@@ -167,7 +167,7 @@ export function Hero({
       whileInView={reduceMotion ? undefined : 'visible'}
       viewport={{ once: true, amount: 0.15 }}
       variants={reveal}
-      className="relative overflow-hidden grid items-center gap-10 py-16 border-b pb- 20 border-secondary/30 lg:grid-cols-12 lg:gap-12"
+      className="relative overflow-hidden grid items-center gap-10 mt-8 border-b pb-20 border-secondary/30 lg:grid-cols-12 lg:gap-12"
       aria-label="Introduction"
     >
       {/* ── Background Subtle SVG Pattern & Fiber Optic Waves ── */}

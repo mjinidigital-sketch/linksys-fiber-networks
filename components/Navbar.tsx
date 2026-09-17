@@ -219,16 +219,7 @@ export function Navbar({
         </div>
 
         <header className="relative z-10 w-full max-w-7xl mx-auto flex items-center justify-between py-3 ">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="md:hidden inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
-              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-            >
-              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-            </button>
-
+          <div className="flex items-center">
             <Link href="/" className="rounded-xl">
               <Image src="/logo.webp" alt="Logo" width={180} height={40} className='dark:brightness-200' />
             </Link>
@@ -280,6 +271,15 @@ export function Navbar({
                   <Moon className="size-4" aria-hidden="true" />
                 )}
               </button>
+
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="md:hidden inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
 
           </div>
         </header>
