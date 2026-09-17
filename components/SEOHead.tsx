@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useWebsiteContent } from '@/hooks/use-website-content'
+import { PageSeoMeta } from '@/lib/types/content'
 import {
   getPageStructuredData,
   getBlogPostJsonLd,
@@ -17,12 +18,12 @@ export function SEOHead() {
   const pathname = usePathname()
   const { content } = useWebsiteContent()
 
-  const seo = content.seo || {}
-  const pages = seo.pages || {}
-  const siteName = content.general?.displayName || content.general?.siteName || 'Victor Maina'
+  const seo = content?.seo
+  const pages: Record<string, PageSeoMeta> = seo?.pages || {}
+  const siteName = content?.general?.displayName || content?.general?.siteName || 'Linksys Fiber Networks'
 
   // 1. Check direct page static config
-  let pageMeta = pages[pathname]
+  let pageMeta: Partial<PageSeoMeta> | undefined = pages[pathname]
   let ogType = 'website'
   let dynamicNoIndex: boolean | undefined = undefined
 
@@ -31,7 +32,7 @@ export function SEOHead() {
   let resolvedBreadcrumbSchema: Record<string, any> | undefined = undefined
 
   // 2. Dynamic Collection Route Resolution
-  if (!pageMeta) {
+  if (content && !pageMeta) {
     if (pathname.startsWith('/blog/')) {
       const slug = decodeURIComponent(pathname.replace('/blog/', ''))
       const post = content.blog?.posts?.find((p) => p.slug === slug || p.id === slug)
@@ -48,12 +49,13 @@ export function SEOHead() {
             post.seo?.metaDescription ||
             post.excerpt ||
             (post.content ? post.content.replace(/<[^>]*>?/gm, '').slice(0, 160) : '') ||
-            seo.description,
+            seo?.description ||
+            '',
           keywords:
             post.seo?.keywords ||
-            (post.category ? `${post.category}, Tech Blog, Web Engineering` : seo.keywords),
-          ogImage: post.seo?.metaImage || post.coverImage || seo.ogImage,
-          canonicalUrl: post.seo?.canonicalUrl || (seo.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
+            (post.category ? `${post.category}, Tech Blog, Web Engineering` : seo?.keywords || ''),
+          ogImage: post.seo?.metaImage || post.coverImage || seo?.ogImage,
+          canonicalUrl: post.seo?.canonicalUrl || (seo?.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
           noIndex: dynamicNoIndex,
         }
         resolvedPrimarySchema = getBlogPostJsonLd(post, content)
@@ -81,12 +83,13 @@ export function SEOHead() {
             project.seo?.metaDescription ||
             project.summary ||
             project.description ||
-            seo.description,
+            seo?.description ||
+            '',
           keywords:
             project.seo?.keywords ||
-            (project.tags?.length ? `${project.tags.join(', ')}, Web Development, Portfolio` : seo.keywords),
-          ogImage: project.seo?.metaImage || project.image || seo.ogImage,
-          canonicalUrl: project.seo?.canonicalUrl || (seo.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
+            (project.tags?.length ? `${project.tags.join(', ')}, Web Development, Portfolio` : seo?.keywords || ''),
+          ogImage: project.seo?.metaImage || project.image || seo?.ogImage,
+          canonicalUrl: project.seo?.canonicalUrl || (seo?.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
           noIndex: dynamicNoIndex,
         }
         resolvedPrimarySchema = getProjectJsonLd(project, content)
@@ -114,12 +117,13 @@ export function SEOHead() {
             service.seo?.metaDescription ||
             service.summary ||
             service.description ||
-            seo.description,
+            seo?.description ||
+            '',
           keywords:
             service.seo?.keywords ||
-            (service.features?.length ? `${service.features.join(', ')}, Consulting` : seo.keywords),
-          ogImage: service.seo?.metaImage || seo.ogImage,
-          canonicalUrl: service.seo?.canonicalUrl || (seo.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
+            (service.features?.length ? `${service.features.join(', ')}, Consulting` : seo?.keywords || ''),
+          ogImage: service.seo?.metaImage || seo?.ogImage,
+          canonicalUrl: service.seo?.canonicalUrl || (seo?.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
           noIndex: dynamicNoIndex,
         }
         resolvedPrimarySchema = getServiceJsonLd(service, content)
@@ -147,12 +151,13 @@ export function SEOHead() {
             template.seo?.metaDescription ||
             template.summary ||
             template.description ||
-            seo.description,
+            seo?.description ||
+            '',
           keywords:
             template.seo?.keywords ||
-            (template.tags?.length ? `${template.tags.join(', ')}, Boilerplate, Next.js Starter` : seo.keywords),
-          ogImage: template.seo?.metaImage || template.previewImage || seo.ogImage,
-          canonicalUrl: template.seo?.canonicalUrl || (seo.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
+            (template.tags?.length ? `${template.tags.join(', ')}, Boilerplate, Next.js Starter` : seo?.keywords || ''),
+          ogImage: template.seo?.metaImage || template.previewImage || seo?.ogImage,
+          canonicalUrl: template.seo?.canonicalUrl || (seo?.canonicalUrl ? `${seo.canonicalUrl}${pathname}` : undefined),
           noIndex: dynamicNoIndex,
         }
         resolvedPrimarySchema = getTemplateJsonLd(template, content)
@@ -169,7 +174,7 @@ export function SEOHead() {
   }
 
   // Fallback to page structured data resolver for core / custom pages
-  if (!resolvedPrimarySchema) {
+  if (content && !resolvedPrimarySchema) {
     const pageData = getPageStructuredData(pathname, content)
     resolvedPrimarySchema = pageData.primarySchema
     resolvedBreadcrumbSchema = pageData.breadcrumbSchema
@@ -178,17 +183,17 @@ export function SEOHead() {
   // Fallback to home page config if nothing matched
   const activeMeta = pageMeta || pages['/']
 
-  const activeTitle = activeMeta?.title || seo.title || `${siteName} — Full-Stack Web Developer & Designer`
-  const activeDesc = activeMeta?.description || seo.description || ''
-  const activeKeywords = activeMeta?.keywords || seo.keywords || ''
-  const activeOgImage = activeMeta?.ogImage || seo.ogImage || ''
+  const activeTitle = activeMeta?.title || seo?.title || `${siteName} — Full-Stack Web Developer & Designer`
+  const activeDesc = activeMeta?.description || seo?.description || ''
+  const activeKeywords = activeMeta?.keywords || seo?.keywords || ''
+  const activeOgImage = activeMeta?.ogImage || seo?.ogImage || ''
   const activeCanonical =
     activeMeta?.canonicalUrl ||
-    (seo.canonicalUrl ? `${seo.canonicalUrl}${pathname === '/' ? '' : pathname}` : '')
-  const apis = seo.apis
+    (seo?.canonicalUrl ? `${seo.canonicalUrl}${pathname === '/' ? '' : pathname}` : '')
+  const apis = seo?.apis
 
   useEffect(() => {
-    if (typeof document === 'undefined') return
+    if (!content || typeof document === 'undefined') return
 
     // Update document title
     if (activeTitle) {
@@ -234,7 +239,7 @@ export function SEOHead() {
       'og:description': activeDesc,
       'og:image': activeOgImage,
       'og:url': activeCanonical || (typeof window !== 'undefined' ? window.location.href : ''),
-      'twitter:card': seo.twitterCard || 'summary_large_image',
+      'twitter:card': seo?.twitterCard || 'summary_large_image',
       'twitter:title': activeTitle,
       'twitter:description': activeDesc,
       'twitter:image': activeOgImage,
@@ -282,7 +287,7 @@ export function SEOHead() {
       robotsTag.setAttribute('name', 'robots')
       document.head.appendChild(robotsTag)
     }
-    const isNoIndex = activeMeta?.noIndex || seo.allowIndexing === false
+    const isNoIndex = activeMeta?.noIndex || seo?.allowIndexing === false
     robotsTag.setAttribute('content', isNoIndex ? 'noindex, nofollow' : 'index, follow')
 
     // Inject Primary Schema.org JSON-LD structured data into <head>
@@ -311,6 +316,7 @@ export function SEOHead() {
       breadcrumbScript.remove()
     }
   }, [
+    content,
     activeTitle,
     activeDesc,
     activeKeywords,
@@ -319,8 +325,8 @@ export function SEOHead() {
     ogType,
     apis,
     activeMeta,
-    seo.allowIndexing,
-    seo.twitterCard,
+    seo?.allowIndexing,
+    seo?.twitterCard,
     siteName,
     pathname,
     resolvedPrimarySchema,

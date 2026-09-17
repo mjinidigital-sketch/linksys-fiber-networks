@@ -1,4 +1,5 @@
 import { ProjectContent } from '@/components/ProjectContent'
+import { getWebsiteContentServer } from '@/lib/get-website-content'
 
 interface ProjectPageProps {
   params: Promise<{ id: string }>
@@ -6,5 +7,6 @@ interface ProjectPageProps {
 
 export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const { id } = await params
-  return <ProjectContent id={id} />
+  const initialData = await getWebsiteContentServer()
+  return <ProjectContent id={id} initialData={initialData} />
 }

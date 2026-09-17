@@ -15,8 +15,6 @@ import {
   getSchemaAreasServed,
   ALL_AREAS_SERVED_SUMMARY,
   KENYA_COUNTIES,
-  USA_TOP_STATES,
-  UK_CITIES_AND_COUNTIES,
 } from './data/locations'
 
 /**
@@ -83,7 +81,7 @@ export function getBaseUrl(content?: Partial<WebsiteContent>): string {
   return (
     content?.seo?.canonicalUrl?.replace(/\/$/, '') ||
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
-    'https://victormaina.mjinidigital.co.ke/'
+    'https://linksysfiber.ke'
   )
 }
 
@@ -109,7 +107,7 @@ export function getBreadcrumbJsonLd(
 }
 
 /**
- * Generates Person schema from portfolio content
+ * Generates Organization / LocalBusiness schema from ISP content
  */
 export function getPersonJsonLd(content: WebsiteContent) {
   const baseUrl = getBaseUrl(content)
@@ -118,31 +116,32 @@ export function getPersonJsonLd(content: WebsiteContent) {
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: general.displayName || general.siteName || 'Victor Maina',
-    jobTitle: general.role || PROFESSION_TITLE,
-    url: baseUrl,
-    image: general.avatarUrl || undefined,
+    '@type': 'LocalBusiness',
+    additionalType: 'https://schema.org/InternetServiceProvider',
+    name: general.displayName || general.siteName || 'Linksys Fiber Networks',
     description: general.shortBio || content.seo.description,
-    email: general.email ? `mailto:${general.email}` : undefined,
-    telephone: general.phone || undefined,
+    url: baseUrl,
+    image: general.avatarUrl ? `${baseUrl}${general.avatarUrl.startsWith('/') ? '' : '/'}${general.avatarUrl}` : undefined,
+    logo: `${baseUrl}/linksys-logo-final.webp`,
+    email: general.email ? `mailto:${general.email}` : 'mailto:info@linksysfiber.ke',
+    telephone: general.phone || '+254 713 366 366',
+    priceRange: 'KSh 1,500 - KSh 4,000',
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Nairobi',
+      streetAddress: 'Generis Hotel Building, Ground Floor',
+      addressLocality: 'Molo',
+      addressRegion: 'Nakuru County',
       addressCountry: 'Kenya',
     },
     areaServed: getSchemaAreasServed(),
     sameAs: socials.map((s) => s.url).filter(Boolean),
     knowsAbout: [
-      'Website Development',
-      'Search Engine Optimization (SEO)',
-      'Next.js',
-      'React',
-      'TypeScript',
-      'Convex',
-      'Node.js',
-      'E-commerce Development',
-      'Full-Stack Web Development',
+      'Fiber Internet',
+      'High-Speed Wi-Fi',
+      'Hotspot Wi-Fi Broadcasting',
+      'Structured Cabling',
+      'CCTV Installation & Security Solutions',
+      'Managed IT Support',
       ...(content.techStack?.items || []),
     ],
   }
@@ -153,7 +152,7 @@ export function getPersonJsonLd(content: WebsiteContent) {
  */
 export function getWebSiteJsonLd(content: WebsiteContent) {
   const baseUrl = getBaseUrl(content)
-  const siteName = content.general.siteName || content.general.displayName || 'Victor Maina'
+  const siteName = content.general.siteName || content.general.displayName || 'Linksys Fiber Networks'
 
   return {
     '@context': 'https://schema.org',
@@ -176,33 +175,41 @@ export function getContactPageJsonLd(content: WebsiteContent) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
-    name: `Contact ${general.displayName || 'Victor Maina'} — Website Developer & SEO Expert`,
-    description: content.contact?.subtitle || 'Get in touch for website development, SEO consulting, and web engineering in Nairobi, Kenya, 47 counties, USA, UK, and worldwide.',
+    name: `Contact ${general.displayName || 'Linksys Fiber Networks'} — Internet Service Provider Molo`,
+    description: content.contact?.subtitle || 'Contact Linksys Fiber Networks for fast, affordable fiber and Wi-Fi internet in Molo and environs.',
     url: `${baseUrl}/contact`,
     mainEntity: {
-      '@type': 'Person',
-      name: general.displayName,
-      jobTitle: PROFESSION_TITLE,
-      email: general.email,
-      telephone: general.phone || undefined,
+      '@type': 'LocalBusiness',
+      additionalType: 'https://schema.org/InternetServiceProvider',
+      name: general.displayName || 'Linksys Fiber Networks',
+      email: general.email || 'info@linksysfiber.ke',
+      telephone: general.phone || '+254 713 366 366',
       url: baseUrl,
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Nairobi',
+        streetAddress: 'Generis Hotel Building, Ground Floor',
+        addressLocality: 'Molo',
+        addressRegion: 'Nakuru County',
         addressCountry: 'Kenya',
       },
       areaServed: getSchemaAreasServed(),
       contactPoint: {
         '@type': 'ContactPoint',
-        contactType: 'Website Development & SEO Inquiries',
-        email: general.email,
+        contactType: 'Customer Support & Sales',
+        email: general.email || 'info@linksysfiber.ke',
+        telephone: general.phone || '+254 713 366 366',
         availableLanguage: ['English', 'Swahili'],
         areaServed: [
-          'Nairobi, Kenya (Main Headquarters)',
-          'Kenya (All 47 Counties)',
-          'United States',
-          'United Kingdom',
-          'Worldwide',
+          'Molo CBD',
+          'Tayari',
+          'Moto',
+          'Turi',
+          'Kibunja',
+          'Promise',
+          '20 Acres',
+          'Kenyatta 123',
+          'Upperhill Estate',
+          'Nakuru County',
         ],
       },
     },
@@ -487,6 +494,75 @@ export function getPageStructuredData(
       }
     }
 
+    if (customType === 'LocalBusiness' || customType === 'Organization') {
+      return {
+        primarySchema: getPersonJsonLd(content),
+        breadcrumbSchema: getBreadcrumbForPath(path, pageMeta.pageName, content),
+      }
+    }
+
+    if (customType === 'Product') {
+      return {
+        primarySchema: {
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: pageMeta.title,
+          description: pageMeta.description,
+          image: pageMeta.ogImage || content.seo.ogImage,
+          brand: {
+            '@type': 'Organization',
+            name: content.general.displayName || content.general.siteName || 'Linksys Fiber Networks',
+          },
+          offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'KES',
+            lowPrice: '1500',
+            highPrice: '4000',
+            offerCount: content.pricing?.plans?.length || 4,
+            offers: (content.pricing?.plans || []).map((t) => ({
+              '@type': 'Offer',
+              name: t.name,
+              price: t.price,
+              priceCurrency: 'KES',
+              url: `${baseUrl}/packages`,
+            })),
+          },
+        },
+        breadcrumbSchema: getBreadcrumbForPath(path, pageMeta.pageName, content),
+      }
+    }
+
+    if (customType === 'Service') {
+      return {
+        primarySchema: {
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: pageMeta.title,
+          description: pageMeta.description,
+          provider: getPersonJsonLd(content),
+          areaServed: getSchemaAreasServed(),
+          url: `${baseUrl}${path}`,
+        },
+        breadcrumbSchema: getBreadcrumbForPath(path, pageMeta.pageName, content),
+      }
+    }
+
+    if (customType === 'Article') {
+      return {
+        primarySchema: {
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: pageMeta.title,
+          description: pageMeta.description,
+          image: pageMeta.ogImage || content.seo.ogImage,
+          author: getPersonJsonLd(content),
+          publisher: getPersonJsonLd(content),
+          url: `${baseUrl}${path}`,
+        },
+        breadcrumbSchema: getBreadcrumbForPath(path, pageMeta.pageName, content),
+      }
+    }
+
     if (customType === 'ProfilePage' || customType === 'AboutPage') {
       return {
         primarySchema: {
@@ -648,9 +724,9 @@ export function getDefaultSchemaTemplate(
   const {
     title = 'Example Title',
     description = 'Example description summarizing this content.',
-    url = 'https://victormaina.mjinidigital.co.ke//page',
-    image = 'https://victormaina.mjinidigital.co.ke//og-image.png',
-    siteName = 'Victor Maina',
+    url = 'https://linksysfiber.ke/packages',
+    image = 'https://linksysfiber.ke/api/media/file/hero-linksys%20(1)-2-1200x630.webp',
+    siteName = 'Linksys Fiber Networks',
   } = params
 
   switch (type) {
@@ -746,6 +822,31 @@ export function getDefaultSchemaTemplate(
             price: '49',
             priceCurrency: 'USD',
           },
+        },
+        null,
+        2
+      )
+
+    case 'LocalBusiness':
+    case 'Organization':
+      return JSON.stringify(
+        {
+          '@context': 'https://schema.org',
+          '@type': type,
+          name: siteName,
+          description,
+          url,
+          logo: image,
+          telephone: '+254 713 366 366',
+          email: 'info@linksysfiber.ke',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'Generis Hotel Building, Ground Floor',
+            addressLocality: 'Molo',
+            addressRegion: 'Nakuru County',
+            addressCountry: 'Kenya',
+          },
+          priceRange: 'KSh 1,500 - KSh 4,000',
         },
         null,
         2

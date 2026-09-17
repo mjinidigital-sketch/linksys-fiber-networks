@@ -1,28 +1,18 @@
 import { MetadataRoute } from 'next'
-import { fetchQuery } from 'convex/nextjs'
-import { api } from '@/convex/_generated/api'
-import { defaultContent } from '@/lib/default-content'
+import { getWebsiteContentServer } from '@/lib/get-website-content'
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   let allowIndexing = true
-  let baseUrl = 'https://victormaina.mjinidigital.co.ke/'
+  let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://linksysfiber.ke'
 
-  try {
-    const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL
-    if (convexUrl) {
-      const data = await fetchQuery(api.content.get, {})
-      if (data?.seo) {
-        if (data.seo.allowIndexing !== undefined) {
-          allowIndexing = Boolean(data.seo.allowIndexing)
-        }
-        if (data.seo.canonicalUrl) {
-          baseUrl = data.seo.canonicalUrl.replace(/\/$/, '')
-        }
-      }
+  const content = await getWebsiteContentServer()
+  if (content?.seo) {
+    if (content.seo.allowIndexing !== undefined) {
+      allowIndexing = Boolean(content.seo.allowIndexing)
     }
-  } catch {
-    allowIndexing = defaultContent.seo.allowIndexing
-    baseUrl = defaultContent.seo.canonicalUrl.replace(/\/$/, '')
+    if (content.seo.canonicalUrl) {
+      baseUrl = content.seo.canonicalUrl.replace(/\/$/, '')
+    }
   }
 
   return {

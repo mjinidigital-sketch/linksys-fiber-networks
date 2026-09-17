@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { PageComponentBlock, ComponentBlockType } from '@/lib/types/content'
 
 // Block types that pull from global collections — not editable per-block
-const FIXED_BLOCKS = new Set<ComponentBlockType>(['projects', 'services', 'templates', 'blog', 'logos'])
+const FIXED_BLOCKS = new Set<ComponentBlockType>(['projects', 'services', 'templates', 'blog', 'logos', 'careers'])
 
 interface BlockContentEditorProps {
   block: PageComponentBlock
@@ -54,7 +54,7 @@ function SectionDivider({ label }: { label: string }) {
 // ---------------------------------------------------------------------------
 
 function HeroEditor({ data, onChange }: { data: Record<string, any>; onChange: (d: Record<string, any>) => void }) {
-  const set = (key: string, val: string) => onChange({ ...data, [key]: val })
+  const set = (key: string, val: any) => onChange({ ...data, [key]: val })
   return (
     <div className="space-y-4">
       <SectionDivider label="Badge & Headline" />
@@ -118,6 +118,49 @@ function HeroEditor({ data, onChange }: { data: Record<string, any>; onChange: (
         <FieldRow label="Highlight Char">
           <Input value={data.statusCardHighlight || ''} onChange={e => set('statusCardHighlight', e.target.value)} placeholder="." className="text-sm font-mono" />
         </FieldRow>
+      </div>
+
+      <SectionDivider label="Carousel Images" />
+      <div className="space-y-2">
+        {(Array.isArray(data.images) ? data.images : []).map((imgUrl: string, i: number) => (
+          <div key={i} className="flex items-center gap-2">
+            <Input
+              value={imgUrl}
+              onChange={e => {
+                const updated = [...(data.images || [])]
+                updated[i] = e.target.value
+                set('images', updated)
+              }}
+              placeholder="https://images.unsplash.com/..."
+              className="text-xs font-mono"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-8 text-destructive shrink-0"
+              onClick={() => {
+                const updated = (data.images || []).filter((_: any, idx: number) => idx !== i)
+                set('images', updated)
+              }}
+            >
+              <Trash2 className="size-3.5" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            const current = Array.isArray(data.images) ? data.images : []
+            set('images', [...current, ''])
+          }}
+          className="w-full gap-1.5 text-xs"
+        >
+          <Plus className="size-3.5" />
+          Add Carousel Image URL
+        </Button>
       </div>
     </div>
   )
@@ -830,6 +873,7 @@ function FixedBlockNotice({ type }: { type: ComponentBlockType }) {
 
 const BLOCK_META: Record<ComponentBlockType, { label: string; icon: React.ReactNode; color: string }> = {
   hero:       { label: 'Hero Section',      icon: <Sparkles className="size-4" />,     color: 'text-primary bg-primary/10' },
+  hero2:      { label: 'Compact Hero (Hero2)', icon: <Sparkles className="size-4" />,  color: 'text-primary bg-primary/10' },
   techStack:  { label: 'Tech Stack',        icon: <Wrench className="size-4" />,       color: 'text-cyan-500 bg-cyan-500/10' },
   logos:      { label: 'Logos',             icon: <Globe className="size-4" />,        color: 'text-purple-500 bg-purple-500/10' },
   projects:   { label: 'Projects',          icon: <Briefcase className="size-4" />,    color: 'text-amber-500 bg-amber-500/10' },
@@ -845,6 +889,7 @@ const BLOCK_META: Record<ComponentBlockType, { label: string; icon: React.ReactN
   pricing:    { label: 'Pricing',           icon: <Briefcase className="size-4" />,    color: 'text-yellow-500 bg-yellow-500/10' },
   stats:      { label: 'Stats',             icon: <Sparkles className="size-4" />,     color: 'text-teal-500 bg-teal-500/10' },
   codeBlock:  { label: 'Code Block',        icon: <Code2 className="size-4" />,        color: 'text-zinc-500 bg-zinc-500/10' },
+  careers:    { label: 'Careers & Roles',   icon: <Briefcase className="size-4" />,    color: 'text-blue-500 bg-blue-500/10' },
 }
 
 // ---------------------------------------------------------------------------
@@ -860,6 +905,7 @@ export function BlockContentEditor({ block, globalContent, onSave, onClose }: Bl
     if (isFixed) return {}
     const globalDefaults: Record<string, any> = {
       hero:       globalContent.hero       || {},
+      hero2:      globalContent.hero       || {},
       techStack:  globalContent.techStack  || {},
       logos:      globalContent.logos      || {},
       process:    globalContent.process    || {},
@@ -913,6 +959,7 @@ export function BlockContentEditor({ block, globalContent, onSave, onClose }: Bl
     if (isFixed) return <FixedBlockNotice type={block.type} />
     switch (block.type) {
       case 'hero':       return <HeroEditor data={localData} onChange={setLocalData} />
+      case 'hero2':      return <HeroEditor data={localData} onChange={setLocalData} />
       case 'techStack':  return <TechStackEditor data={localData} onChange={setLocalData} />
       case 'logos':      return <LogosEditor data={localData} onChange={setLocalData} />
       case 'process':    return <ProcessEditor data={localData} onChange={setLocalData} />

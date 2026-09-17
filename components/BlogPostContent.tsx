@@ -24,22 +24,38 @@ import { toast } from '@/components/ui/toast'
 import { getBlogPostJsonLd, getBreadcrumbJsonLd } from '@/lib/structured-data'
 import { CommentsSection } from '@/components/CommentsSection'
 
+import { WebsiteContent } from '@/lib/types/content'
+
 interface BlogPostContentProps {
   slug: string
+  initialData?: WebsiteContent | null
 }
 
-export function BlogPostContent({ slug }: BlogPostContentProps) {
+export function BlogPostContent({ slug, initialData }: BlogPostContentProps) {
   const router = useRouter()
-  const { content } = useWebsiteContent()
+  const { content, loading } = useWebsiteContent(initialData)
   const [copied, setCopied] = useState(false)
 
-  const post = content.blog.posts.find((p) => p.slug === slug || p.id === slug)
-  const relatedPosts = content.blog.posts.filter((p) => p.id !== post?.id && p.published).slice(0, 2)
+  if (!content || loading) {
+    return (
+      <div className="min-h-screen flex flex-col w-full bg-background animate-pulse">
+        <div className="h-16 w-full border-b border-border/40 bg-card/20" />
+        <main className="flex-1 mx-auto max-w-4xl px-4 sm:px-6 mt-12 pb-20 w-full space-y-6">
+          <div className="h-10 w-3/4 bg-muted/30 rounded-lg" />
+          <div className="h-6 w-1/2 bg-muted/20 rounded-md" />
+          <div className="h-96 bg-muted/20 rounded-2xl w-full" />
+        </main>
+      </div>
+    )
+  }
+
+  const post = content.blog?.posts?.find((p) => p.slug === slug || p.id === slug)
+  const relatedPosts = (content.blog?.posts || []).filter((p) => p.id !== post?.id && p.published).slice(0, 2)
 
   const handleShareTwitter = () => {
     if (!post) return
     const url = window.location.href
-    const text = encodeURIComponent(`Check out "${post.title}" by ${content.general.displayName}`)
+    const text = encodeURIComponent(`Check out "${post.title}" by ${content.general?.displayName || 'Linksys'}`)
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`, '_blank')
   }
 
@@ -61,20 +77,22 @@ export function BlogPostContent({ slug }: BlogPostContentProps) {
 
   if (!post) {
     return (
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20">
-        <Navbar navigation={content.navigation} />
-        <div className="py-24 text-center space-y-4">
-          <BookOpen className="mx-auto size-12 text-muted-foreground/50" aria-hidden="true" />
-          <h1 className="text-2xl font-bold">Article Not Found</h1>
-          <p className="text-sm text-muted-foreground">The article you are looking for does not exist or has been unpublished.</p>
-          <Link href="/blog">
-            <Button variant="outline" className="rounded-xl">
-              <ArrowLeft className="size-4 mr-1.5" aria-hidden="true" /> Back to Blog
-            </Button>
-          </Link>
-        </div>
-        <Footer footer={content.footer} general={content.general} />
-      </main>
+      <div className="min-h-screen flex flex-col w-full">
+        <Navbar navigation={content.navigation} general={content.general} />
+        <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20 w-full">
+          <div className="py-24 text-center space-y-4">
+            <BookOpen className="mx-auto size-12 text-muted-foreground/50" aria-hidden="true" />
+            <h1 className="text-2xl font-bold">Article Not Found</h1>
+            <p className="text-sm text-muted-foreground">The article you are looking for does not exist or has been unpublished.</p>
+            <Link href="/blog">
+              <Button variant="outline" className="rounded-xl">
+                <ArrowLeft className="size-4 mr-1.5" aria-hidden="true" /> Back to Blog
+              </Button>
+            </Link>
+          </div>
+          <Footer footer={content.footer} general={content.general} />
+        </main>
+      </div>
     )
   }
 
@@ -91,7 +109,7 @@ export function BlogPostContent({ slug }: BlogPostContentProps) {
   const authorAvatarSrc = content.general.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400'
 
   return (
-    <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20">
+    <div className="min-h-screen flex flex-col w-full">
       {/* Schema.org JSON-LD structured data */}
       <script
         type="application/ld+json"
@@ -102,9 +120,10 @@ export function BlogPostContent({ slug }: BlogPostContentProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <Navbar navigation={content.navigation} />
+      <Navbar navigation={content.navigation} general={content.general} />
 
-      <article className="mx-auto max-w-4xl py-12 sm:py-16">
+      <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20 w-full">
+        <article className="mx-auto max-w-4xl py-12 sm:py-16">
         {/* Back Link */}
         <Link
           href="/blog"
@@ -282,6 +301,7 @@ export function BlogPostContent({ slug }: BlogPostContentProps) {
       </article>
 
       <Footer footer={content.footer} general={content.general} />
-    </main>
+      </main>
+    </div>
   )
 }

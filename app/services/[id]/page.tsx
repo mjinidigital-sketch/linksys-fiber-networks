@@ -1,4 +1,5 @@
 import { ServiceContent } from '@/components/ServiceContent'
+import { getWebsiteContentServer } from '@/lib/get-website-content'
 
 interface ServicePageProps {
   params: Promise<{ id: string }>
@@ -6,5 +7,6 @@ interface ServicePageProps {
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
   const { id } = await params
-  return <ServiceContent id={id} />
+  const initialData = await getWebsiteContentServer()
+  return <ServiceContent id={id} initialData={initialData} />
 }

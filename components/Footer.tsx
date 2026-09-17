@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { FooterContent, GeneralSettings } from '@/lib/types/content'
-import { defaultContent } from '@/lib/default-content'
 import { Mail, Phone } from 'lucide-react'
 
 interface FooterProps {
@@ -8,8 +7,8 @@ interface FooterProps {
   general?: GeneralSettings
 }
 
-export function Footer({ footer = defaultContent.footer, general = defaultContent.general }: FooterProps) {
-  const rawPhone = general.phone?.replace(/\s+/g, '') || ''
+export function Footer({ footer, general }: FooterProps) {
+  const rawPhone = general?.phone?.replace(/\s+/g, '') || ''
   const waPhone = rawPhone.replace('+', '')
 
   return (

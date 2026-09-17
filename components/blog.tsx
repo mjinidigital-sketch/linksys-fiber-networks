@@ -19,19 +19,19 @@ const Blog = ({ blog }: { blog?: BlogContent }) => {
   if (!posts.length) return null;
 
   return (
-    <div className="mx-auto max-w-(--breakpoint-xl) px-6 py-16 xl:px-0">
+    <div className="border-t border-b mx-auto max-w-(--breakpoint-xl) px-6 py-20 xl:px-0 -mt-16">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           {blog?.sectionLabel && (
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+            <p className="font-mono text-md uppercase tracking-[0.2em] text-accent-foreground">
               {blog.sectionLabel}
             </p>
           )}
-          <h2 className="mt-2 font-medium text-[1.5rem] tracking-tight">
+          <h2 className="mt-2 font-bold text-2xl sm:text-4xl lg:text-5xl">
             {blog?.title || "Recommended Posts"}
           </h2>
           {blog?.subtitle && (
-            <p className="mt-2 text-sm text-muted-foreground">{blog.subtitle}</p>
+            <p className="mt-2 text-base text-muted-foreground">{blog.subtitle}</p>
           )}
         </div>
         <Select defaultValue="recommended">
@@ -46,7 +46,7 @@ const Blog = ({ blog }: { blog?: BlogContent }) => {
         </Select>
       </div>
 
-      <div className="mt-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <Card
             className="gap-0 overflow-hidden rounded-lg py-0 shadow-none flex flex-col"
@@ -81,11 +81,11 @@ const Blog = ({ blog }: { blog?: BlogContent }) => {
               </div>
 
               <Link href={`/blog/${post.slug}`} className="group/title block">
-                <h3 className="mt-4 font-medium text-[1.4rem] text-xl tracking-[-0.02em] group-hover/title:text-primary transition-colors">
+                <h3 className="mt-4 font-bold text-xl  group-hover/title:text-primary transition-colors">
                   {post.title}
                 </h3>
               </Link>
-              <p className="mt-2 text-muted-foreground line-clamp-3 mb-6">
+              <p className="mt-2 text-muted-foreground line-clamp-3 mb-6 text-sm">
                 {post.excerpt}
               </p>
 

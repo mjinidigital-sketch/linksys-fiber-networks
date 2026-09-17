@@ -3,7 +3,6 @@
 import { motion, useReducedMotion, type Variants } from 'framer-motion'
 import { ArrowUpRight, Mail, Phone, MessageCircle } from 'lucide-react'
 import { ContactContent } from '@/lib/types/content'
-import { defaultContent } from '@/lib/default-content'
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -19,8 +18,9 @@ interface ContactProps {
   phone?: string
 }
 
-export function Contact({ contact = defaultContent.contact, phone = defaultContent.general.phone }: ContactProps) {
+export function Contact({ contact, phone }: ContactProps) {
   const reduceMotion = useReducedMotion()
+  if (!contact) return null
 
   // Format phone for tel: and WhatsApp links (strip spaces)
   const rawPhone = phone?.replace(/\s+/g, '') || ''

@@ -9,6 +9,8 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as careers from "../careers.js";
+import type * as chat from "../chat.js";
 import type * as comments from "../comments.js";
 import type * as content from "../content.js";
 import type * as files from "../files.js";
@@ -25,6 +27,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  careers: typeof careers;
+  chat: typeof chat;
   comments: typeof comments;
   content: typeof content;
   files: typeof files;

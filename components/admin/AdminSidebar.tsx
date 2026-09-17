@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useQuery } from 'convex/react'
+import { api } from '@/convex/_generated/api'
 import {
   LayoutDashboard,
   FileCode2,
@@ -11,6 +13,7 @@ import {
   Settings,
   Globe2,
   Users,
+  MessageSquare,
   ExternalLink,
   ChevronDown,
   LayoutTemplate,
@@ -50,7 +53,7 @@ const websiteContentSections: ContentCategory[] = [
     items: [
       { label: 'Projects', href: '/admin/website-content/collections/projects', icon: Briefcase },
       { label: 'Services', href: '/admin/website-content/collections/services', icon: Layers },
-      { label: 'Templates', href: '/admin/website-content/collections/templates', icon: LayoutTemplate },
+      { label: 'Careers & Jobs', href: '/admin/website-content/collections/careers', icon: Users },
       { label: 'Blog Posts', href: '/admin/website-content/collections/blog', icon: FileText },
     ]
   },
@@ -76,6 +79,9 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
   const isContentActive = pathname.startsWith('/admin/website-content')
   const [contentDropdownOpen, setContentDropdownOpen] = useState(true)
 
+  // Live admin unread messages count from Convex
+  const adminUnreadCount = useQuery(api.chat.adminGetTotalUnreadCount)
+
   // Keep dropdown open if user navigates to content subpage
   useEffect(() => {
     if (isContentActive) {
@@ -94,10 +100,9 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
         {/* Brand Header */}
         <div className="rounded-2xl border border-primary/20 bg-background/90 p-3.5">
           <div className="flex items-center justify-between">
-            <p className="font-bold text-[12px] uppercase tracking-[0.2em] text-primary">Admin Portal</p>
+            <p className="font-bold ">Admin Panel</p>
             <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
-          <p className="mt-1.5 text-sm font-bold tracking-tight">Victor Maina</p>
         </div>
 
         {/* Main Navigation */}
@@ -113,12 +118,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               className={cn(
                 'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
                 pathname === '/admin'
-                  ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
+                  ? 'bg-secondary text-primary-foreground shadow-xs shadow-primary/25'
                   : 'text-muted-foreground hover:bg-muted hover:text-foreground'
               )}
             >
               <div className="flex items-center gap-2.5">
-                <LayoutDashboard className={cn('size-4 shrink-0', pathname === '/admin' ? 'text-primary-foreground' : 'text-primary')} />
+                <LayoutDashboard className={cn('size-4 shrink-0', pathname === '/admin' ? 'text-accent' : 'text-secondary')} />
                 <span>Overview</span>
               </div>
             </Link>
@@ -132,7 +137,7 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
                   className={cn(
                     'flex flex-1 items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
                     isContentActive
-                      ? 'bg-primary/15 text-muted-foreground font-semibold'
+                      ? 'bg-secondary text-muted font-semibold'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground '
                   )}
                 >
@@ -191,6 +196,32 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               )}
             </div>
 
+            {/* Live Chat & Support Route */}
+            <Link
+              href="/admin/chats"
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                pathname === '/admin/chats'
+                  ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
+            >
+              <div className="flex items-center gap-2.5">
+                <MessageSquare className={cn('size-4 shrink-0', pathname === '/admin/chats' ? 'text-secondary' : 'text-secondary')} />
+                <span>Live Chat & Support</span>
+              </div>
+              {adminUnreadCount !== undefined && adminUnreadCount > 0 ? (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground animate-pulse">
+                  {adminUnreadCount}
+                </span>
+              ) : (
+                <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-emerald-500">
+                  Live
+                </span>
+              )}
+            </Link>
+
             {/* Other Admin Routes */}
             <Link
               href="/admin/users"
@@ -203,7 +234,7 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               )}
             >
               <div className="flex items-center gap-2.5">
-                <Users className={cn('size-4 shrink-0', pathname === '/admin/users' ? 'text-primary-foreground' : 'text-primary')} />
+                <Users className={cn('size-4 shrink-0', pathname === '/admin/users' ? 'text-secondary' : 'text-secondary')} />
                 <span>User Management</span>
               </div>
               <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-primary">
@@ -222,7 +253,7 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               )}
             >
               <div className="flex items-center gap-2.5">
-                <Search className={cn('size-4 shrink-0', pathname === '/admin/seo' ? 'text-primary-foreground' : 'text-primary')} />
+                <Search className={cn('size-4 shrink-0', pathname === '/admin/seo' ? 'text-secondary' : 'text-secondary')} />
                 <span>SEO Settings</span>
               </div>
             </Link>
@@ -238,7 +269,7 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               )}
             >
               <div className="flex items-center gap-2.5">
-                <Share2 className={cn('size-4 shrink-0', pathname === '/admin/socials' ? 'text-primary-foreground' : 'text-primary')} />
+                <Share2 className={cn('size-4 shrink-0', pathname === '/admin/socials' ? 'text-secondary' : 'text-secondary')} />
                 <span>Social Links</span>
               </div>
             </Link>
@@ -254,7 +285,7 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               )}
             >
               <div className="flex items-center gap-2.5">
-                <Settings className={cn('size-4 shrink-0', pathname === '/admin/settings' ? 'text-primary-foreground' : 'text-primary')} />
+                <Settings className={cn('size-4 shrink-0', pathname === '/admin/settings' ? 'text-secondary' : 'text-secondary')} />
                 <span>Site Settings</span>
               </div>
             </Link>

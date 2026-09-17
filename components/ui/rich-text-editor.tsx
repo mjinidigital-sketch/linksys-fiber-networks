@@ -1,34 +1,47 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   Bold,
   Italic,
+  Underline,
+  Strikethrough,
   Code,
+  Subscript,
+  Superscript,
   Heading1,
   Heading2,
   Heading3,
+  Heading4,
   List,
   ListOrdered,
   Quote,
   Image as ImageIcon,
   Link as LinkIcon,
+  Unlink,
   Minus,
   Eye,
   Edit3,
-  HelpCircle,
-  Lightbulb,
-  AlertTriangle,
-  Info,
+  Code2,
+  Maximize2,
+  Minimize2,
+  Undo,
+  Redo,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Table as TableIcon,
   X,
-  Plus,
-  LayoutTemplate,
   Sparkles,
-  FileCheck
+  LayoutTemplate,
+  Info,
+  RemoveFormatting,
+  Palette
 } from 'lucide-react'
 import { YoutubeIcon } from './icons'
 import { Button } from './button'
 import { Input } from './input'
+import { Label } from './label'
 import { ImageUploader } from './image-uploader'
 import { RichTextRenderer } from './rich-text-renderer'
 import { cn } from '@/lib/utils'
@@ -42,7 +55,82 @@ interface RichTextEditorProps {
   className?: string
 }
 
+// Convert legacy Markdown strings to clean visual HTML for backward compatibility
+export function convertMarkdownToHtml(md: string): string {
+  if (!md) return ''
+  // If content already contains HTML tags like <p>, <h2>, <div>, return as is
+  if (/<(p|h[1-6]|div|ul|ol|table|blockquote|figure|pre|br)\b[^>]*>/i.test(md)) {
+    return md
+  }
+
+  let html = md
+
+  // YouTube tags :::youtube[id]:::
+  html = html.replace(/:::youtube\[([a-zA-Z0-9_-]+)\]:::/g, (_, id) => {
+    return `<div class="youtube-embed my-6 aspect-video rounded-2xl overflow-hidden border border-primary/20 shadow-xl"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full border-0"></iframe></div>`
+  })
+
+  // Callouts :::callout[type] text :::
+  html = html.replace(/:::callout\[(\w+)\]\s*([\s\S]*?)\s*:::/g, (_, type, content) => {
+    const isWarning = type === 'warning'
+    const isTip = type === 'tip'
+    const isDanger = type === 'danger'
+    const bgClass = isWarning
+      ? 'border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200'
+      : isTip
+        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200'
+        : isDanger
+          ? 'border-red-500/30 bg-red-500/10 text-red-900 dark:text-red-200'
+          : 'border-primary/30 bg-primary/10 text-primary dark:text-primary-foreground'
+    const title = isWarning ? 'Warning' : isTip ? 'Pro Tip' : isDanger ? 'Caution' : 'Note'
+    return `<div class="callout callout-${type} my-6 p-4 rounded-2xl border ${bgClass} flex gap-3 items-start"><div><strong class="block text-sm font-semibold mb-1">${title}</strong><p class="text-xs leading-relaxed m-0">${content}</p></div></div>`
+  })
+
+  // Code blocks ```lang\ncode\n```
+  html = html.replace(/```(\w*)\n([\s\S]*?)\n```/g, (_, lang, code) => {
+    const escapedCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    return `<pre class="my-6 p-4 rounded-2xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto border border-border"><code class="language-${lang || 'plaintext'}">${escapedCode}</code></pre>`
+  })
+
+  // Images ![alt](url)
+  html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (_, alt, url) => {
+    return `<figure class="my-6 text-center"><img src="${url}" alt="${alt || 'Article Image'}" class="rounded-2xl border border-border max-w-full inline-block shadow-md max-h-[500px] object-cover" />${alt ? `<figcaption class="text-center font-mono text-[11px] text-muted-foreground mt-2">${alt}</figcaption>` : ''}</figure>`
+  })
+
+  // Headings - explicitly rendered with bold styling
+  html = html.replace(/^#### (.*$)/gim, '<h4 class="text-lg font-bold text-foreground mt-6 mb-2">$1</h4>')
+  html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold text-foreground mt-6 mb-2">$1</h3>')
+  html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl font-extrabold text-foreground mt-8 mb-3 border-b border-border/50 pb-2">$1</h2>')
+  html = html.replace(/^# (.*$)/gim, '<h1 class="text-3xl font-black text-foreground mt-10 mb-4">$1</h1>')
+
+  // Blockquotes
+  html = html.replace(/^>\s*(.*$)/gim, '<blockquote class="border-l-4 border-primary pl-4 py-2 my-4 italic text-muted-foreground font-serif">$1</blockquote>')
+
+  // Bold, Italic, Inline Code, Links
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>')
+  html = html.replace(/`([^`]+)`/g, '<code class="rounded-md bg-primary/10 px-1.5 py-0.5 font-mono text-xs font-semibold text-primary">$1</code>')
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary font-semibold underline underline-offset-4 hover:opacity-80">$1</a>')
+
+  // Unordered list items
+  html = html.replace(/^\s*-\s+(.*$)/gim, '<li class="ml-5 list-disc text-sm text-muted-foreground my-1">$1</li>')
+  html = html.replace(/(<li class="ml-5 list-disc[\s\S]*?<\/li>)/g, '<ul class="my-4">$1</ul>')
+
+  // Paragraphs
+  const blocks = html.split(/\n{2,}/)
+  html = blocks.map(b => {
+    const trimmed = b.trim()
+    if (!trimmed) return ''
+    if (/^<(h[1-6]|div|pre|blockquote|ul|ol|figure|table)/i.test(trimmed)) return trimmed
+    return `<p class="my-4 text-sm sm:text-base text-muted-foreground leading-relaxed">${trimmed.replace(/\n/g, '<br />')}</p>`
+  }).join('')
+
+  return html
+}
+
 function extractYouTubeId(url: string): string | null {
+  const customTagMatch = url.match(/:::youtube\[([a-zA-Z0-9_-]+)\]:::/)
+  if (customTagMatch) return customTagMatch[1]
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
   const match = url.match(regExp)
   return match && match[2].length === 11 ? match[2] : null
@@ -54,92 +142,69 @@ export const PREBUILT_TEMPLATES = [
     title: 'Project Case Study',
     description: 'Problem statement, technical architecture, and measurable client results.',
     badge: 'Projects',
-    content: `### 1. Problem & Business Objective
-Explain the challenge the client was facing and what the business required.
-
-### 2. Architecture & Solution
-Describe the technological foundation, tools chosen, and core engineering decisions.
-
-- **Frontend**: Next.js App Router, TypeScript, Tailwind CSS.
-- **Backend & State**: Convex reactive database, real-time sync, and edge caching.
-- **Auth & Storage**: Secure session management and cloud asset storage.
-
-### 3. Key Results & Metrics
-- **Performance**: 98+ Google Lighthouse score.
-- **Conversion / User Growth**: +35% engagement increase post-launch.
-
-:::callout[tip]
-Full test coverage and continuous deployment automated with GitHub Actions.
-:::`
+    html: `<h2 class="font-extrabold text-2xl text-foreground">1. Problem &amp; Business Objective</h2>
+<p>Explain the core challenge the client was facing and what the business required to achieve rapid growth.</p>
+<h2 class="font-extrabold text-2xl text-foreground">2. Architecture &amp; Solution</h2>
+<p>Describe the technological foundation, tools chosen, and core engineering decisions behind the project.</p>
+<ul>
+  <li><strong>Frontend</strong>: Next.js App Router, TypeScript, and Tailwind CSS.</li>
+  <li><strong>Backend &amp; State</strong>: Convex reactive database, real-time sync, and edge caching.</li>
+  <li><strong>Auth &amp; Storage</strong>: Secure session management and cloud asset storage.</li>
+</ul>
+<h2 class="font-extrabold text-2xl text-foreground">3. Key Results &amp; Metrics</h2>
+<ul>
+  <li><strong>Performance Score</strong>: 98+ Google Lighthouse rating.</li>
+  <li><strong>User Engagement</strong>: +35% increase in conversion post-launch.</li>
+</ul>
+<div class="callout callout-tip my-6 p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 flex gap-3 items-start">
+  <div><strong class="block text-sm font-semibold mb-1">Pro Tip</strong><p class="text-xs leading-relaxed m-0">Full test coverage and continuous deployment automated with GitHub Actions.</p></div>
+</div>`
   },
   {
     id: 'service-offering',
     title: 'Service Scope & Deliverables',
     description: 'Overview, detailed deliverables, development milestones, and prerequisites.',
     badge: 'Services',
-    content: `### Service Overview
-A tailored engineering solution built for rapid execution, resilience, and obsessive polish.
-
-#### What Is Included
-- **Discovery & Requirements**: Comprehensive audit and technical specification.
-- **Core Engineering**: Clean, scalable code adhering to industry standards.
-- **Responsive Testing**: Flawless experience across mobile, tablet, and ultra-wide screens.
-- **Handoff & Documentation**: Video walkthrough, source code handoff, and launch guidance.
-
-#### Process & Timeline
-1. **Week 1**: Design prototypes and database modeling.
-2. **Week 2-3**: Full-stack build and API integration.
-3. **Week 4**: QA, security audit, and production deployment.
-
-:::callout[info]
-Includes 14 days of dedicated post-launch support and bug fixes at zero extra cost.
-:::`
+    html: `<h2 class="font-extrabold text-2xl text-foreground">Service Overview</h2>
+<p>A tailored full-stack engineering solution built for rapid execution, high performance, and obsessive visual polish.</p>
+<h3 class="font-bold text-xl text-foreground">What Is Included</h3>
+<ul>
+  <li><strong>Discovery &amp; Requirements</strong>: Comprehensive architecture audit and technical specification.</li>
+  <li><strong>Core Engineering</strong>: Clean, scalable TypeScript code adhering to modern web standards.</li>
+  <li><strong>Responsive Optimization</strong>: Flawless experience across mobile, tablet, and desktop screens.</li>
+  <li><strong>Handoff &amp; Documentation</strong>: Codebase walkthrough, documentation, and launch guidance.</li>
+</ul>
+<h3 class="font-bold text-xl text-foreground">Process &amp; Timeline</h3>
+<ol>
+  <li><strong>Phase 1</strong>: Interactive wireframes and schema design.</li>
+  <li><strong>Phase 2</strong>: Full-stack development and API integration.</li>
+  <li><strong>Phase 3</strong>: QA testing, performance audit, and production launch.</li>
+</ol>
+<div class="callout callout-info my-6 p-4 rounded-2xl border border-primary/30 bg-primary/10 text-primary flex gap-3 items-start">
+  <div><strong class="block text-sm font-semibold mb-1">Note</strong><p class="text-xs leading-relaxed m-0">Includes 14 days of dedicated post-launch support and maintenance at zero additional cost.</p></div>
+</div>`
   },
   {
-    id: 'template-kit',
-    title: 'Product / Starter Kit Showcase',
-    description: 'Features overview, tech stack, documentation, and installation instructions.',
+    id: 'starter-kit',
+    title: 'Starter Kit / Product Showcase',
+    description: 'Features breakdown, tech stack highlights, installation guide, and code snippets.',
     badge: 'Templates',
-    content: `### Product Highlights
-Everything you need to ship a modern production application with minimal setup.
-
-#### Features Included:
-- **Zero Config Setup**: Clone and deploy to Vercel or Netlify in under 5 minutes.
-- **TypeScript First**: Full end-to-end type safety from database to UI components.
-- **Dark Mode Ready**: Beautiful dark and light palettes out of the box.
-
-#### Getting Started:
-\`\`\`bash
-# 1. Clone the repository
+    html: `<h2 class="font-extrabold text-2xl text-foreground">Product Highlights</h2>
+<p>Everything required to launch a modern production application with zero friction.</p>
+<h3 class="font-bold text-xl text-foreground">Core Capabilities</h3>
+<ul>
+  <li><strong>Zero Config Setup</strong>: Clone and deploy to production in under 5 minutes.</li>
+  <li><strong>End-to-End Type Safety</strong>: Full TypeScript integration from database schemas to UI props.</li>
+  <li><strong>Adaptive Dark Mode</strong>: Curated color system supporting system preferences out of the box.</li>
+</ul>
+<pre class="my-6 p-4 rounded-2xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto border border-border"><code class="language-bash"># 1. Clone repository
 git clone https://github.com/example/starter-kit.git
 
 # 2. Install dependencies
 npm install
 
-# 3. Run development server
-npm run dev
-\`\`\`
-
-:::callout[tip]
-Commercial license includes unlimited personal and client projects with lifetime updates.
-:::`
-  },
-  {
-    id: 'feature-spec',
-    title: 'Feature Breakdown & Callout',
-    description: 'Bullet points with technical highlights and callout banner.',
-    badge: 'General',
-    content: `### Key Capabilities & Highlights
-
-A focused breakdown of core capabilities:
-
-- **Sub-second Response Times**: Optimized asset delivery and edge routing.
-- **Modern Security**: CSRF protection, input validation, and secure auth tokens.
-- **Accessibility**: WCAG 2.1 AA compliant typography, contrast, and keyboard navigation.
-
-:::callout[tip]
-Easily extensible with your own plugins, custom components, and third-party APIs.
-:::`
+# 3. Start local development server
+npm run dev</code></pre>`
   }
 ]
 
@@ -147,53 +212,185 @@ export function RichTextEditor({
   value = '',
   onChange,
   label = 'Article Body Content',
-  placeholder = 'Write your article here in rich formatting or markdown...',
-  minHeight = '360px',
+  placeholder = 'Start writing your content here with rich formatting...',
+  minHeight = '380px',
   className,
 }: RichTextEditorProps) {
-  const [mode, setMode] = useState<'edit' | 'preview' | 'split'>('edit')
+  const [mode, setMode] = useState<'edit' | 'source' | 'preview'>('edit')
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  // Modals
   const [showImageModal, setShowImageModal] = useState(false)
   const [showYoutubeModal, setShowYoutubeModal] = useState(false)
   const [showLinkModal, setShowLinkModal] = useState(false)
+  const [showTableModal, setShowTableModal] = useState(false)
+  const [showCalloutModal, setShowCalloutModal] = useState(false)
   const [showTemplatesModal, setShowTemplatesModal] = useState(false)
+  const [showColorPicker, setShowColorPicker] = useState(false)
 
+  // Media & Dialog inputs
   const [uploadedImageUrl, setUploadedImageUrl] = useState('')
+  const [imageAlt, setImageAlt] = useState('')
   const [imageCaption, setImageCaption] = useState('')
+  const [imageAlign, setImageAlign] = useState<'center' | 'left' | 'right'>('center')
 
   const [youtubeInput, setYoutubeInput] = useState('')
   const [youtubeError, setYoutubeError] = useState('')
 
-  const [linkText, setLinkText] = useState('')
+  // Simple Link modal state: destination URL only!
   const [linkUrl, setLinkUrl] = useState('')
+  const [linkNewTab, setLinkNewTab] = useState(true)
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [tableRows, setTableRows] = useState(3)
+  const [tableCols, setTableCols] = useState(3)
+  const [tableHeader, setTableHeader] = useState(true)
 
-  const insertTextAtCursor = (before: string, after: string = '', defaultText: string = '') => {
-    const textarea = textareaRef.current
-    if (!textarea) return
+  const [calloutType, setCalloutType] = useState<'info' | 'tip' | 'warning' | 'danger'>('info')
+  const [calloutTitle, setCalloutTitle] = useState('Important Note')
+  const [calloutText, setCalloutText] = useState('')
 
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const currentVal = textarea.value
-    const selected = currentVal.substring(start, end) || defaultText
+  const editorRef = useRef<HTMLDivElement>(null)
+  const savedSelectionRef = useRef<Range | null>(null)
 
-    const replacement = `${before}${selected}${after}`
-    const nextVal = currentVal.substring(0, start) + replacement + currentVal.substring(end)
+  // Undo / Redo history
+  const [history, setHistory] = useState<string[]>([])
+  const [historyIdx, setHistoryIdx] = useState(-1)
+  const isInternalChangeRef = useRef(false)
 
-    onChange(nextVal)
+  // Initialize visual editor content once mounted or when switching view modes
+  useEffect(() => {
+    if (editorRef.current && mode === 'edit') {
+      const currentHtml = editorRef.current.innerHTML
+      const targetHtml = convertMarkdownToHtml(value)
+      if (currentHtml !== targetHtml && !isInternalChangeRef.current) {
+        editorRef.current.innerHTML = targetHtml || ''
+      }
+    }
+    isInternalChangeRef.current = false
+  }, [value, mode])
 
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + before.length, start + before.length + selected.length)
-    }, 10)
+  // Save selection before modal opens
+  const saveSelection = () => {
+    if (typeof window === 'undefined') return
+    const sel = window.getSelection()
+    if (sel && sel.rangeCount > 0) {
+      savedSelectionRef.current = sel.getRangeAt(0).cloneRange()
+    }
   }
 
+  // Restore selection when modal closes or action finishes
+  const restoreSelection = () => {
+    if (typeof window === 'undefined' || !savedSelectionRef.current) return
+    const sel = window.getSelection()
+    if (sel) {
+      sel.removeAllRanges()
+      sel.addRange(savedSelectionRef.current)
+    }
+  }
+
+  // Handle changes in contentEditable
+  const handleContentChange = useCallback(() => {
+    if (!editorRef.current) return
+    const html = editorRef.current.innerHTML
+    isInternalChangeRef.current = true
+    onChange(html)
+
+    // Push to history
+    setHistory((prev) => {
+      const next = prev.slice(0, historyIdx + 1)
+      next.push(html)
+      return next.slice(-40)
+    })
+    setHistoryIdx((prev) => Math.min(prev + 1, 39))
+  }, [onChange, historyIdx])
+
+  // Execute standard document command
+  const execCmd = (cmd: string, val: string = '') => {
+    if (mode !== 'edit' || !editorRef.current) return
+    editorRef.current.focus()
+    document.execCommand(cmd, false, val)
+    handleContentChange()
+  }
+
+  // Format block heading (H1, H2, H3, H4, P)
+  const formatHeading = (tag: string) => {
+    execCmd('formatBlock', tag)
+  }
+
+  // Insert raw HTML element snippet into cursor position
+  const insertHtmlAtCursor = (htmlSnippet: string) => {
+    if (mode !== 'edit' || !editorRef.current) return
+    editorRef.current.focus()
+    restoreSelection()
+    document.execCommand('insertHTML', false, htmlSnippet)
+    handleContentChange()
+  }
+
+  // Undo / Redo handlers
+  const handleUndo = () => {
+    if (historyIdx > 0) {
+      const prevHtml = history[historyIdx - 1]
+      setHistoryIdx(historyIdx - 1)
+      if (editorRef.current) {
+        editorRef.current.innerHTML = prevHtml
+      }
+      isInternalChangeRef.current = true
+      onChange(prevHtml)
+    }
+  }
+
+  const handleRedo = () => {
+    if (historyIdx < history.length - 1) {
+      const nextHtml = history[historyIdx + 1]
+      setHistoryIdx(historyIdx + 1)
+      if (editorRef.current) {
+        editorRef.current.innerHTML = nextHtml
+      }
+      isInternalChangeRef.current = true
+      onChange(nextHtml)
+    }
+  }
+
+  // Clean HTML handling on paste
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    const html = e.clipboardData.getData('text/html')
+    const text = e.clipboardData.getData('text/plain')
+
+    if (html) {
+      let clean = html
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/class="Mso[^"]*"/gi, '')
+        .replace(/style="[^"]*mso-[^"]*"/gi, '')
+        .replace(/<meta[^>]*>/gi, '')
+
+      document.execCommand('insertHTML', false, clean)
+    } else if (text) {
+      const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br />')
+      document.execCommand('insertHTML', false, escaped)
+    }
+    handleContentChange()
+  }
+
+  // Media Insertion Handlers
   const handleInsertImage = () => {
     if (!uploadedImageUrl) return
-    const caption = imageCaption.trim() || 'Image'
-    const tag = `\n![${caption}](${uploadedImageUrl})\n`
-    insertTextAtCursor(tag, '', '')
+    const altText = imageAlt.trim() || imageCaption.trim() || 'Uploaded Image'
+    const captionText = imageCaption.trim()
+
+    let alignClass = 'text-center'
+    if (imageAlign === 'left') alignClass = 'text-left float-left mr-4 mb-4 max-w-[50%]'
+    if (imageAlign === 'right') alignClass = 'text-right float-right ml-4 mb-4 max-w-[50%]'
+
+    const snippet = `<figure class="my-6 ${alignClass}"><img src="${uploadedImageUrl}" alt="${altText}" class="rounded-2xl border border-border max-w-full inline-block shadow-lg max-h-[550px] object-cover" />${captionText ? `<figcaption class="text-center font-mono text-xs text-muted-foreground mt-2">${captionText}</figcaption>` : ''}</figure><p><br /></p>`
+
+    insertHtmlAtCursor(snippet)
     setUploadedImageUrl('')
+    setImageAlt('')
     setImageCaption('')
     setShowImageModal(false)
   }
@@ -201,260 +398,564 @@ export function RichTextEditor({
   const handleInsertYoutube = () => {
     const id = extractYouTubeId(youtubeInput.trim())
     if (!id) {
-      setYoutubeError('Please enter a valid YouTube video URL')
+      setYoutubeError('Please enter a valid YouTube video URL or ID')
       return
     }
 
-    const tag = `\n:::youtube[${id}]:::\n`
-    insertTextAtCursor(tag, '', '')
+    const snippet = `<div class="youtube-embed my-6 aspect-video rounded-2xl overflow-hidden border border-primary/20 shadow-2xl"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full border-0"></iframe></div><p><br /></p>`
+
+    insertHtmlAtCursor(snippet)
     setYoutubeInput('')
     setYoutubeError('')
     setShowYoutubeModal(false)
   }
 
+  // Userfriendly link handler: destination URL only!
   const handleInsertLink = () => {
     if (!linkUrl.trim()) return
-    const label = linkText.trim() || linkUrl.trim()
-    const tag = `[${label}](${linkUrl.trim()})`
-    insertTextAtCursor(tag, '', '')
-    setLinkText('')
+    const url = linkUrl.trim()
+    const targetAttr = linkNewTab ? 'target="_blank" rel="noopener noreferrer"' : ''
+
+    if (mode === 'edit' && editorRef.current) {
+      editorRef.current.focus()
+      restoreSelection()
+      const sel = window.getSelection()
+      const selectedText = sel ? sel.toString() : ''
+
+      if (selectedText) {
+        document.execCommand('createLink', false, url)
+      } else {
+        const snippet = `<a href="${url}" ${targetAttr} class="text-primary font-semibold underline underline-offset-4 hover:opacity-80 transition-opacity">${url}</a>`
+        document.execCommand('insertHTML', false, snippet)
+      }
+      handleContentChange()
+    }
+
     setLinkUrl('')
     setShowLinkModal(false)
   }
 
-  const wordCount = value.trim() ? value.trim().split(/\s+/).length : 0
-  const charCount = value.length
+  const handleUnlink = () => {
+    execCmd('unlink')
+  }
+
+  const handleInsertTable = () => {
+    let rowsHtml = ''
+    if (tableHeader) {
+      let headerCells = ''
+      for (let c = 0; c < tableCols; c++) {
+        headerCells += `<th class="border border-border bg-muted/80 p-2.5 text-left text-xs font-bold text-foreground">Header ${c + 1}</th>`
+      }
+      rowsHtml += `<thead><tr>${headerCells}</tr></thead>`
+    }
+
+    let bodyRows = ''
+    for (let r = 0; r < tableRows; r++) {
+      let cells = ''
+      for (let c = 0; c < tableCols; c++) {
+        cells += `<td class="border border-border p-2.5 text-xs text-muted-foreground">Cell data</td>`
+      }
+      bodyRows += `<tr>${cells}</tr>`
+    }
+    rowsHtml += `<tbody>${bodyRows}</tbody>`
+
+    const tableSnippet = `<div class="my-6 overflow-x-auto rounded-2xl border border-border shadow-sm"><table class="w-full border-collapse text-sm">${rowsHtml}</table></div><p><br /></p>`
+    insertHtmlAtCursor(tableSnippet)
+    setShowTableModal(false)
+  }
+
+  const handleInsertCallout = () => {
+    const isWarning = calloutType === 'warning'
+    const isTip = calloutType === 'tip'
+    const isDanger = calloutType === 'danger'
+
+    const bgClass = isWarning
+      ? 'border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200'
+      : isTip
+        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200'
+        : isDanger
+          ? 'border-red-500/30 bg-red-500/10 text-red-900 dark:text-red-200'
+          : 'border-primary/30 bg-primary/10 text-primary dark:text-primary-foreground'
+
+    const defaultTitle = isWarning ? 'Warning' : isTip ? 'Pro Tip' : isDanger ? 'Caution' : 'Note'
+    const title = calloutTitle.trim() || defaultTitle
+    const text = calloutText.trim() || 'Enter callout explanation text here...'
+
+    const snippet = `<div class="callout callout-${calloutType} my-6 p-4 rounded-2xl border ${bgClass} flex gap-3 items-start"><div><strong class="block text-sm font-semibold mb-1">${title}</strong><p class="text-xs leading-relaxed m-0">${text}</p></div></div><p><br /></p>`
+
+    insertHtmlAtCursor(snippet)
+    setCalloutText('')
+    setShowCalloutModal(false)
+  }
+
+  // Word & character stats
+  const plainText = (value || '').replace(/<[^>]+>/g, '').trim()
+  const wordCount = plainText ? plainText.split(/\s+/).length : 0
+  const charCount = plainText.length
+  const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 200))
 
   return (
-    <div className={cn('space-y-2', className)}>
-      {label && (
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-foreground">{label}</label>
-          <div className="flex items-center gap-2 text-[11px] font-mono text-muted-foreground">
-            <span>{wordCount} words</span>
-            <span>•</span>
-            <span>{charCount} chars</span>
-          </div>
-        </div>
+    <div
+      className={cn(
+        'space-y-2 transition-all',
+        isFullscreen ? 'fixed inset-0 z-50 p-4 sm:p-8 bg-background/95 backdrop-blur-md overflow-y-auto' : '',
+        className
       )}
+    >
+      {/* Header bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        {label && (
+          <label className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+            <Sparkles className="size-3.5 text-primary" />
+            {label}
+          </label>
+        )}
+        <div className="flex items-center gap-3 text-[11px] font-mono text-muted-foreground ml-auto">
+          <span>{wordCount} words</span>
+          <span>•</span>
+          <span>{charCount} chars</span>
+          <span>•</span>
+          <span className="text-primary font-semibold">{readTimeMinutes} min read</span>
+        </div>
+      </div>
 
-      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
-        {/* Editor Toolbar */}
-        <div className="flex flex-wrap items-center justify-between border-b border-border bg-muted/40 p-2 gap-1.5">
+      {/* Main Container */}
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden transition-all">
+        {/* Toolbar Header */}
+        <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-border bg-muted/40 p-2">
+          {/* Left formatting action tools */}
           <div className="flex flex-wrap items-center gap-1">
-            {/* Headings */}
+            {/* Undo / Redo */}
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 px-2 text-xs"
-              onClick={() => insertTextAtCursor('\n## ', '\n', 'Heading 2')}
-              title="Heading 2"
+              className="h-8 w-8 p-0"
+              onClick={handleUndo}
+              disabled={historyIdx <= 0}
+              title="Undo (Ctrl+Z)"
             >
-              <Heading2 className="size-4" />
+              <Undo className="size-3.5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 px-2 text-xs"
-              onClick={() => insertTextAtCursor('\n### ', '\n', 'Heading 3')}
-              title="Heading 3"
+              className="h-8 w-8 p-0"
+              onClick={handleRedo}
+              disabled={historyIdx >= history.length - 1}
+              title="Redo (Ctrl+Y)"
             >
-              <Heading3 className="size-4" />
+              <Redo className="size-3.5" />
             </Button>
 
             <div className="h-4 w-px bg-border mx-1" />
 
-            {/* Bold, Italic, Code */}
+            {/* Direct Heading / Title Buttons with BOLD visual labels */}
+            <div className="flex items-center gap-0.5 bg-background/80 rounded-lg p-0.5 border border-border">
+              <button
+                type="button"
+                onClick={() => formatHeading('h1')}
+                className="h-7 px-2 text-xs font-black tracking-tight text-foreground hover:bg-primary/20 hover:text-primary rounded transition-colors"
+                title="Heading 1 (Main Bold Title)"
+              >
+                H1
+              </button>
+              <button
+                type="button"
+                onClick={() => formatHeading('h2')}
+                className="h-7 px-2 text-xs font-extrabold tracking-tight text-foreground hover:bg-primary/20 hover:text-primary rounded transition-colors"
+                title="Heading 2 (Bold Title)"
+              >
+                H2
+              </button>
+              <button
+                type="button"
+                onClick={() => formatHeading('h3')}
+                className="h-7 px-2 text-xs font-bold text-foreground hover:bg-primary/20 hover:text-primary rounded transition-colors"
+                title="Heading 3 (Section Subtitle)"
+              >
+                H3
+              </button>
+              <button
+                type="button"
+                onClick={() => formatHeading('h4')}
+                className="h-7 px-2 text-xs font-semibold text-foreground hover:bg-primary/20 hover:text-primary rounded transition-colors"
+                title="Heading 4 (Sub-heading)"
+              >
+                H4
+              </button>
+              <button
+                type="button"
+                onClick={() => formatHeading('p')}
+                className="h-7 px-1.5 text-[11px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground rounded transition-colors"
+                title="Paragraph Body Text"
+              >
+                Body
+              </button>
+            </div>
+
+            <div className="h-4 w-px bg-border mx-1" />
+
+            {/* Inline Formatting: Bold, Italic, Underline, Strikethrough */}
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => insertTextAtCursor('**', '**', 'bold text')}
-              title="Bold"
+              className="h-8 w-8 p-0 font-bold"
+              onClick={() => execCmd('bold')}
+              title="Bold (Ctrl+B)"
             >
-              <Bold className="size-4" />
+              <Bold className="size-3.5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => insertTextAtCursor('*', '*', 'italic text')}
-              title="Italic"
+              className="h-8 w-8 p-0 italic"
+              onClick={() => execCmd('italic')}
+              title="Italic (Ctrl+I)"
             >
-              <Italic className="size-4" />
+              <Italic className="size-3.5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => insertTextAtCursor('`', '`', 'code')}
+              className="h-8 w-8 p-0 underline"
+              onClick={() => execCmd('underline')}
+              title="Underline (Ctrl+U)"
+            >
+              <Underline className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 line-through"
+              onClick={() => execCmd('strikeThrough')}
+              title="Strikethrough"
+            >
+              <Strikethrough className="size-3.5" />
+            </Button>
+
+            {/* Text Colors */}
+            <div className="relative inline-block">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-primary"
+                onClick={() => setShowColorPicker(!showColorPicker)}
+                title="Text Colors & Highlights"
+              >
+                <Palette className="size-3.5" />
+              </Button>
+              {showColorPicker && (
+                <div className="absolute left-0 top-9 z-50 flex gap-1 rounded-xl border border-border bg-background p-2 shadow-xl">
+                  {[
+                    { color: '#ffffff', label: 'White' },
+                    { color: '#3b82f6', label: 'Blue' },
+                    { color: '#10b981', label: 'Emerald' },
+                    { color: '#f59e0b', label: 'Amber' },
+                    { color: '#ef4444', label: 'Red' },
+                    { color: '#a855f7', label: 'Purple' },
+                  ].map((c) => (
+                    <button
+                      key={c.color}
+                      type="button"
+                      onClick={() => {
+                        execCmd('foreColor', c.color)
+                        setShowColorPicker(false)
+                      }}
+                      className="size-5 rounded-full border border-border transition-transform hover:scale-110"
+                      style={{ backgroundColor: c.color }}
+                      title={`Text color: ${c.label}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 font-mono text-xs"
+              onClick={() => insertHtmlAtCursor('<code class="rounded-md bg-primary/10 px-1.5 py-0.5 font-mono text-xs font-semibold text-primary">Inline code</code>')}
               title="Inline Code"
             >
-              <Code className="size-4" />
+              <Code className="size-3.5" />
             </Button>
 
             <div className="h-4 w-px bg-border mx-1" />
 
-            {/* Lists & Blockquote */}
+            {/* Alignment */}
             <Button
               type="button"
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0"
-              onClick={() => insertTextAtCursor('\n- ', '\n', 'List item')}
+              onClick={() => execCmd('justifyLeft')}
+              title="Align Left"
+            >
+              <AlignLeft className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => execCmd('justifyCenter')}
+              title="Align Center"
+            >
+              <AlignCenter className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => execCmd('justifyRight')}
+              title="Align Right"
+            >
+              <AlignRight className="size-3.5" />
+            </Button>
+
+            <div className="h-4 w-px bg-border mx-1" />
+
+            {/* Lists */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => execCmd('insertUnorderedList')}
               title="Bullet List"
             >
-              <List className="size-4" />
+              <List className="size-3.5" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0"
-              onClick={() => insertTextAtCursor('\n1. ', '\n', 'Numbered item')}
+              onClick={() => execCmd('insertOrderedList')}
               title="Numbered List"
             >
-              <ListOrdered className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => insertTextAtCursor('\n> ', '\n', 'Quote text')}
-              title="Blockquote"
-            >
-              <Quote className="size-4" />
+              <ListOrdered className="size-3.5" />
             </Button>
 
             <div className="h-4 w-px bg-border mx-1" />
 
-            {/* Callouts */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 text-xs text-primary"
-              onClick={() => insertTextAtCursor('\n:::callout[info] ', ' :::\n', 'Important highlight')}
-              title="Info Callout"
-            >
-              <Info className="size-3.5 mr-1" /> Callout
-            </Button>
-
-            {/* Code Block */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 text-xs"
-              onClick={() => insertTextAtCursor('\n```typescript\n', '\n```\n', '// code snippet')}
-              title="Code Block"
-            >
-              Snippet
-            </Button>
-
-            <div className="h-4 w-px bg-border mx-1" />
-
-            {/* Media: Image & YouTube */}
+            {/* Media & Embed Modals */}
             <Button
               type="button"
               variant="outline"
               size="sm"
               className="h-8 text-xs font-semibold bg-background"
-              onClick={() => setShowImageModal(true)}
+              onClick={() => {
+                saveSelection()
+                setShowImageModal(true)
+              }}
+              title="Insert Image (Convex Storage Upload)"
             >
-              <ImageIcon className="size-3.5 mr-1 text-primary" /> Image (Convex)
+              <ImageIcon className="size-3.5 mr-1 text-primary" /> Image
             </Button>
+
             <Button
               type="button"
               variant="outline"
               size="sm"
               className="h-8 text-xs font-semibold bg-background text-red-500 hover:text-red-600"
-              onClick={() => setShowYoutubeModal(true)}
+              onClick={() => {
+                saveSelection()
+                setShowYoutubeModal(true)
+              }}
+              title="Embed YouTube Video"
             >
-              <YoutubeIcon className="size-3.5 mr-1" /> Video (YouTube)
+              <YoutubeIcon className="size-3.5 mr-1" /> Video
             </Button>
+
+            {/* Simple Link Button */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-primary"
+              onClick={() => {
+                saveSelection()
+                setShowLinkModal(true)
+              }}
+              title="Insert Link URL"
+            >
+              <LinkIcon className="size-3.5" />
+            </Button>
+
             <Button
               type="button"
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0"
-              onClick={() => setShowLinkModal(true)}
-              title="Insert Link"
+              onClick={handleUnlink}
+              title="Remove Link"
             >
-              <LinkIcon className="size-4" />
+              <Unlink className="size-3.5 text-muted-foreground" />
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => {
+                saveSelection()
+                setShowTableModal(true)
+              }}
+              title="Insert HTML Table"
+            >
+              <TableIcon className="size-3.5" />
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 text-xs text-primary"
+              onClick={() => {
+                saveSelection()
+                setShowCalloutModal(true)
+              }}
+              title="Insert Callout Alert Banner"
+            >
+              <Info className="size-3.5 mr-1" /> Callout
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => insertHtmlAtCursor('<hr class="my-8 border-border" /><p><br /></p>')}
+              title="Horizontal Divider Line"
+            >
+              <Minus className="size-3.5" />
             </Button>
 
             <div className="h-4 w-px bg-border mx-1" />
 
-            {/* Templates Quick Insert */}
+            {/* Templates */}
             <Button
               type="button"
               variant="outline"
               size="sm"
               className="h-8 text-xs font-semibold bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
               onClick={() => setShowTemplatesModal(true)}
-              title="Browse & Insert Formatting Templates"
+              title="Insert Prebuilt Layout Templates"
             >
               <LayoutTemplate className="size-3.5 mr-1 text-primary" /> Templates
             </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+              onClick={() => execCmd('removeFormat')}
+              title="Clear Formatting"
+            >
+              <RemoveFormatting className="size-3.5" />
+            </Button>
           </div>
 
-          {/* View Mode Toggle */}
-          <div className="flex items-center rounded-xl bg-background border border-border p-0.5">
-            <button
+          {/* Right Mode Switcher & Fullscreen */}
+          <div className="flex items-center gap-1.5 ml-auto">
+            <div className="flex items-center rounded-xl bg-background border border-border p-0.5">
+              <button
+                type="button"
+                onClick={() => setMode('edit')}
+                className={cn(
+                  'flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
+                  mode === 'edit'
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                title="Visual WYSIWYG Mode"
+              >
+                <Edit3 className="size-3" /> Visual
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMode('source')}
+                className={cn(
+                  'flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
+                  mode === 'source'
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                title="Direct HTML Source Code Editor"
+              >
+                <Code2 className="size-3" /> HTML Source
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMode('preview')}
+                className={cn(
+                  'flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
+                  mode === 'preview'
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                title="Reader Live Preview"
+              >
+                <Eye className="size-3" /> Preview
+              </button>
+            </div>
+
+            <Button
               type="button"
-              onClick={() => setMode('edit')}
-              className={cn(
-                'flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
-                mode === 'edit' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-              )}
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Distraction Free'}
             >
-              <Edit3 className="size-3" /> Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('split')}
-              className={cn(
-                'hidden sm:flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
-                mode === 'split' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              Split
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('preview')}
-              className={cn(
-                'flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
-                mode === 'preview' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              <Eye className="size-3" /> Preview
-            </button>
+              {isFullscreen ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
+            </Button>
           </div>
         </div>
 
         {/* Editor Body */}
         <div className="relative">
+          {/* Mode 1: Visual WYSIWYG ContentEditable Surface - Headings are VERY BOLD */}
           {mode === 'edit' && (
-            <textarea
-              ref={textareaRef}
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              placeholder={placeholder}
+            <div
+              ref={editorRef}
+              contentEditable
+              onInput={handleContentChange}
+              onPaste={handlePaste}
               style={{ minHeight }}
-              className="w-full resize-y bg-transparent p-4 text-xs sm:text-sm font-mono leading-relaxed outline-none focus:ring-1 focus:ring-primary"
+              className="w-full resize-y bg-background p-6 text-sm leading-relaxed text-foreground outline-none focus:ring-1 focus:ring-primary overflow-y-auto [&_h1]:text-3xl [&_h1]:sm:text-4xl [&_h1]:font-black [&_h1]:text-foreground [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:tracking-tight [&_h2]:text-2xl [&_h2]:sm:text-3xl [&_h2]:font-extrabold [&_h2]:text-foreground [&_h2]:mt-5 [&_h2]:mb-2.5 [&_h2]:tracking-tight [&_h2]:border-b [&_h2]:border-border/50 [&_h2]:pb-1.5 [&_h3]:text-xl [&_h3]:sm:text-2xl [&_h3]:font-bold [&_h3]:text-foreground [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:tracking-tight [&_h4]:text-lg [&_h4]:font-bold [&_h4]:text-foreground [&_h4]:mt-3 [&_h4]:mb-1.5 [&_p]:text-sm [&_p]:text-muted-foreground [&_p]:my-3 [&_p]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:py-1 [&_blockquote]:italic [&_blockquote]:my-4 [&_blockquote]:text-muted-foreground [&_a]:text-primary [&_a]:font-semibold [&_a]:underline [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-3"
+              data-placeholder={placeholder}
             />
           )}
 
+          {/* Mode 2: HTML Source Code View */}
+          {mode === 'source' && (
+            <textarea
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder="<p>Write your raw HTML code here...</p>"
+              style={{ minHeight }}
+              className="w-full resize-y bg-slate-950 p-5 text-xs sm:text-sm font-mono leading-relaxed text-emerald-400 outline-none focus:ring-1 focus:ring-primary border-0"
+            />
+          )}
+
+          {/* Mode 3: Live Reader Preview */}
           {mode === 'preview' && (
-            <div style={{ minHeight }} className="p-6 bg-background/50 overflow-y-auto max-h-[600px]">
+            <div style={{ minHeight }} className="p-6 bg-background/60 overflow-y-auto max-h-[650px]">
               {value ? (
                 <RichTextRenderer content={value} />
               ) : (
@@ -462,27 +963,10 @@ export function RichTextEditor({
               )}
             </div>
           )}
-
-          {mode === 'split' && (
-            <div className="grid grid-cols-2 divide-x divide-border" style={{ minHeight }}>
-              <textarea
-                ref={textareaRef}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder}
-                className="w-full resize-none bg-transparent p-4 text-xs font-mono leading-relaxed outline-none focus:ring-1 focus:ring-primary"
-              />
-              <div className="p-4 bg-background/50 overflow-y-auto max-h-[600px]">
-                {value ? (
-                  <RichTextRenderer content={value} />
-                ) : (
-                  <p className="text-xs text-muted-foreground italic">Live preview will show here.</p>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* ── Modals & Dialogs ──────────────────────────────────────────────── */}
 
       {/* 1. Modal: Upload & Insert Image */}
       {showImageModal && (
@@ -491,7 +975,7 @@ export function RichTextEditor({
             <div className="flex items-center justify-between border-b border-border pb-3">
               <h4 className="text-base font-bold flex items-center gap-2">
                 <ImageIcon className="size-4 text-primary" />
-                Upload Image to Convex Storage
+                Upload &amp; Insert Image
               </h4>
               <button
                 type="button"
@@ -506,18 +990,49 @@ export function RichTextEditor({
               <ImageUploader
                 value={uploadedImageUrl}
                 onChange={(url) => setUploadedImageUrl(url)}
-                label="Select image to upload"
-                aspectRatio="video"
+                label="Select image file or paste URL"
+                aspectRatio="auto"
               />
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold">Image Caption / Alt Text</label>
+                <Label className="text-xs font-semibold">Image Alt Text (SEO)</Label>
                 <Input
-                  value={imageCaption}
-                  onChange={(e) => setImageCaption(e.target.value)}
+                  value={imageAlt}
+                  onChange={(e) => setImageAlt(e.target.value)}
                   placeholder="e.g. Architecture diagram of microservices"
                   className="text-xs"
                 />
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Image Caption (Optional)</Label>
+                <Input
+                  value={imageCaption}
+                  onChange={(e) => setImageCaption(e.target.value)}
+                  placeholder="e.g. Figure 1. System workflow"
+                  className="text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Alignment</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(['center', 'left', 'right'] as const).map((a) => (
+                    <button
+                      key={a}
+                      type="button"
+                      onClick={() => setImageAlign(a)}
+                      className={cn(
+                        'rounded-xl border py-1.5 text-xs font-semibold capitalize transition-all',
+                        imageAlign === a
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border text-muted-foreground hover:bg-muted'
+                      )}
+                    >
+                      {a}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -562,7 +1077,7 @@ export function RichTextEditor({
 
             <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold">YouTube Video URL</label>
+                <Label className="text-xs font-semibold">YouTube Video URL or ID</Label>
                 <Input
                   value={youtubeInput}
                   onChange={(e) => {
@@ -574,7 +1089,7 @@ export function RichTextEditor({
                 />
                 {youtubeError && <p className="text-[11px] text-destructive">{youtubeError}</p>}
                 <p className="text-[11px] text-muted-foreground">
-                  Paste any normal YouTube link or share URL (e.g. youtu.be/...).
+                  Paste any normal YouTube link or share URL. It will be embedded as a responsive video frame.
                 </p>
               </div>
             </div>
@@ -605,14 +1120,14 @@ export function RichTextEditor({
         </div>
       )}
 
-      {/* 3. Modal: Insert Link */}
+      {/* 3. Streamlined Link Modal: Just Destination URL! */}
       {showLinkModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
           <div className="relative w-full max-w-md rounded-3xl border border-border bg-background p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <h4 className="text-base font-bold flex items-center gap-2">
                 <LinkIcon className="size-4 text-primary" />
-                Insert Link
+                Insert Hyperlink
               </h4>
               <button
                 type="button"
@@ -625,22 +1140,30 @@ export function RichTextEditor({
 
             <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold">Link Text</label>
-                <Input
-                  value={linkText}
-                  onChange={(e) => setLinkText(e.target.value)}
-                  placeholder="e.g. Visit Convex Documentation"
-                  className="text-xs"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold">Destination URL</label>
+                <Label className="text-xs font-semibold">Destination URL</Label>
                 <Input
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
-                  placeholder="https://docs.convex.dev"
+                  placeholder="https://example.com"
                   className="text-xs font-mono"
+                  autoFocus
                 />
+                <p className="text-[11px] text-muted-foreground">
+                  If text is highlighted in your editor, it will be linked directly to this URL.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="link-new-tab"
+                  checked={linkNewTab}
+                  onChange={(e) => setLinkNewTab(e.target.checked)}
+                  className="rounded border-border"
+                />
+                <Label htmlFor="link-new-tab" className="text-xs cursor-pointer">
+                  Open link in new tab
+                </Label>
               </div>
             </div>
 
@@ -662,7 +1185,159 @@ export function RichTextEditor({
         </div>
       )}
 
-      {/* 4. Modal: Pre-Built Formatting Templates */}
+      {/* 4. Modal: Insert HTML Table */}
+      {showTableModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="relative w-full max-w-md rounded-3xl border border-border bg-background p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <h4 className="text-base font-bold flex items-center gap-2">
+                <TableIcon className="size-4 text-primary" />
+                Insert Data Table
+              </h4>
+              <button
+                type="button"
+                onClick={() => setShowTableModal(false)}
+                className="rounded-lg p-1 text-muted-foreground hover:bg-muted"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Rows</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={tableRows}
+                  onChange={(e) => setTableRows(parseInt(e.target.value) || 1)}
+                  className="text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Columns</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={10}
+                  value={tableCols}
+                  onChange={(e) => setTableCols(parseInt(e.target.value) || 1)}
+                  className="text-xs"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="table-header"
+                checked={tableHeader}
+                onChange={(e) => setTableHeader(e.target.checked)}
+                className="rounded border-border"
+              />
+              <Label htmlFor="table-header" className="text-xs cursor-pointer">
+                Include header row
+              </Label>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-border">
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowTableModal(false)}>
+                Cancel
+              </Button>
+              <Button type="button" size="sm" onClick={handleInsertTable} className="bg-primary font-semibold">
+                Insert Table
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Modal: Callout Alert Banner */}
+      {showCalloutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="relative w-full max-w-md rounded-3xl border border-border bg-background p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <h4 className="text-base font-bold flex items-center gap-2">
+                <Info className="size-4 text-primary" />
+                Insert Callout Alert Banner
+              </h4>
+              <button
+                type="button"
+                onClick={() => setShowCalloutModal(false)}
+                className="rounded-lg p-1 text-muted-foreground hover:bg-muted"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Callout Style</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { type: 'info', label: 'Info (Primary)' },
+                    { type: 'tip', label: 'Pro Tip (Emerald)' },
+                    { type: 'warning', label: 'Warning (Amber)' },
+                    { type: 'danger', label: 'Caution (Red)' },
+                  ].map((c) => (
+                    <button
+                      key={c.type}
+                      type="button"
+                      onClick={() => {
+                        setCalloutType(c.type as any)
+                        if (c.type === 'tip') setCalloutTitle('Pro Tip')
+                        else if (c.type === 'warning') setCalloutTitle('Warning')
+                        else if (c.type === 'danger') setCalloutTitle('Caution')
+                        else setCalloutTitle('Note')
+                      }}
+                      className={cn(
+                        'rounded-xl border p-2 text-xs font-semibold transition-all text-left',
+                        calloutType === c.type
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border text-muted-foreground hover:bg-muted'
+                      )}
+                    >
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Title</Label>
+                <Input
+                  value={calloutTitle}
+                  onChange={(e) => setCalloutTitle(e.target.value)}
+                  placeholder="e.g. Important Notice"
+                  className="text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Message</Label>
+                <Input
+                  value={calloutText}
+                  onChange={(e) => setCalloutText(e.target.value)}
+                  placeholder="Explain details here..."
+                  className="text-xs"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-border">
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowCalloutModal(false)}>
+                Cancel
+              </Button>
+              <Button type="button" size="sm" onClick={handleInsertCallout} className="bg-primary font-semibold">
+                Insert Callout
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Modal: Pre-Built Formatting Templates */}
       {showTemplatesModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
           <div className="relative w-full max-w-2xl rounded-3xl border border-border bg-background p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
@@ -673,7 +1348,7 @@ export function RichTextEditor({
                   Rich Content Templates
                 </h4>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Choose a template structure to insert into your editor.
+                  Insert professionally designed rich HTML layouts directly into your editor.
                 </p>
               </div>
               <button
@@ -692,11 +1367,9 @@ export function RichTextEditor({
                   className="group flex flex-col justify-between rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md"
                 >
                   <div>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary font-mono">
-                        {tmpl.badge}
-                      </span>
-                    </div>
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary font-mono">
+                      {tmpl.badge}
+                    </span>
                     <h5 className="mt-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                       {tmpl.title}
                     </h5>
@@ -712,7 +1385,7 @@ export function RichTextEditor({
                       variant="outline"
                       className="flex-1 text-xs rounded-xl"
                       onClick={() => {
-                        insertTextAtCursor(`\n\n${tmpl.content}\n\n`, '', '')
+                        insertHtmlAtCursor(tmpl.html)
                         setShowTemplatesModal(false)
                       }}
                     >
@@ -723,13 +1396,13 @@ export function RichTextEditor({
                       size="sm"
                       className="flex-1 text-xs rounded-xl bg-primary font-semibold"
                       onClick={() => {
-                        if (!value.trim() || window.confirm('Replace existing text with this template?')) {
-                          onChange(tmpl.content)
+                        if (!value.trim() || window.confirm('Replace current editor content with this template?')) {
+                          onChange(tmpl.html)
                           setShowTemplatesModal(false)
                         }
                       }}
                     >
-                      Use as Template
+                      Use Template
                     </Button>
                   </div>
                 </div>

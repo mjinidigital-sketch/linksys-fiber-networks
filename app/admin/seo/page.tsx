@@ -57,60 +57,70 @@ const defaultPagesMap: Record<string, PageSeoMeta> = {
   '/': {
     path: '/',
     pageName: 'Home Page',
-    title: 'Victor Maina — Full-Stack Web Developer & Designer',
-    description: 'Building high-performance web applications, digital platforms, and thoughtful user interfaces.',
-    keywords: 'Victor Maina, Full-stack developer, React, Next.js, UI/UX design',
-    canonicalUrl: 'https://victormaina.mjinidigital.co.ke/',
+    title: 'Linksys Fiber Networks — Fast & Reliable Internet in Molo',
+    description: 'Linksys is a trusted internet service provider in Molo offering fast, reliable, and affordable fiber and Wi-Fi for homes and businesses.',
+    keywords: 'Linksys Fiber Networks, Molo Internet Provider, Fast WiFi Molo, Fiber Internet Nakuru, Affordable Home Internet',
+    canonicalUrl: 'https://linksysfiber.ke/',
     noIndex: false,
     structuredDataType: 'WebSite',
   },
-  '/projects': {
-    path: '/projects',
-    pageName: 'Projects & Portfolio',
-    title: 'Selected Works & Case Studies — Victor Maina',
-    description: 'Explore full-stack web apps, e-commerce storefronts, and open-source software built by Victor Maina.',
-    keywords: 'Victor Maina Portfolio, Web applications, React projects, Next.js showcase',
-    canonicalUrl: 'https://victormaina.mjinidigital.co.ke//projects',
+  '/packages': {
+    path: '/packages',
+    pageName: 'Internet Packages',
+    title: 'Internet Packages & Pricing — Linksys Fiber Networks',
+    description: 'Explore unlimited high-speed fiber and Wi-Fi internet packages in Molo starting from KSh 1,500/mo.',
+    keywords: 'Internet packages Molo, Unlimited WiFi, Home Fiber packages, Business internet Molo',
+    canonicalUrl: 'https://linksysfiber.ke/packages',
     noIndex: false,
-    structuredDataType: 'CollectionPage',
+    structuredDataType: 'Product',
   },
   '/services': {
     path: '/services',
-    pageName: 'Services & Offerings',
-    title: 'Engineering & Design Services — Victor Maina',
-    description: 'Full-stack engineering, custom UI/UX design systems, and fast digital commerce solutions.',
-    keywords: 'Web development services, Next.js consulting, UI/UX design systems',
-    canonicalUrl: 'https://victormaina.mjinidigital.co.ke//services',
+    pageName: 'Services & Solutions',
+    title: 'Services & IT Solutions — Linksys Fiber Networks',
+    description: 'High-speed fiber installation, hotspot broadcasting, CCTV setup, and managed IT networking in Molo and environs.',
+    keywords: 'Fiber installation Molo, CCTV security Molo, Hotspot Wi-Fi, Structured cabling',
+    canonicalUrl: 'https://linksysfiber.ke/services',
     noIndex: false,
-    structuredDataType: 'CollectionPage',
+    structuredDataType: 'Service',
   },
-  '/templates': {
-    path: '/templates',
-    pageName: 'Templates & Starter Kits',
-    title: 'Templates & Starter Kits — Victor Maina',
-    description: 'Production-ready web templates, design systems, and developer starter kits.',
-    keywords: 'Next.js templates, Convex starter kits, SaaS boilerplates, UI kits',
-    canonicalUrl: 'https://victormaina.mjinidigital.co.ke//templates',
+  '/projects': {
+    path: '/projects',
+    pageName: 'Deployments & Case Studies',
+    title: 'Featured Deployments — Linksys Fiber Networks',
+    description: 'Explore successful network installations, commercial deployments, and community Wi-Fi projects across Molo.',
+    keywords: 'Network installations Molo, Case studies, Wi-Fi projects Kenya',
+    canonicalUrl: 'https://linksysfiber.ke/projects',
     noIndex: false,
     structuredDataType: 'CollectionPage',
   },
   '/blog': {
     path: '/blog',
     pageName: 'Blog & Articles',
-    title: 'Thoughts & Technical Articles — Victor Maina',
-    description: 'Deep dives into modern frontend architecture, Next.js performance, and design systems.',
-    keywords: 'Technical blog, Next.js tutorials, Frontend architecture',
-    canonicalUrl: 'https://victormaina.mjinidigital.co.ke//blog',
+    title: 'News & Tech Tips — Linksys Fiber Networks',
+    description: 'Stay updated with internet tips, troubleshooting advice, and tech announcements from Linksys.',
+    keywords: 'Internet tips, Wi-Fi troubleshooting, Fiber news Molo',
+    canonicalUrl: 'https://linksysfiber.ke/blog',
     noIndex: false,
     structuredDataType: 'CollectionPage',
   },
+  '/careers': {
+    path: '/careers',
+    pageName: 'Careers & Jobs',
+    title: 'Careers & Opportunities — Linksys Fiber Networks',
+    description: 'Join our growing team at Linksys Fiber Networks. Explore open positions in networking, sales, and support.',
+    keywords: 'Jobs in Molo, Telecom careers Kenya, IT technician jobs Nakuru',
+    canonicalUrl: 'https://linksysfiber.ke/careers',
+    noIndex: false,
+    structuredDataType: 'WebPage',
+  },
   '/contact': {
     path: '/contact',
-    pageName: 'Contact & Hire',
-    title: 'Get in Touch — Victor Maina',
-    description: 'Let’s discuss your next digital project, contract opportunities, or technical consulting.',
-    keywords: 'Hire Victor Maina, Contact full-stack developer, Kenya developer inquiry',
-    canonicalUrl: 'https://victormaina.mjinidigital.co.ke//contact',
+    pageName: 'Contact & Support',
+    title: 'Contact Us & Get Connected — Linksys Fiber Networks',
+    description: 'Contact Linksys Fiber Networks for immediate installation, customer support, or technical inquiries in Molo.',
+    keywords: 'Contact Linksys, Internet support Molo, Generis Hotel Building, Customer care',
+    canonicalUrl: 'https://linksysfiber.ke/contact',
     noIndex: false,
     structuredDataType: 'ContactPage',
   },
@@ -442,7 +452,7 @@ export default function SeoAdminPage() {
   if (hasGoogleVerification || hasGA) score += 10
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-6xl w-full min-w-0 overflow-x-hidden space-y-8">
       {/* Top Banner */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
@@ -482,7 +492,7 @@ export default function SeoAdminPage() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)}>
-        <TabsList className="grid w-full grid-cols-5 rounded-2xl bg-muted/60 p-1">
+        <TabsList className="flex flex-wrap sm:grid sm:grid-cols-5 w-full rounded-2xl bg-muted/60 p-1 gap-1">
           <TabsTrigger value="pages" className="rounded-xl text-xs font-semibold">
             <Layers className="size-3.5 mr-1.5" />
             Page Meta & Schema
@@ -775,11 +785,17 @@ export default function SeoAdminPage() {
                       >
                         <option value="default">Default Auto (Inferred from page route)</option>
                         <option value="WebSite">WebSite (Search box & main site identity)</option>
+                        <option value="Product">Product (Packages, products, pricing & offers)</option>
+                        <option value="Service">Service (Internet solutions, IT services, consulting)</option>
+                        <option value="LocalBusiness">LocalBusiness (Physical office location & service areas)</option>
+                        <option value="Organization">Organization (Company profile & branding)</option>
+                        <option value="Article">Article (Articles, blog posts, news)</option>
+                        <option value="SoftwareApplication">SoftwareApplication (Web application / software tool)</option>
                         <option value="WebPage">WebPage (Standard informational webpage)</option>
-                        <option value="ProfilePage">ProfilePage (Developer bio / profile)</option>
-                        <option value="AboutPage">AboutPage (About Victor / experience)</option>
+                        <option value="ProfilePage">ProfilePage (Bio & profile overview)</option>
+                        <option value="AboutPage">AboutPage (About us & company history)</option>
                         <option value="ContactPage">ContactPage (Direct inquiry & contact point)</option>
-                        <option value="CollectionPage">CollectionPage (Listings of projects, posts, services)</option>
+                        <option value="CollectionPage">CollectionPage (Listings of packages, posts, services)</option>
                         <option value="FAQPage">FAQPage (Frequently asked questions accordion)</option>
                         <option value="Custom">Custom JSON-LD (Full manual override)</option>
                       </select>

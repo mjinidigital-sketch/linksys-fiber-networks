@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion, type Variants } from 'framer-motion'
 import { LogosContent } from '@/lib/types/content'
-import { defaultContent } from '@/lib/default-content'
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -17,8 +16,9 @@ interface LogosProps {
   logos?: LogosContent
 }
 
-export function Logos({ logos = defaultContent.logos }: LogosProps) {
+export function Logos({ logos }: LogosProps) {
   const reduceMotion = useReducedMotion()
+  if (!logos) return null
 
   return (
     <motion.section

@@ -20,36 +20,53 @@ import {
   ArrowRight
 } from 'lucide-react'
 
+import { WebsiteContent } from '@/lib/types/content'
+
 interface ProjectContentProps {
   id: string
+  initialData?: WebsiteContent | null
 }
 
-export function ProjectContent({ id }: ProjectContentProps) {
-  const { content } = useWebsiteContent()
+export function ProjectContent({ id, initialData }: ProjectContentProps) {
+  const { content, loading } = useWebsiteContent(initialData)
 
-  const project = content.projects.items.find((p) => p.id === id || p.link === id)
-  const relatedProjects = content.projects.items
+  if (!content || loading) {
+    return (
+      <div className="min-h-screen flex flex-col w-full bg-background animate-pulse">
+        <div className="h-16 w-full border-b border-border/40 bg-card/20" />
+        <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-12 pb-20 w-full space-y-6">
+          <div className="h-10 w-64 bg-muted/30 rounded-lg" />
+          <div className="h-80 bg-muted/20 rounded-2xl w-full" />
+        </main>
+      </div>
+    )
+  }
+
+  const project = content.projects?.items?.find((p) => p.id === id || p.link === id)
+  const relatedProjects = (content.projects?.items || [])
     .filter((p) => p.id !== project?.id)
     .slice(0, 3)
 
   if (!project) {
     return (
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20">
-        <Navbar navigation={content.navigation} />
-        <div className="py-24 text-center space-y-4">
-          <Briefcase className="mx-auto size-12 text-muted-foreground/50" aria-hidden="true" />
-          <h1 className="text-2xl font-bold">Project Not Found</h1>
-          <p className="text-sm text-muted-foreground">
-            This project does not exist or has been removed.
-          </p>
-          <Link href="/projects">
-            <Button variant="outline" className="rounded-xl">
-              <ArrowLeft className="size-4 mr-1.5" aria-hidden="true" /> Back to Projects
-            </Button>
-          </Link>
-        </div>
-        <Footer footer={content.footer} general={content.general} />
-      </main>
+      <div className="min-h-screen flex flex-col w-full">
+        <Navbar navigation={content.navigation} general={content.general} />
+        <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20 w-full">
+          <div className="py-24 text-center space-y-4">
+            <Briefcase className="mx-auto size-12 text-muted-foreground/50" aria-hidden="true" />
+            <h1 className="text-2xl font-bold">Project Not Found</h1>
+            <p className="text-sm text-muted-foreground">
+              This project does not exist or has been removed.
+            </p>
+            <Link href="/projects">
+              <Button variant="outline" className="rounded-xl">
+                <ArrowLeft className="size-4 mr-1.5" aria-hidden="true" /> Back to Projects
+              </Button>
+            </Link>
+          </div>
+          <Footer footer={content.footer} general={content.general} />
+        </main>
+      </div>
     )
   }
 
@@ -66,7 +83,7 @@ export function ProjectContent({ id }: ProjectContentProps) {
   const authorAvatarSrc = content.general.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400'
 
   return (
-    <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20">
+    <div className="min-h-screen flex flex-col w-full">
       {/* Schema.org JSON-LD structured data */}
       <script
         type="application/ld+json"
@@ -77,9 +94,10 @@ export function ProjectContent({ id }: ProjectContentProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <Navbar navigation={content.navigation} />
+      <Navbar navigation={content.navigation} general={content.general} />
 
-      <article className="mx-auto max-w-4xl py-12 sm:py-16">
+      <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 mt-6 pb-20 w-full">
+        <article className="mx-auto max-w-4xl py-12 sm:py-16">
         {/* Back Link */}
         <Link
           href="/projects"
@@ -265,6 +283,7 @@ export function ProjectContent({ id }: ProjectContentProps) {
       </article>
 
       <Footer footer={content.footer} general={content.general} />
-    </main>
+      </main>
+    </div>
   )
 }

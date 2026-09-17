@@ -46,6 +46,7 @@ export interface HeroContent {
   statusCardLabel: string
   statusCardText: string
   statusCardHighlight: string
+  images?: string[]
 }
 
 export interface TechStackContent {
@@ -204,6 +205,12 @@ export interface ContactContent {
 export type PageStructuredDataType =
   | 'default'
   | 'WebSite'
+  | 'Product'
+  | 'Service'
+  | 'LocalBusiness'
+  | 'Organization'
+  | 'Article'
+  | 'SoftwareApplication'
   | 'WebPage'
   | 'ProfilePage'
   | 'AboutPage'
@@ -330,6 +337,7 @@ export interface CodeBlockContent {
 
 export type ComponentBlockType =
   | 'hero'
+  | 'hero2'
   | 'techStack'
   | 'logos'
   | 'projects'
@@ -345,6 +353,7 @@ export type ComponentBlockType =
   | 'pricing'
   | 'stats'
   | 'codeBlock'
+  | 'careers'
 
 export interface PageComponentBlock {
   id: string

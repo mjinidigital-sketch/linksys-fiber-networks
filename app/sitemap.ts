@@ -1,10 +1,7 @@
 import { MetadataRoute } from 'next'
-import { fetchQuery } from 'convex/nextjs'
-import { api } from '@/convex/_generated/api'
-import { defaultContent } from '@/lib/default-content'
+import { getWebsiteContentServer } from '@/lib/get-website-content'
 import { WebsiteContent } from '@/lib/types/content'
 
-// Revalidate sitemap dynamically every 1 hour (or on-demand)
 export const dynamic = 'force-dynamic'
 export const revalidate = 3600
 
@@ -15,26 +12,10 @@ function safeDate(dateStr?: string): Date {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  let content: WebsiteContent = defaultContent
+  const content: WebsiteContent | null = await getWebsiteContentServer()
 
-  try {
-    const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL
-    if (convexUrl) {
-      const data = await fetchQuery(api.content.get, {})
-      if (data) {
-        content = {
-          ...defaultContent,
-          ...data,
-          seo: { ...defaultContent.seo, ...data.seo },
-          blog: { ...defaultContent.blog, ...data.blog },
-          projects: { ...defaultContent.projects, ...data.projects },
-          services: { ...defaultContent.services, ...data.services },
-          templates: data.templates || defaultContent.templates,
-        }
-      }
-    }
-  } catch (err) {
-    console.warn('Sitemap: Failed to query Convex directly, using default content fallback.', err)
+  if (!content) {
+    return []
   }
 
   // Global indexing check
@@ -42,11 +23,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return []
   }
 
-  // Always use the env var as the authoritative base URL.
-  // The CMS canonicalUrl is for per-page <link rel="canonical"> tags, NOT for the sitemap base.
   const rawBase =
     process.env.NEXT_PUBLIC_SITE_URL ||
-    'https://victormaina.mjinidigital.co.ke'
+    'https://linksysfiber.ke'
   const baseUrl = rawBase.replace(/\/$/, '')
   const lastUpdated = safeDate(content.lastUpdated)
 
@@ -62,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/projects', changeFrequency: 'weekly', priority: 0.9 },
     { path: '/services', changeFrequency: 'weekly', priority: 0.9 },
     { path: '/blog', changeFrequency: 'daily', priority: 0.9 },
-    { path: '/templates', changeFrequency: 'weekly', priority: 0.8 },
+    { path: '/careers', changeFrequency: 'weekly', priority: 0.8 },
     { path: '/contact', changeFrequency: 'monthly', priority: 0.8 },
   ]
 
@@ -70,7 +49,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const page of corePages) {
     const pageMeta = customPagesMap[page.path]
-    // Skip if marked noindex
     if (pageMeta?.noIndex) continue
 
     sitemapEntries.push({
@@ -83,7 +61,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 2. Custom Additional Pages (from CMS SEO Pages Map)
   for (const [path, pageMeta] of Object.entries(customPagesMap)) {
-    // Exclude core pages already added, private admin/auth routes, or noindex pages
     if (
       corePages.some((c) => c.path === path) ||
       path.startsWith('/admin') ||

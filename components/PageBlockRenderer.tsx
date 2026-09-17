@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { WebsiteContent, PageComponentBlock, ServiceItem, TemplateItem } from '@/lib/types/content'
 import { Hero } from '@/components/Hero'
+import { Hero2 } from '@/components/Hero2'
 import { TechStack } from '@/components/TechStack'
 import { Logos } from '@/components/Logos'
 import { Projects } from '@/components/Projects'
@@ -14,6 +15,7 @@ import Pricing from '@/components/pricing'
 import Stats from '@/components/stats'
 import CodeBlock from '@/components/code-block'
 import Blog from '@/components/blog'
+import { CareersSection } from '@/components/CareersSection'
 import { RichTextRenderer } from '@/components/ui/rich-text-renderer'
 import { GithubIcon } from '@/components/ui/icons'
 import { Sparkles, Check, Code2, ArrowUpRight, ExternalLink, FileText, X } from 'lucide-react'
@@ -24,7 +26,7 @@ interface PageBlockRendererProps {
 }
 
 // Fixed block types: always render from global collections, not per-page data
-const FIXED_BLOCKS = new Set(['projects', 'services', 'templates', 'blog', 'logos'])
+const FIXED_BLOCKS = new Set(['projects', 'services', 'templates', 'blog', 'logos', 'careers'])
 
 export function PageBlockRenderer({ path, content }: PageBlockRendererProps) {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null)
@@ -47,6 +49,15 @@ export function PageBlockRenderer({ path, content }: PageBlockRendererProps) {
             return (
               <section key={block.id} id={`hero-${block.id}`}>
                 <Hero hero={heroData} socials={content.contact.socials} />
+              </section>
+            )
+          }
+
+          case 'hero2': {
+            const heroData = { ...content.hero, ...d }
+            return (
+              <section key={block.id} id={`hero2-${block.id}`}>
+                <Hero2 hero={heroData} socials={content.contact.socials} />
               </section>
             )
           }
@@ -87,20 +98,17 @@ export function PageBlockRenderer({ path, content }: PageBlockRendererProps) {
             return (
               <section key={block.id} id={`services-${block.id}`} className="py-8">
                 <div className="max-w-2xl">
-                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">{content.services.sectionLabel}</p>
-                  <h2 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">{content.services.title}</h2>
+                  <p className="font-mono text-md uppercase tracking-[0.2em] text-accent-foreground">{content.services.sectionLabel}</p>
+                  <h2 className="mt-4 text-4xl md:text-4xl lg:text-5xl font-bold ">{content.services.title}</h2>
                   <p className="mt-3 text-base text-muted-foreground leading-relaxed">{content.services.subtitle}</p>
                 </div>
-                <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {content.services.items.map((service) => (
                     <div key={service.id} className={`flex flex-col justify-between rounded-3xl border p-6 transition-all ${service.popular ? 'border-primary bg-primary/5 shadow-xl shadow-primary/5' : 'border-border bg-card'}`}>
                       <div>
-                        <div className="flex items-center justify-between">
-                          <div className="rounded-2xl bg-primary/10 p-3 text-primary"><Code2 className="size-6" aria-hidden="true" /></div>
-                          {service.popular && <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">Most Popular</span>}
-                        </div>
+                      
                         <Link href={`/services/${service.id}`} className="group/title block">
-                          <h3 className="mt-6 text-xl font-bold tracking-tight group-hover/title:text-primary transition-colors">{service.title}</h3>
+                          <h3 className="mt-6 text-xl font-bold tracking-tight group-hover/title:text-primary transition-colors line-clamp-1">{service.title}</h3>
                         </Link>
                         <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{service.description}</p>
                         
@@ -122,25 +130,19 @@ export function PageBlockRenderer({ path, content }: PageBlockRendererProps) {
                         </div>
                       </div>
 
-                      <div className="mt-6 pt-4 border-t border-border space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Link
-                            href={`/services/${service.id}`}
-                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline cursor-pointer"
-                          >
-                            <FileText className="size-3.5" aria-hidden="true" /> View Scope &amp; Details
-                          </Link>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="font-mono text-xs text-muted-foreground">Investment</span>
-                            <p className="text-lg font-bold text-foreground">{service.price || 'Custom scope'}</p>
+                      <div className="mt-6 pt-4 border-t border-border space-y-4 item-start">
+                                               
+                           
                           </div>
-                          <Link href="/contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
-                            Inquire Now <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                           <div className="flex items-center justify-start gap-4 ">
+                         
+                          <Link href={`/services/${service.id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
+                            Explore Service <ArrowUpRight className="size-3.5" aria-hidden="true" />
                           </Link>
-                        </div>
+                          <Link href="/contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
+                             Inquire Now <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                          </Link>
+                       
                       </div>
                     </div>
                   ))}
@@ -251,6 +253,13 @@ export function PageBlockRenderer({ path, content }: PageBlockRendererProps) {
               </section>
             )
 
+          case 'careers':
+            return (
+              <section key={block.id} id={`careers-${block.id}`}>
+                <CareersSection />
+              </section>
+            )
+
           case 'features': {
             const data = d.items ? { ...content.features, ...d } : { ...content.features, ...d }
             return (
@@ -346,7 +355,7 @@ export function PageBlockRenderer({ path, content }: PageBlockRendererProps) {
 
       {/* Service Scope & Deliverables Modal (if modal fallback triggered) */}
       {selectedService && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" role="dialog" aria-modal="true">
+        <div className="pb-12 fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" role="dialog" aria-modal="true">
           <div className="relative w-full max-w-2xl rounded-3xl border border-border bg-background p-6 sm:p-8 shadow-2xl max-h-[88vh] overflow-y-auto space-y-6">
             <div className="flex items-start justify-between border-b border-border pb-4">
               <div>

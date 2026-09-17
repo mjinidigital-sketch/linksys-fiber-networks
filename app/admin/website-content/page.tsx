@@ -25,7 +25,8 @@ import {
   Database,
   HelpCircle,
   Share2,
-  FolderOpen
+  FolderOpen,
+  Users
 } from 'lucide-react'
 import { useWebsiteContent } from '@/hooks/use-website-content'
 import { useToast } from '@/components/ui/toast'
@@ -45,7 +46,6 @@ export default function WebsiteContentHubPage() {
   const pageCount = Object.keys(activePageLayouts).length
   const projectCount = content.projects?.items?.length || 0
   const serviceCount = content.services?.items?.length || 0
-  const templateCount = content.templates?.items?.length || 0
   const blogCount = content.blog?.posts?.length || 0
   const techCount = content.techStack?.items?.length || 0
 
@@ -85,11 +85,11 @@ export default function WebsiteContentHubPage() {
           color: 'from-emerald-500/20 to-teal-500/20 text-emerald-500',
         },
         {
-          title: 'Templates',
-          description: `Pre-built starter kits, digital templates, demo links and GitHub repositories`,
-          href: '/admin/website-content/collections/templates',
-          icon: LayoutTemplate,
-          badge: `${templateCount} Templates`,
+          title: 'Careers & Jobs',
+          description: `Manage job listings, open positions, requirements, and incoming applicant applications`,
+          href: '/admin/website-content/collections/careers',
+          icon: Users,
+          badge: 'Job Board',
           color: 'from-violet-500/20 to-purple-500/20 text-violet-500',
         },
         {
@@ -102,6 +102,7 @@ export default function WebsiteContentHubPage() {
         },
       ]
     },
+
     {
       category: 'Reusable Components',
       description: 'Customize section components displayed across home and landing pages',
@@ -223,8 +224,8 @@ export default function WebsiteContentHubPage() {
           <p className="mt-1 text-2xl font-bold text-foreground">{serviceCount}</p>
         </div>
         <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Templates</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{templateCount}</p>
+          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Jobs</p>
+          <p className="mt-1 text-2xl font-bold text-foreground">—</p>
         </div>
         <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
           <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Blog Posts</p>

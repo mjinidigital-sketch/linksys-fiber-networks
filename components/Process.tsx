@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion, type Variants } from 'framer-motion'
 import { ProcessContent } from '@/lib/types/content'
-import { defaultContent } from '@/lib/default-content'
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -17,8 +16,9 @@ interface ProcessProps {
   process?: ProcessContent
 }
 
-export function Process({ process = defaultContent.process }: ProcessProps) {
+export function Process({ process }: ProcessProps) {
   const reduceMotion = useReducedMotion()
+  if (!process) return null
 
   return (
     <motion.section
@@ -26,14 +26,14 @@ export function Process({ process = defaultContent.process }: ProcessProps) {
       whileInView={reduceMotion ? undefined : 'visible'}
       viewport={{ once: true, amount: 0.2 }}
       variants={reveal}
-      className="grid gap-10 border-t border-border py-20 sm:py-28 lg:grid-cols-[0.8fr_1.2fr]"
+      className="grid gap-10 border-t border-border py-16  lg:grid-cols-[0.8fr_1.2fr]"
       aria-labelledby="services-title"
     >
-      <div>
-        <p className="font-mono text-xs uppercase tracking-[0.18em] text-primary">
+      <div className='mt-12'>
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-secondary">
           {process.sectionLabel}
         </p>
-        <h2 id="services-title" className="mt-3 max-w-sm text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h2 id="services-title" className="mt-3 max-w-sm text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
           {process.title}
         </h2>
       </div>

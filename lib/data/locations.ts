@@ -1,15 +1,39 @@
 /**
- * Standard Locations & Areas Served Data
- * Main Location: Nairobi, Kenya
- * Full Coverage: Kenya (all 47 Counties), USA (top states), UK (cities & counties)
- * Primary Title: Website Developer & SEO Expert
+ * Standard Locations & Areas Served Data for Linksys Fiber Networks
+ * Main Location: Molo, Nakuru County, Kenya
+ * Full Coverage: Molo and its environs (Tayari, Moto, Turi, Kibunja, Promise, 20 Acres, Kenyatta 123, Treasure, Upperhill Estate, Mwangaza, Kasino, Keepleft, Mutirithia, Millimani, Molo CBD, Elburgon, Njoro, Nakuru County, Kenya)
+ * Primary Title: Fast & Reliable Internet Service Provider Molo
  */
 
-export const MAIN_LOCATION = 'Nairobi, Kenya'
-export const PROFESSION_TITLE = 'Website Developer & SEO Expert'
+export const MAIN_LOCATION = 'Molo, Nakuru County, Kenya'
+export const PROFESSION_TITLE = 'Fast & Reliable Internet Service Provider Molo'
+
+// Specific coverage areas in Molo and neighboring towns
+export const MOLO_COVERAGE_AREAS = [
+  'Molo CBD',
+  'Tayari',
+  'Moto',
+  'Turi',
+  'Kibunja',
+  'Promise',
+  '20 Acres',
+  'Kenyatta 123',
+  'Treasure',
+  'Upperhill Estate',
+  'Mwangaza',
+  'Kasino',
+  'Keepleft',
+  'Mutirithia',
+  'Millimani',
+  'Elburgon',
+  'Njoro',
+  'Sachangwan',
+  'Mau Summit',
+] as const
 
 // All 47 Counties of the Republic of Kenya
 export const KENYA_COUNTIES = [
+  'Nakuru',
   'Mombasa',
   'Kwale',
   'Kilifi',
@@ -41,7 +65,6 @@ export const KENYA_COUNTIES = [
   'Nandi',
   'Baringo',
   'Laikipia',
-  'Nakuru',
   'Narok',
   'Kajiado',
   'Kericho',
@@ -59,71 +82,28 @@ export const KENYA_COUNTIES = [
   'Nairobi',
 ] as const
 
-// Top States and Major Metros in the United States
-export const USA_TOP_STATES = [
-  'California',
-  'New York',
-  'Texas',
-  'Florida',
-  'Washington',
-  'Illinois',
-  'Massachusetts',
-  'Colorado',
-  'Georgia',
-  'North Carolina',
-  'Virginia',
-  'Pennsylvania',
-  'Ohio',
-  'Michigan',
-  'New Jersey',
-  'Arizona',
-  'Oregon',
-  'Utah',
-  'Nevada',
-  'Maryland',
-  'Minnesota',
-  'Tennessee',
-  'Indiana',
-  'District of Columbia',
-] as const
-
-// Top Cities & Counties in the United Kingdom
-export const UK_CITIES_AND_COUNTIES = [
-  'London',
-  'Manchester',
-  'Birmingham',
-  'Leeds',
-  'Glasgow',
-  'Edinburgh',
-  'Bristol',
-  'Liverpool',
-  'Newcastle upon Tyne',
-  'Sheffield',
-  'Cambridge',
-  'Oxford',
-  'Cardiff',
-  'Belfast',
-  'Nottingham',
-  'Southampton',
-  'Brighton',
-  'Greater London',
-  'Greater Manchester',
-  'West Midlands',
-  'West Yorkshire',
-  'Surrey',
-  'Hampshire',
-  'Kent',
-  'Essex',
-  'Cambridgeshire',
-  'Oxfordshire',
-] as const
-
 // Schema.org areaServed entities format for Google and search crawlers
 export function getSchemaAreasServed() {
   return [
     {
       '@type': 'City',
-      name: 'Nairobi',
+      name: 'Molo',
+      containedInPlace: {
+        '@type': 'AdministrativeArea',
+        name: 'Nakuru County',
+      },
+    },
+    ...MOLO_COVERAGE_AREAS.map((area) => ({
+      '@type': 'Place',
+      name: `${area}, Molo`,
+      containedInPlace: {
+        '@type': 'City',
+        name: 'Molo',
+      },
+    })),
+    {
+      '@type': 'AdministrativeArea',
+      name: 'Nakuru County',
       containedInPlace: {
         '@type': 'Country',
         name: 'Kenya',
@@ -132,66 +112,35 @@ export function getSchemaAreasServed() {
     {
       '@type': 'Country',
       name: 'Kenya',
-      description: 'Nationwide coverage across all 47 counties of Kenya',
+      description: 'Nationwide coverage across Kenya with main fiber backbone in Molo and Nakuru County',
     },
-    ...KENYA_COUNTIES.map((county) => ({
-      '@type': 'AdministrativeArea',
-      name: `${county} County`,
-      containedInPlace: {
-        '@type': 'Country',
-        name: 'Kenya',
-      },
-    })),
-    {
-      '@type': 'Country',
-      name: 'United States',
-      alternateName: 'USA',
-    },
-    ...USA_TOP_STATES.map((state) => ({
-      '@type': 'AdministrativeArea',
-      name: state,
-      containedInPlace: {
-        '@type': 'Country',
-        name: 'United States',
-      },
-    })),
-    {
-      '@type': 'Country',
-      name: 'United Kingdom',
-      alternateName: 'UK',
-    },
-    ...UK_CITIES_AND_COUNTIES.map((loc) => ({
-      '@type': 'AdministrativeArea',
-      name: loc,
-      containedInPlace: {
-        '@type': 'Country',
-        name: 'United Kingdom',
-      },
-    })),
   ]
 }
 
-// Compact string summary of all locations
+// Compact string summary of all locations served
 export const ALL_AREAS_SERVED_SUMMARY = [
-  'Nairobi, Kenya (Headquarters)',
-  'Kenya (All 47 Counties)',
-  'United States (Nationwide & Top Tech Hubs)',
-  'United Kingdom (London & Major Cities)',
-  'Worldwide (Remote Engineering & Consulting)',
+  'Molo CBD (Headquarters - Generis Hotel Building)',
+  'Tayari, Moto, Turi & Kibunja',
+  'Promise, 20 Acres & Kenyatta 123',
+  'Treasure, Upperhill Estate & Mwangaza',
+  'Kasino, Keepleft, Mutirithia & Millimani',
+  'Elburgon, Njoro & Greater Nakuru County',
 ]
 
-// Keywords formatted for high-ranking local & international SEO
+// Keywords formatted for high-ranking local & regional ISP SEO
 export const LOCAL_SEO_KEYWORDS = [
-  'Website Developer Nairobi',
-  'SEO Expert Nairobi Kenya',
-  'Web Developer Kenya 47 Counties',
-  'Website Designer Nairobi',
-  'Next.js Developer Kenya',
-  'Full Stack Engineer Nairobi',
-  'Website Developer USA',
-  'SEO Expert USA',
-  'Website Developer UK',
-  'SEO Consultant London',
-  'WordPress to Next.js Migration Kenya',
-  'E-commerce Developer Kenya USA UK',
+  'Internet Service Provider Molo',
+  'Fast Internet in Molo',
+  'Fiber Internet Molo',
+  'Linksys Fiber Networks Molo',
+  'WiFi installation Molo',
+  'Affordable internet packages Molo',
+  'Home WiFi Molo',
+  'Business Internet Molo',
+  'Hotspot Wi-Fi Broadcasting Molo',
+  'CCTV installation Molo Nakuru',
+  'Structured Cabling Molo',
+  'IT Support Services Molo',
+  'Reliable ISP Nakuru County',
+  'Linksys Fiber Turi Kibunja Tayari',
 ].join(', ')

@@ -20,7 +20,8 @@ import {
   Save,
   Download,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Users
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -37,7 +38,7 @@ export const contentNavigationGroups = [
     items: [
       { label: 'Projects', href: '/admin/website-content/collections/projects', icon: Briefcase, description: 'Portfolio case studies & work items' },
       { label: 'Services', href: '/admin/website-content/collections/services', icon: Layers, description: 'Service offerings, pricing & features' },
-      { label: 'Templates', href: '/admin/website-content/collections/templates', icon: LayoutTemplate, description: 'Digital products, templates & code kits' },
+      { label: 'Careers & Jobs', href: '/admin/website-content/collections/careers', icon: Users, description: 'Job listings & applicant management' },
       { label: 'Blog Posts', href: '/admin/website-content/collections/blog', icon: FileText, description: 'Articles, markdown posts & guides' },
     ]
   },

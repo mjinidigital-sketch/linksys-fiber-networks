@@ -1,38 +1,45 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Roboto } from "next/font/google";
 import './globals.css'
 import { ConvexClientProvider } from './ConvexClientProvider'
 import { ToastProvider } from '@/components/ui/toast'
 import { SEOHead } from '@/components/SEOHead'
 import { ThemeProvider } from '@/components/theme-provider'
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
-const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
+import { BackgroundPattern } from '@/components/BackgroundPattern'
+import { ChatWidget } from '@/components/chat/ChatWidget'
+
+const fontSans = Roboto({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
-  title: 'Victor Maina — Full-Stack Web Developer',
-  description: 'Victor Maina is a full-stack web developer building fast, thoughtful digital products and experiences.',
+  title: 'Linksys Fiber Networks — Fast & Reliable Internet in Molo',
+  description: 'Linksys is a trusted internet service provider in Molo offering fast, reliable, and affordable fiber and Wi-Fi for homes and businesses.',
   generator: 'v0.app',
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
-      <body className="antialiased">
+    <html lang="en" className={`${fontSans.variable} antialiased`} suppressHydrationWarning>
+      <body className="m-0 p-0 relative min-h-screen max-w-full overflow-x-clip">
          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-        <ConvexClientProvider>
-          <ToastProvider>
-            <SEOHead />
-            {children}
-          </ToastProvider>
-        </ConvexClientProvider>
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+            <BackgroundPattern />
+            <ConvexClientProvider>
+              <ToastProvider>
+                <SEOHead />
+                {children}
+                <ChatWidget />
+              </ToastProvider>
+            </ConvexClientProvider>
+            {process.env.NODE_ENV === 'production' && <Analytics />}
         </ThemeProvider>
       </body>
     </html>

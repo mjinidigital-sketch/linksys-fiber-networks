@@ -25,7 +25,7 @@ export default function FAQ({ faqs }: FAQProps) {
   if (!items.length) return null
 
   return (
-    <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-12">
+    <section className="relative overflow-hidden border-b pb-20">
       {/* Subtle radial background */}
       <div
         aria-hidden
@@ -35,7 +35,7 @@ export default function FAQ({ faqs }: FAQProps) {
       <div className="mx-auto w-full max-w-7xl">
         {/* Header */}
         <div className="mb-14 max-w-2xl">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+          <p className="font-mono text-md uppercase tracking-[0.2em] text-secondary">
             {faqs?.sectionLabel ?? 'Got questions?'}
           </p>
           <h2 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">

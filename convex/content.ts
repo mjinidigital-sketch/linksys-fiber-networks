@@ -176,27 +176,34 @@ export const patchContactInfo = mutation({
       ...existing,
       general: {
         ...(existing.general || {}),
-        email: "vickdev@mjinidigital.co.ke",
-        phone: "+254 729 396962",
+        siteName: "Linksys Fiber Networks",
+        displayName: "Linksys Fiber Networks",
+        email: "info@linksysfiber.ke",
+        phone: "+254 713 366 366",
+        location: "Generis Hotel Building, Ground Floor, Molo, Nakuru County",
       },
       contact: {
         ...(existing.contact || {}),
-        email: "vickdev@mjinidigital.co.ke",
+        email: "info@linksysfiber.ke",
+        location: "Generis Hotel Building, Ground Floor, Molo, Nakuru County",
       },
       footer: {
         ...(existing.footer || {}),
+        copyright: "© 2026 Linksys Fiber Networks LTD. All rights reserved.",
         links: [
           { label: "Back to top", href: "#top" },
-          { label: "Work", href: "/projects" },
+          { label: "Packages", href: "/packages" },
           { label: "Services", href: "/services" },
           { label: "Blog", href: "/blog" },
-          { label: "Email me", href: "mailto:vickdev@mjinidigital.co.ke" },
+          { label: "Contact", href: "/contact" },
+          { label: "Email Us", href: "mailto:info@linksysfiber.ke" },
         ],
       },
       lastUpdated: now,
     };
 
     await ctx.db.patch(doc._id, { content: updatedContent, lastUpdated: now });
-    return { success: true, email: "vickdev@mjinidigital.co.ke", phone: "+254 729 396962" };
+    return { success: true, email: "info@linksysfiber.ke", phone: "+254 713 366 366" };
   },
 });
+

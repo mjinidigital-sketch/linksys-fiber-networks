@@ -62,6 +62,7 @@ export default function PagesLayoutManagerPage() {
   const getBlockIcon = (type: string) => {
     switch (type) {
       case 'hero': return <Sparkles className="size-4 text-primary" />
+      case 'hero2': return <Sparkles className="size-4 text-primary" />
       case 'techStack': return <Wrench className="size-4 text-primary" />
       case 'logos': return <Globe className="size-4 text-primary" />
       case 'projects': return <Briefcase className="size-4 text-primary" />
@@ -76,6 +77,7 @@ export default function PagesLayoutManagerPage() {
       case 'pricing': return <Briefcase className="size-4 text-primary" />
       case 'stats': return <Sparkles className="size-4 text-primary" />
       case 'codeBlock': return <Code2 className="size-4 text-primary" />
+      case 'careers': return <Briefcase className="size-4 text-primary" />
       default: return <Code2 className="size-4 text-primary" />
     }
   }
@@ -83,6 +85,7 @@ export default function PagesLayoutManagerPage() {
   const getDefaultBlockData = (type: ComponentBlockType): Record<string, any> => {
     switch (type) {
       case 'hero':
+      case 'hero2':
         return {
           badge: content.hero?.badge || '',
           titleLine1: content.hero?.titleLine1 || '',
@@ -141,6 +144,8 @@ export default function PagesLayoutManagerPage() {
         return {
           files: content.codeBlock?.files || [],
         }
+      case 'careers':
+        return {}
       default:
         return {}
     }
@@ -465,6 +470,7 @@ export default function PagesLayoutManagerPage() {
                 className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="hero">Hero Section</option>
+                <option value="hero2">Compact Hero (Hero2)</option>
                 <option value="techStack">Tech Stack & Skills</option>
                 <option value="logos">Logos & Partners</option>
                 <option value="projects">Projects Portfolio</option>
@@ -479,6 +485,7 @@ export default function PagesLayoutManagerPage() {
                 <option value="pricing">Pricing</option>
                 <option value="stats">Stats</option>
                 <option value="codeBlock">Code Block</option>
+                <option value="careers">Careers & Open Roles</option>
               </select>
             </div>
           </div>

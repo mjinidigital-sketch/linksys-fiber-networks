@@ -22,7 +22,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 import { ProjectsContent } from '@/lib/types/content'
-import { defaultContent } from '@/lib/default-content'
 import { useRouter } from 'next/navigation'
 
 const reveal: Variants = {
@@ -61,11 +60,12 @@ interface ProjectsProps {
 }
 
 export function Projects({
-  projects = defaultContent.projects,
+  projects,
 }: ProjectsProps) {
   const reduceMotion = useReducedMotion()
+  const router = useRouter()
 
-  const router = useRouter();
+  if (!projects) return null
 
   return (
     <motion.section

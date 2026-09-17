@@ -5,35 +5,41 @@ export const defaultPageLayouts: Record<string, PageConfig> = {
     id: 'page-home',
     name: 'Home Page',
     path: '/',
-    description: 'Main landing page of the portfolio',
+    description: 'Main landing page of Linksys Fiber Networks Molo',
     enabled: true,
     blocks: [
       { id: 'blk-home-hero', type: 'hero', title: 'Hero Section', enabled: true },
-      { id: 'blk-home-tech', type: 'techStack', title: 'Tech Stack', enabled: true },
-      { id: 'blk-home-logos', type: 'logos', title: 'Logos & Tools', enabled: true },
-      { id: 'blk-home-projects', type: 'projects', title: 'Selected Projects', enabled: true },
-      { id: 'blk-home-process', type: 'process', title: 'Process Steps', enabled: true },
-      { id: 'blk-home-contact', type: 'contact', title: 'Contact Section', enabled: true },
+      { id: 'blk-home-stats', type: 'stats', title: 'Company Statistics', enabled: true },
+      { id: 'blk-home-packages', type: 'pricing', title: 'Internet Packages', enabled: true },
+      { id: 'blk-home-services', type: 'services', title: 'Our Services', enabled: true },
+      { id: 'blk-home-tech', type: 'techStack', title: 'Network Infrastructure & Equipment', enabled: true },
+      { id: 'blk-home-logos', type: 'logos', title: 'Partners & Hardware Brands', enabled: true },
+      { id: 'blk-home-process', type: 'process', title: 'How to Get Connected', enabled: true },
+      { id: 'blk-home-projects', type: 'projects', title: 'Featured Deployments & Case Studies', enabled: true },
+      { id: 'blk-home-blog', type: 'blog', title: 'Latest Articles & Tips', enabled: true },
       { id: 'blk-home-faq', type: 'faq', title: 'FAQ Section', enabled: true },
+      { id: 'blk-home-contact', type: 'contact', title: 'Contact Section', enabled: true },
     ]
   },
-  '/projects': {
-    id: 'page-projects',
-    name: 'Projects Page',
-    path: '/projects',
-    description: 'Full work portfolio & case studies',
+  '/packages': {
+    id: 'page-packages',
+    name: 'Internet Packages Page',
+    path: '/packages',
+    description: 'Affordable high-speed fiber and WiFi packages in Molo',
     enabled: true,
     blocks: [
-      { id: 'blk-proj-grid', type: 'projects', title: 'Full Portfolio Showcase', enabled: true },
+      { id: 'blk-pkg-pricing', type: 'pricing', title: 'All Internet Packages', enabled: true },
+      { id: 'blk-pkg-faq', type: 'faq', title: 'Packages FAQ', enabled: true },
       {
-        id: 'blk-proj-cta',
+        id: 'blk-pkg-cta',
         type: 'ctaBanner',
-        title: 'Start a Project Banner',
-        description: 'Ready to build something exceptional?',
+        title: 'Ready to Get Connected?',
+        description: 'Contact our local Molo team today and get installed in no time.',
         enabled: true,
         data: {
-          description: 'Ready to build something exceptional?',
-          ctaText: "Let's talk",
+          title: 'Looking for Fast, Reliable Internet?',
+          description: 'Linksys Fiber Networks is here to keep your home or business online with high-speed, uninterrupted connectivity across Molo and its environs.',
+          ctaText: 'Get Connected Now',
           ctaLink: '/contact',
         },
       }
@@ -43,31 +49,32 @@ export const defaultPageLayouts: Record<string, PageConfig> = {
     id: 'page-services',
     name: 'Services Page',
     path: '/services',
-    description: 'Engineering & Design Services',
+    description: 'Fiber internet, hotspot broadcasting, CCTV security, cabling & IT support in Molo',
     enabled: true,
     blocks: [
-      { id: 'blk-serv-grid', type: 'services', title: 'Engineering & Design Services', enabled: true },
-      { id: 'blk-serv-process', type: 'process', title: 'Development Process', enabled: true },
+      { id: 'blk-serv-grid', type: 'services', title: 'Our Core Services', enabled: true },
+      { id: 'blk-serv-process', type: 'process', title: 'Installation & Support Process', enabled: true },
       { id: 'blk-serv-faq', type: 'faq', title: 'Services FAQ', enabled: true }
     ]
   },
   '/templates': {
     id: 'page-templates',
-    name: 'Templates Page',
+    name: 'Equipment & Hardware Bundles',
     path: '/templates',
-    description: 'Pre-built templates, starter kits & systems',
+    description: 'Pre-configured networking, router kits & security hardware systems',
     enabled: true,
     blocks: [
-      { id: 'blk-tmpl-grid', type: 'templates', title: 'Starter Kits & Code', enabled: true },
+      { id: 'blk-tmpl-grid', type: 'templates', title: 'Networking Equipment & Kits', enabled: true },
       {
         id: 'blk-tmpl-cta',
         type: 'ctaBanner',
-        title: 'Need a Custom System?',
-        description: 'Have specific requirements or need help customizing a template?',
+        title: 'Need a Custom Enterprise Setup?',
+        description: 'Looking for dedicated leased lines, campus networking, or bespoke CCTV installation in Molo?',
         enabled: true,
         data: {
-          description: 'Have specific requirements or need help customizing a template?',
-          ctaText: 'Get in Touch',
+          title: 'Need a Custom Enterprise Network?',
+          description: 'Our certified network engineers design custom setups for schools, hospitals, hotels, and business estates.',
+          ctaText: 'Consult Our Engineers',
           ctaLink: '/contact',
         },
       }
@@ -77,538 +84,789 @@ export const defaultPageLayouts: Record<string, PageConfig> = {
     id: 'page-blog',
     name: 'Blog Page',
     path: '/blog',
-    description: 'Thoughts & Articles',
+    description: 'Internet guides, technology insights, and connectivity tips for Molo',
     enabled: true,
     blocks: [
-      { id: 'blk-blog-posts', type: 'blog', title: 'Writing & Articles', enabled: true }
+      { id: 'blk-blog-posts', type: 'blog', title: 'Read Our Blog Posts', enabled: true }
     ]
   },
   '/contact': {
     id: 'page-contact',
     name: 'Contact Page',
     path: '/contact',
-    description: 'Contact form & direct details',
+    description: 'Contact Linksys Fiber Networks Molo office, customer care, and WhatsApp support',
     enabled: true,
     blocks: [
-      { id: 'blk-contact-main', type: 'contact', title: 'Contact & Inquiries', enabled: true },
+      { id: 'blk-contact-main', type: 'contact', title: 'Get in Touch with Linksys Fiber', enabled: true },
       { id: 'blk-contact-faq', type: 'faq', title: 'Quick Answers FAQ', enabled: true }
     ]
+  },
+  '/careers': {
+    id: 'page-careers',
+    name: 'Careers Page',
+    path: '/careers',
+    description: 'Explore job opportunities and join our team in Molo',
+    enabled: true,
+    blocks: [
+      {
+        id: 'blk-careers-hero',
+        type: 'hero2',
+        title: 'Join Our Team',
+        enabled: true,
+        data: {
+          badge: "We're Hiring",
+          titleLine1: 'Explore & Apply for',
+          titleHighlight1: 'Job Opportunities',
+          bio: 'Stay connected and help build reliable fiber & WiFi networks across Molo. Explore open positions and launch your career with Linksys Fiber Networks.',
+          primaryCtaText: 'View Open Roles',
+          primaryCtaLink: '#open-positions',
+          secondaryCtaText: 'Contact Us',
+          secondaryCtaLink: '/contact',
+        },
+      },
+      { id: 'blk-careers-jobs', type: 'careers', title: 'Open Positions', enabled: true },
+      { id: 'blk-careers-faq', type: 'faq', title: 'Careers FAQ', enabled: true },
+    ],
   }
 }
 
-
 export const defaultContent: WebsiteContent = {
   general: {
-    siteName: 'Victor Maina',
-    siteTagline: 'Full-stack web developer building high-performing digital experiences',
-    displayName: 'Victor Maina',
-    role: 'Website Developer & SEO Expert',
-    shortBio: 'Website Developer & SEO Expert based in Nairobi, Kenya. Crafting high-performance web systems and digital platforms for clients in Kenya, the US, and the UK.',
-    avatarUrl: 'https://res.cloudinary.com/dcxqwes9x/image/upload/v1738001955/new_jkuh2v.png',
-    location: 'Nairobi, Kenya',
-    primaryLocation: 'Nairobi, Kenya',
+    siteName: 'Linksys Fiber Networks',
+    siteTagline: 'Fast, Affordable & Reliable Internet Provider in Molo & Environs',
+    displayName: 'Linksys Fiber Networks',
+    role: 'Internet Service Provider & Tech Solutions',
+    shortBio: 'Linksys is a trusted internet service provider in Molo offering fast, reliable, and affordable fiber and Wi-Fi for homes and businesses. Delivering uninterrupted connectivity, CCTV, and IT solutions across Molo and its environs.',
+    avatarUrl: '/linksys-logo-final.webp',
+    location: 'Generis Hotel Building, Ground Floor, Molo, Nakuru County',
+    primaryLocation: 'Molo, Nakuru County, Kenya',
     areasServed: [
-      'Nairobi, Kenya (Main Headquarters)',
-      'Kenya (All 47 Counties)',
-      'United States (Nationwide & Top Tech Hubs)',
-      'United Kingdom (London & Major Cities)',
-      'Worldwide (Remote Delivery)',
+      'Molo CBD (Generis Hotel Building)',
+      'Tayari',
+      'Moto',
+      'Turi',
+      'Kibunja',
+      'Promise',
+      '20 Acres',
+      'Kenyatta 123',
+      'Treasure',
+      'Upperhill Estate',
+      'Mwangaza',
+      'Kasino',
+      'Keepleft',
+      'Mutirithia',
+      'Millimani',
+      'Elburgon & Greater Nakuru County',
     ],
-    email: 'vickdev@mjinidigital.co.ke',
-    phone: '+254 729 396962',
-    resumeUrl: '#',
+    email: 'info@linksysfiber.ke',
+    phone: '+254 713 366 366',
+    resumeUrl: '/packages',
     availableForWork: true,
-    statusBadge: 'Available for projects'
+    statusBadge: 'Fast Installation & 24/7 Support Available'
   },
   navigation: {
-    brandName: 'Victor',
-    brandAccent: 'Maina',
+    brandName: 'Linksys',
+    brandAccent: 'Fiber',
     links: [
-      { label: 'About', href: '/#about' },
-      { label: 'Work', href: '/projects' },
+      { label: 'Home', href: '/' },
+      { label: 'Packages', href: '/packages' },
       { label: 'Services', href: '/services' },
-      { label: 'Templates', href: '/templates' },
       { label: 'Blog', href: '/blog' },
       { label: 'Contact', href: '/contact' }
     ]
   },
   hero: {
-    badge: 'Full-stack developer',
-    titleLine1: 'I build',
-    titleHighlight1: 'websites & apps',
-    titleLine2: 'that drive business',
-    titleHighlight2: 'growth.',
-    bio: "I'm Victor Maina, a full-stack web developer who turns ambitious ideas into solutions that help businesses grow and serve their customers better.",
-    primaryCtaText: 'See my work',
-    primaryCtaLink: '/projects',
-    secondaryCtaText: "Let's talk",
+    badge: 'Trusted Internet Service Provider in Molo',
+    titleLine1: 'Affordable, Fast &',
+    titleHighlight1: 'Reliable Internet',
+    titleLine2: 'for Homes &',
+    titleHighlight2: 'Businesses in Molo.',
+    bio: 'Are you in Molo and in need of reliable and fast fiber or WiFi internet? Stay connected with high-speed fiber and WiFi packages designed for uninterrupted streaming, working, and gaming.',
+    primaryCtaText: 'View Packages',
+    primaryCtaLink: '/packages',
+    secondaryCtaText: 'Get Connected',
     secondaryCtaLink: '/contact',
-    locationText: 'Nairobi, Kenya',
-    avatarUrl: 'https://res.cloudinary.com/dcxqwes9x/image/upload/v1738001955/new_jkuh2v.png',
-    statusCardLabel: 'Currently crafting',
-    statusCardText: 'The next big thing',
-    statusCardHighlight: '.'
+    locationText: 'Molo, Nakuru County, Kenya',
+    avatarUrl: '/linksys-logo-final.webp',
+    statusCardLabel: 'Network Status',
+    statusCardText: '99.9% Uptime Active',
+    statusCardHighlight: ' 24/7',
+    images: [
+      'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1551808525-51a94da548ce?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1520869562399-e772f042f422?q=80&w=1200&auto=format&fit=crop',
+    ]
   },
   techStack: {
-    sectionLabel: 'Trusted toolkit',
-    subtitle: 'The tools behind the work',
-    items: ['TypeScript', 'React', 'Next.js', 'Node.js', 'PostgreSQL', 'Tailwind CSS', 'Prisma', 'Docker']
+    sectionLabel: 'Network Infrastructure',
+    subtitle: 'Enterprise-grade technology powering our high-speed network',
+    items: [
+      'Fiber Optic Backbones',
+      'GPON / EPON Technology',
+      'MikroTik Core Routers',
+      'Ubiquiti UniFi & AirMax',
+      'Cisco Enterprise Routing',
+      'Cambium Wireless Links',
+      'Structured Cat6/Cat7 LAN',
+      'Hikvision & Dahua CCTV'
+    ]
   },
   logos: {
-    sectionLabel: 'Built with intention',
-    title: 'Tools that move ideas forward.',
-    subtitle: 'A flexible stack for shipping thoughtful products from first sketch to final pixel.',
-    items: ['Convex', 'Express', 'Payload CMS', 'Strapi', 'Webflow', 'Shopify', 'WordPress', 'Supabase']
+    sectionLabel: 'Hardware & Carrier Partners',
+    title: 'Powered by world-class telecommunications hardware.',
+    subtitle: 'We deploy robust, industry-standard equipment to guarantee minimal packet loss and maximum uptime.',
+    items: [
+      'MikroTik',
+      'Ubiquiti',
+      'Cisco',
+      'Cambium Networks',
+      'Hikvision',
+      'Dahua',
+      'TP-Link',
+      'Huawei Enterprise'
+    ]
   },
   projects: {
-    sectionLabel: 'Selected work',
-    title: "A few things I've shipped.",
-    ctaText: 'Start a project',
+    sectionLabel: 'Network Deployments',
+    title: 'Featured Installations & Case Studies',
+    ctaText: 'Request Site Survey',
     ctaLink: '/contact',
     items: [
       {
         id: 'proj-1',
-        title: 'Maji Labs',
-        type: 'Product platform',
-        description: 'A clean operations workspace that helps distributed teams turn messy workflows into momentum.',
-        summary: 'Cloud collaboration platform designed for distributed async teams, featuring real-time workspaces and document sync.',
-        content: `### Problem & Context
+        title: 'Molo CBD Commercial Fiber Backbone',
+        type: 'Enterprise Fiber Rollout',
+        description: 'Deployment of dedicated high-speed fiber optic ring supplying uninterrupted connectivity to hotels, banks, and retail centers in Molo town.',
+        summary: 'Underground fiber distribution network supporting over 120 commercial premises with zero daytime latency spikes.',
+        content: `### Commercial Fiber Infrastructure in Molo CBD
 
-Distributed product teams frequently lose momentum across scattered tooling and fragmented documentation. Maji Labs unified task orchestration, real-time whiteboards, and lightweight project roadmaps into a single responsive application.
+To support the growing digital economy in Molo, Linksys engineered and deployed a dedicated fiber optic ring connecting prime commercial buildings around Generis Hotel, Kenyatta Road, and surrounding trading centers.
 
-#### Architecture Highlights:
-- **Next.js App Router** with nested server component streaming.
-- **Convex Reactive Backend** for sub-30ms state synchronizations.
-- **Optimistic Mutation UI** providing instant local feedback.
+#### Key Deployment Highlights:
+- **Redundant Fiber Rings**: Automatic failover link preventing commercial downtime.
+- **Dedicated Bandwidth**: Symmetrical upload and download speeds for point-of-sale systems and office servers.
+- **24/7 Network Monitoring**: Real-time packet inspection and proactive link maintenance.
 
 :::callout[tip]
-Achieved sub-100ms cold start latency and handled 10,000+ daily active collaborative document updates during peak beta testing.
+Achieved 99.95% measured uptime across commercial tenants with average response times under 15 minutes for local support calls.
 :::`,
-        tags: ['Next.js', 'Convex', 'Tailwind'],
-        accent: 'bg-primary',
-        link: 'https://github.com',
+        tags: ['Fiber Optics', 'GPON', 'MikroTik', 'Molo CBD'],
+        accent: 'bg-[#02659C]',
+        link: '/packages',
         featured: true,
-        category: 'Web Application',
-        liveUrl: 'https://example.com/maji-labs',
-        githubUrl: 'https://github.com',
-        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop'
+        category: 'Commercial Network',
+        liveUrl: 'https://linksysfiber.ke/packages',
+        githubUrl: 'https://linksysfiber.ke/contact',
+        image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1000&auto=format&fit=crop'
       },
       {
         id: 'proj-2',
-        title: 'Nuru Commerce',
-        type: 'E-commerce experience',
-        description: 'A fast, conversion-focused storefront designed to make every product feel considered.',
-        summary: 'Custom headless e-commerce storefront with optimized mobile checkouts and sub-second catalog search.',
-        content: `### E-Commerce Performance Overhaul
+        title: 'Tayari & Upperhill Residential WiFi Coverage',
+        type: 'Residential Hotspot & Fiber',
+        description: 'Comprehensive high-speed home fiber and localized outdoor Wi-Fi broadcasting for residential estates in Tayari and Upperhill.',
+        summary: 'High-density wireless access points and fiber distribution boxes serving hundreds of households and remote workers.',
+        content: `### High-Speed Residential Expansion
 
-Re-engineered an omnichannel retail brand from a monolithic slow theme to an ultrafast headless React storefront.
+Expanded high-speed home fiber and neighborhood Wi-Fi broadcasting across Tayari, Upperhill Estate, and Promise.
 
-#### Key Results:
-- **Conversion Rate**: +34% uplift on mobile checkout completions.
-- **Page Load Time**: Reduced from 4.2s to 0.7s average First Contentful Paint.
-- **Global Payments**: Integrated localized payment methods alongside standard credit card processing.`,
-        tags: ['Shopify', 'React', 'Storefront API'],
-        accent: 'bg-foreground',
-        link: 'https://github.com',
+#### Project Milestones:
+- **Zero Buffering**: Seamless 4K video streaming and Zoom conferencing for families.
+- **Flexible Subscription Plans**: From 6 Mbps Base to 25 Mbps Home Pro.
+- **Fast Same-Day Installation**: Professional cable routing and in-home optical network terminal (ONT) setup.`,
+        tags: ['Home Fiber', 'Residential WiFi', 'Ubiquiti', 'Tayari'],
+        accent: 'bg-[#77BC43]',
+        link: '/packages',
         featured: true,
-        category: 'E-Commerce',
-        liveUrl: 'https://example.com/nuru-commerce',
-        githubUrl: 'https://github.com',
-        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop'
+        category: 'Residential Fiber',
+        liveUrl: 'https://linksysfiber.ke/packages',
+        githubUrl: 'https://linksysfiber.ke/contact',
+        image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000&auto=format&fit=crop'
       },
       {
         id: 'proj-3',
-        title: 'Kora Studio',
-        type: 'Brand & web system',
-        description: 'A flexible visual system and content engine for a modern creative practice.',
-        tags: ['Webflow', 'Strapi', 'GSAP'],
-        accent: 'bg-muted-foreground',
-        link: 'https://github.com',
+        title: 'Campus LAN & Integrated CCTV Security Setup',
+        type: 'Structured Cabling & Surveillance',
+        description: 'Turnkey campus networking with structured Cat6 cabling, high-definition IP cameras, and centralized network management.',
+        summary: 'Complete integration of fast administrative WiFi, computer lab cabling, and perimeter security surveillance.',
+        tags: ['Structured Cabling', 'CCTV Security', 'Hikvision', 'LAN'],
+        accent: 'bg-[#002b40]',
+        link: '/services',
         featured: true,
-        category: 'Branding & Web',
-        liveUrl: 'https://example.com/kora-studio',
-        githubUrl: 'https://github.com',
-        image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1000&auto=format&fit=crop'
+        category: 'Security & Cabling',
+        liveUrl: 'https://linksysfiber.ke/services',
+        githubUrl: 'https://linksysfiber.ke/contact',
+        image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?q=80&w=1000&auto=format&fit=crop'
       },
       {
         id: 'proj-4',
-        title: 'Pulse Analytics',
-        type: 'SaaS Platform',
-        description: 'Real-time user engagement and performance analytics dashboard with custom reporting.',
-        tags: ['Next.js', 'TypeScript', 'ClickHouse'],
+        title: 'Turi & Kibunja Long-Range Wireless Link',
+        type: 'Point-to-Multipoint Wireless',
+        description: 'High-throughput wireless bridge connecting rural schools, farms, and agribusinesses in Turi and Kibunja back to the core Molo fiber ring.',
+        tags: ['Wireless Link', 'Cambium', 'AirMax', 'Rural Internet'],
         accent: 'bg-emerald-600',
-        link: 'https://github.com',
+        link: '/packages',
         featured: false,
-        category: 'SaaS',
-        liveUrl: 'https://example.com/pulse',
-        githubUrl: 'https://github.com',
-        image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1000&auto=format&fit=crop'
+        category: 'Wireless Bridge',
+        liveUrl: 'https://linksysfiber.ke/packages',
+        githubUrl: 'https://linksysfiber.ke/contact',
+        image: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1000&auto=format&fit=crop'
       }
     ]
   },
   process: {
-    sectionLabel: 'How I work',
-    title: 'From rough idea to real-world impact.',
+    sectionLabel: 'How to Get Connected',
+    title: 'Fast, simple setup in 3 easy steps.',
     steps: [
       {
         id: 'proc-1',
         stepNumber: '01',
-        title: 'Clarify',
-        description: 'We define the sharpest version of the problem and the smallest path to value.'
+        title: 'Select Your Package',
+        description: 'Choose the ideal speed plan for your home, online study, or business needs — from 6 Mbps up to 40 Mbps.'
       },
       {
         id: 'proc-2',
         stepNumber: '02',
-        title: 'Create',
-        description: 'I design and build a durable system that feels simple to use and easy to grow.'
+        title: 'Fast Site Survey & Setup',
+        description: 'Our Molo technicians visit your premises, lay the fiber/wireless cable, configure your Wi-Fi router, and test latency.'
       },
       {
         id: 'proc-3',
         stepNumber: '03',
-        title: 'Launch',
-        description: 'We ship, learn from real users, and keep improving what matters most.'
+        title: 'Enjoy 24/7 Unlimited Internet',
+        description: 'Stream, work, game, and browse with zero data caps, backed by our friendly 24/7 local technical support.'
       }
     ]
   },
   services: {
-    sectionLabel: 'What I do',
-    title: 'Engineering & Design Services',
-    subtitle: 'Tailored solutions built with modern technology, obsessive performance, and attention to detail.',
+    sectionLabel: 'Our Services',
+    title: 'Comprehensive Internet & Tech Solutions in Molo',
+    subtitle: 'Explore our range of reliable connectivity and IT services tailored for both homes and businesses in Molo and environs.',
     items: [
       {
         id: 'serv-1',
-        title: 'Full-Stack Web Development',
-        description: 'Custom Next.js & React applications built from scratch with clean architecture, high speed, and scalability.',
-        icon: 'Code2',
-        price: 'Custom scope',
+        title: 'High-Speed Fiber & Home Internet',
+        description: 'Fast, unlimited fiber and wireless internet connections directly to your home or apartment in Molo with zero buffering and low ping.',
+        icon: 'Wifi',
+        price: 'From KSh 1,500/mo',
         popular: true,
         features: [
-          'Next.js & TypeScript architecture',
-          'Database modeling & API integration',
-          'Responsive mobile-first layout',
-          'SEO & Core Web Vitals optimization'
+          'Unlimited monthly data with zero throttling',
+          'Speeds from 6 Mbps to 40 Mbps',
+          'Free dual-band Wi-Fi router configuration',
+          'Dedicated 24/7 local customer support'
         ],
-        summary: 'Production-ready full-stack applications with high performance, secure auth, and scalable database backends.',
-        content: `### Complete Full-Stack Web Development
+        summary: 'Stable high-speed home connectivity for streaming, work-from-home, online learning, and gaming.',
+        content: `### High-Speed Fiber & Home Internet in Molo
 
-Turn complex product requirements into resilient web applications with modern architecture and delightful UX.
+Enjoy seamless streaming, crystal-clear video calls, and instant downloads with Linksys Fiber Networks.
 
-#### Core Deliverables:
-- **Application Architecture**: Type-safe Next.js 15+ application with server components and edge rendering.
-- **Backend & Database**: Convex or PostgreSQL database schema design, reactive mutations, and API integrations.
-- **State & Authentication**: Production-grade auth flow, session management, and role-based access control.
-- **Testing & Deployment**: Automated CI/CD pipelines, Vercel optimization, and Lighthouse 95+ performance scores.
-
-:::callout[tip]
-Every full-stack project includes 14 days of complimentary post-launch support and handoff documentation.
-:::`,
+#### Key Features:
+- **Truly Unlimited**: No fair usage policy limits or hidden caps.
+- **Low Latency**: Optimized routing for Zoom calls, Netflix, YouTube 4K, and online gaming.
+- **Fast Installation**: Professional cabling and router setup within hours of booking.`
       },
       {
         id: 'serv-2',
-        title: 'E-Commerce & Digital Storefronts',
-        description: 'High-converting online stores that provide smooth checkout journeys and frictionless user experiences.',
-        icon: 'ShoppingBag',
-        price: 'From $1,500',
+        title: 'Hotspot & Public Wi-Fi Broadcasting in Molo',
+        description: 'Fast and reliable hotspot and public Wi-Fi broadcasting for businesses, hotels, estates, cafes, and public spaces in Molo.',
+        icon: 'Radio',
+        price: 'Custom scope',
         popular: false,
         features: [
-          'Shopify & Headless storefronts',
-          'Payment gateway integrations',
-          'Inventory & Order management',
-          'Fast checkout flow optimization'
+          'Captive portal login & customized billing vouchers',
+          'High-density outdoor & indoor access points',
+          'User bandwidth management & traffic isolation',
+          'Monetization options for venue owners'
         ],
-        summary: 'Modern headless commerce platforms engineered for rapid conversions, localized currencies, and instant page loads.',
-        content: `### High-Converting Digital Storefronts
+        summary: 'Turnkey public Wi-Fi deployment with automated voucher systems and secure guest isolation.',
+        content: `### Public Wi-Fi & Hotspot Solutions
 
-Build a unique shopping experience that stands out from generic templates and converts visitors into loyal customers.
-
-#### Key Capabilities:
-- **Headless Commerce**: Shopify Storefront API or Stripe checkout integrations with sub-second page loads.
-- **Custom Product Filtering**: Instant faceted search, variant selectors, and dynamic inventory badges.
-- **Global Payments**: Multi-currency checkout, mobile money (M-Pesa), credit card processing, and localized tax calculations.`,
+Empower your business or commercial venue with branded guest Wi-Fi or monetize bandwidth with automated M-Pesa voucher systems.`
       },
       {
         id: 'serv-3',
-        title: 'UI/UX Design Systems',
-        description: 'Design systems, brand guidelines, and interactive Figma prototypes that turn complex products into intuitive software.',
-        icon: 'Palette',
-        price: 'From $1,200',
+        title: 'Wireless & Structured Cabling Networking',
+        description: 'Professional wireless links and structured Cat6/Cat7 LAN cabling for offices, schools, and multi-story commercial buildings.',
+        icon: 'Network',
+        price: 'Custom quote',
         popular: false,
         features: [
-          'Figma design systems & UI kits',
-          'Interactive clickable prototypes',
-          'Micro-interactions & animations',
-          'Design-to-code token alignment'
+          'Clean structured patch panel & rack installation',
+          'Long-range point-to-point wireless links',
+          'Fiber optic splicing & testing',
+          'Enterprise VLAN & firewall configuration'
         ],
-        summary: 'Scalable design systems and component libraries that align engineering teams and elevate brand consistency.',
-        content: `### Design Systems & Product Strategy
+        summary: 'Neat, high-capacity local area networks engineered for maximum reliability and future expansion.',
+        content: `### Structured Cabling & Wireless Networks
 
-Bridge the gap between design and engineering with a reusable token-driven design system.
+Build a durable IT network foundation with certified cabling standards, cable management, and enterprise-grade switches.`
+      },
+      {
+        id: 'serv-4',
+        title: 'CCTV & Security Solutions in Molo',
+        description: 'Expert CCTV installation in Molo with complete security solutions including HD/IP cameras, mobile viewing, and security lighting.',
+        icon: 'ShieldCheck',
+        price: 'From KSh 15,000',
+        popular: false,
+        features: [
+          'High-definition day/night vision IP cameras',
+          'Real-time remote mobile app viewing anywhere',
+          'DVR / NVR recording with motion detection',
+          'Electric fencing & security lighting integration'
+        ],
+        summary: 'Protect your home, business, or farm in Molo with modern 24/7 video surveillance systems.',
+        content: `### Complete CCTV & Security Installations
 
-#### Deliverables:
-- **Figma Component Library**: Comprehensive components with auto-layout, light/dark themes, and design tokens.
-- **Interactive Prototyping**: Clickable flows to validate user journeys before writing a single line of code.
-- **Tailwind / CSS Integration**: Seamless translation of Figma tokens directly into clean React code.`,
+Keep an eye on what matters most. We install high-definition security cameras with night vision and remote live streaming on your smartphone.`
+      },
+      {
+        id: 'serv-5',
+        title: 'IT Support & Managed IT Services in Molo',
+        description: 'Reliable IT support and managed computer/server services in Molo for businesses, schools, and offices.',
+        icon: 'Cpu',
+        price: 'Monthly retainers available',
+        popular: false,
+        features: [
+          'Hardware repair, computer maintenance & upgrades',
+          'Automated data backup & recovery systems',
+          'Antivirus, firewall & cybersecurity protection',
+          'Prompt on-site and remote technical assistance'
+        ],
+        summary: 'Comprehensive IT troubleshooting, preventive maintenance, and computer systems management.',
+        content: `### Managed IT Services for Molo Businesses
+
+Let our IT specialists handle your computer systems, backups, and network troubleshooting so you can focus on your business.`
+      }
+    ]
+  },
+  pricing: {
+    sectionLabel: 'Affordable Plans',
+    title: 'Our Internet Packages in Molo',
+    subtitle: 'Unlimited high-speed internet designed for households, students, and businesses across Molo.',
+    plans: [
+      {
+        id: 'plan-base',
+        name: 'BASE',
+        description: 'Ideal for light browsing, social media, WhatsApp, and email on 1-2 devices.',
+        price: 1500,
+        isRecommended: false,
+        icon: 'Wifi',
+        features: [
+          '6 Mbps High-Speed Internet',
+          'Ideal for browsing & social media',
+          'Stable connection for small households',
+          'Email & basic streaming support',
+          '24/7 customer support'
+        ]
+      },
+      {
+        id: 'plan-student',
+        name: 'STUDENT',
+        description: 'Perfect for online classes, research, Zoom calls, and smooth HD video playback.',
+        price: 1700,
+        isRecommended: false,
+        icon: 'GraduationCap',
+        features: [
+          '10 Mbps High-Speed Internet',
+          'Perfect for online classes & Zoom',
+          'Smooth HD video streaming',
+          'Reliable for assignments & research',
+          '24/7 customer support'
+        ]
+      },
+      {
+        id: 'plan-home-basic',
+        name: 'DS-HOME BASIC',
+        description: 'Our most popular plan for families. Smooth streaming, gaming, and multiple connected phones.',
+        price: 2000,
+        isRecommended: true,
+        icon: 'Home',
+        features: [
+          '20 Mbps High-Speed Internet',
+          'Multiple device connectivity (4-6 devices)',
+          'HD streaming & gaming support',
+          'Fast downloads & uploads',
+          '24/7 customer support'
+        ]
+      },
+      {
+        id: 'plan-home-pro',
+        name: 'DS-HOME PRO',
+        description: 'High-throughput connectivity for heavy households, 4K streaming, and remote professionals.',
+        price: 2500,
+        isRecommended: false,
+        icon: 'Zap',
+        features: [
+          '25 Mbps High-Speed Internet',
+          'Seamless streaming on multiple screens',
+          'Online gaming ready with low latency',
+          'Work-from-home optimized',
+          'Priority customer support'
+        ]
+      },
+      {
+        id: 'plan-business',
+        name: 'BUSINESS',
+        description: 'Reliable commercial internet for shops, pharmacies, cybercafes, and small offices.',
+        price: 3000,
+        isRecommended: false,
+        icon: 'Briefcase',
+        features: [
+          '30 Mbps High-Speed Internet',
+          'Reliable for offices & SMEs',
+          'Fast cloud access & file uploads',
+          'Multi-user simultaneous browsing',
+          'Priority business support'
+        ]
+      },
+      {
+        id: 'plan-business-pro',
+        name: 'BUSINESS PRO',
+        description: 'Heavy usage business connectivity for hotels, institutions, and growing corporate teams.',
+        price: 3500,
+        isRecommended: false,
+        icon: 'Building',
+        features: [
+          '35 Mbps High-Speed Internet',
+          'High-performance business connectivity',
+          'Heavy usage & multitasking ready',
+          'Video conferencing without lag',
+          'Dedicated support & uptime focus'
+        ]
+      },
+      {
+        id: 'plan-business-premium',
+        name: 'BUSINESS PREMIUM',
+        description: 'Maximum speed package for enterprise networks, schools, and large commercial operations.',
+        price: 4000,
+        isRecommended: false,
+        icon: 'Shield',
+        features: [
+          '40 Mbps High-Speed Internet',
+          'Ultra-fast speeds for large teams',
+          'Enterprise-grade performance',
+          'Heavy downloads & cloud operations',
+          'Top-tier priority support'
+        ]
+      }
+    ]
+  },
+  stats: {
+    sectionLabel: 'Our Proven Track Record',
+    title: 'Connecting Molo and Its Environs with Pride',
+    subtitle: 'Over a decade of dependable internet service, robust fiber infrastructure, and happy clients.',
+    items: [
+      {
+        id: 'stat-1',
+        value: '10+',
+        label: 'Years of Experience',
+        description: 'Serving Molo and surrounding towns with trusted telecommunication solutions since our founding.'
+      },
+      {
+        id: 'stat-2',
+        value: '1000+',
+        label: 'Homes Connected',
+        description: 'Reliable fiber and Wi-Fi powering everyday family entertainment, study, and communication.'
+      },
+      {
+        id: 'stat-3',
+        value: '250+',
+        label: 'Businesses Connected',
+        description: 'Powering Molo CBD hotels, banks, cybercafes, schools, and enterprises daily.'
+      },
+      {
+        id: 'stat-4',
+        value: '99.9%',
+        label: 'Network Uptime',
+        description: 'Redundant fiber backbone ensuring minimal downtime and instant local technical support.'
       }
     ]
   },
   templates: {
-    sectionLabel: 'Starter Kits & Code',
-    title: 'Pre-built Templates & Systems',
-    subtitle: 'Production-ready web templates, design systems, and developer starter kits to accelerate your next launch.',
+    sectionLabel: 'Hardware & Kits',
+    title: 'Pre-configured Networking & Hardware Bundles',
+    subtitle: 'Tested routers, wireless boosters, and security packages ready for rapid on-site installation in Molo.',
     items: [
       {
         id: 'tmpl-1',
-        title: 'SaaS Platform Starter Kit',
-        slug: 'saas-starter-kit',
-        category: 'Next.js & Convex',
-        description: 'Complete multi-tenant SaaS foundation with authentication, billing, dashboard layouts, and dark mode.',
-        summary: 'Production boilerplate equipped with Convex reactive backend, Better Auth, and Stripe subscription billing.',
-        tags: ['Next.js', 'Convex', 'Tailwind CSS', 'TypeScript'],
-        price: '$49',
-        liveDemoUrl: 'https://example.com/saas-demo',
-        githubUrl: 'https://github.com',
-        previewImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop',
+        title: 'Dual-Band Gigabit Fiber Home Router Kit',
+        slug: 'home-router-bundle',
+        category: 'Home Wi-Fi Hardware',
+        description: 'Pre-configured high-gain dual-band AC1200 router optimized for optical fiber terminals and wide home coverage.',
+        summary: 'Plug-and-play Wi-Fi router bundle with surge protector, pre-spliced patch cord, and setup guide.',
+        tags: ['Wi-Fi 5/6', 'Dual-Band', 'Gigabit Ports', 'Molo Fiber'],
+        price: 'Included with Setup',
+        liveDemoUrl: 'https://linksysfiber.ke/packages',
+        githubUrl: 'https://linksysfiber.ke/contact',
+        previewImage: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1000&auto=format&fit=crop',
         features: [
-          'Full-stack Next.js App Router + TypeScript',
-          'Convex reactive database and server functions',
-          'Authentication with OAuth and email magic links',
-          'Tailwind CSS design system with custom tokens',
-          'Responsive dashboard and administration analytics'
+          'Dual-band 2.4GHz & 5GHz concurrent transmission',
+          '4 high-gain 5dBi omnidirectional antennas',
+          'Gigabit WAN and LAN Ethernet ports',
+          'Parental controls & guest network isolation',
+          '1-year manufacturer replacement warranty'
         ],
         featured: true,
-        content: `### SaaS Platform Starter Kit
+        content: `### Gigabit Home Wi-Fi Router Bundle
 
-Launch your SaaS in days rather than months with a battle-tested architecture.
+Get maximum speed from your fiber connection with our tested dual-band routers configured specifically for the Linksys Fiber network.
 
-#### Highlights:
-- **Type-Safe Backend**: Powered by Convex with automatic end-to-end schema synchronization.
-- **Production UI**: Over 25 pre-built components including metrics widgets, data tables, and settings tabs.
-- **Ready for Monetization**: Integrated Stripe webhooks and subscription management.
-
-:::callout[info]
-Includes lifetime updates, GitHub repository access, and commercial license for unlimited personal and client projects.
-:::`
+#### What is Included:
+- **Dual-Band Wireless Router**: Supports 30+ simultaneous smart devices without dropping packets.
+- **Pre-spliced Fiber Drop Cable & Connectors**: Low-loss optical fiber installation.
+- **On-Site Installation**: Professional testing by our field technicians.`
       },
       {
         id: 'tmpl-2',
-        title: 'Minimalist Portfolio & Blog',
-        slug: 'minimal-portfolio',
-        category: 'Portfolio',
-        description: 'Ultra-fast portfolio template for software engineers, designers, and tech creators with a markdown-powered CMS.',
-        summary: 'Clean, typography-driven portfolio with light/dark theme switching and project case study layouts.',
-        tags: ['React', 'Next.js', 'Framer Motion'],
-        price: '$29',
-        liveDemoUrl: 'https://example.com/portfolio-demo',
-        githubUrl: 'https://github.com',
-        previewImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop',
+        title: 'Commercial Hotspot & Voucher Gateway Kit',
+        slug: 'commercial-hotspot-kit',
+        category: 'Hotspot Hardware',
+        description: 'Complete outdoor long-range Wi-Fi broadcasting kit with integrated MikroTik captive portal and M-Pesa voucher engine.',
+        summary: 'Turnkey public Wi-Fi solution covering up to 300 meters radius for business venues, estates, and centers.',
+        tags: ['Outdoor Wi-Fi', 'MikroTik', 'Voucher Billing', 'Hotspot'],
+        price: 'Custom Quote',
+        liveDemoUrl: 'https://linksysfiber.ke/services',
+        githubUrl: 'https://linksysfiber.ke/contact',
+        previewImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000&auto=format&fit=crop',
         features: [
-          'Obsessive typography and smooth page transitions',
-          'Markdown and rich-text rendering for case studies',
-          'SEO optimized with dynamic OpenGraph generation',
-          'Lighthouse 100/100 performance across all metrics'
+          'High-power outdoor weatherproof access points (IP67)',
+          'MikroTik routerboard with automated voucher script',
+          'Instant M-Pesa automated billing integration',
+          'Bandwidth rate limiting per connected client'
         ],
         featured: true,
-        content: `### Minimalist Portfolio & Blog
+        content: `### Turnkey Hotspot & Voucher System
 
-Showcase your craft with an understated, elegant portfolio designed to highlight your work and writing.
-
-#### What is Included:
-- **Project Case Studies**: Rich markdown layout supporting code snippets, responsive images, and video embeds.
-- **Client Testimonials & Services**: Structured sections ready to customize with your offerings.
-- **Contact Form**: Plug-and-play email inquiry form with validation.`
+Monetize internet access or provide branded Wi-Fi for your guests in Molo with automated M-Pesa voucher generation and revenue tracking.`
       }
     ]
   },
   blog: {
-    sectionLabel: 'Thoughts & Insights',
-    title: 'Writing on code, design, and product.',
-    subtitle: 'Reflections from shipping products, architectural patterns, and lessons learned along the way.',
+    sectionLabel: 'Articles & Insights',
+    title: 'Tips & Tech Guides from Molo’s Top ISP',
+    subtitle: 'Helpful advice on optimizing your Wi-Fi, understanding fiber technology, and getting the fastest internet speeds in Kenya.',
     posts: [
       {
         id: 'post-1',
-        slug: 'building-performant-nextjs-apps',
-        title: 'Building High-Performance Next.js Web Apps in 2026',
-        excerpt: 'A deep dive into server components, caching strategies, and streaming rendering for speed.',
-        date: 'Feb 24, 2026',
-        readTime: '6 min read',
-        category: 'Engineering',
-        coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop',
+        slug: 'why-your-internet-is-slow-and-how-to-fix-it',
+        title: 'Why Your Internet is Slow and How to Fix It',
+        excerpt: 'Find out why your internet is slow and learn simple, effective ways to fix it for better speed, stability, and performance at home or office.',
+        date: 'Mar 10, 2026',
+        readTime: '5 min read',
+        category: 'Internet Tips',
+        coverImage: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1000&auto=format&fit=crop',
         published: true,
-        content: `Building for the modern web requires balancing rapid iteration with obsessive runtime performance. In this article, we break down core architectural decisions when building production Next.js apps.
+        content: `Having slow internet can be frustrating whether you are attending an online class, working remotely from Molo, or streaming your favorite show. Here are the top reasons your internet might feel sluggish and how you can fix it:
 
-## 1. Server Components vs. Client Boundaries
+## 1. Router Placement Matters
 
-React Server Components (RSC) allow components to fetch data right where they live without shipping runtime JavaScript bundles to the browser.
+Place your Wi-Fi router in a central, elevated location in your home. Thick stone walls, metal cabinets, and kitchen appliances can severely degrade 2.4GHz and 5GHz wireless signals.
 
 :::callout[tip]
-Keep client boundaries at the leaves of your component tree to minimize client bundle sizes.
+Keep your router at least 1 meter off the ground and away from microwave ovens or large mirrors.
 :::
 
-\`\`\`typescript
-// Server Component Example
-export default async function ProductOverview({ productId }: { productId: string }) {
-  const product = await db.products.findById(productId);
-  return <ProductCard item={product} />;
-}
-\`\`\`
+## 2. Too Many Connected Devices
 
-## 2. Watch the Video Breakdown
+If multiple family members or staff are simultaneously streaming 4K video, downloading large updates, and gaming, your bandwidth may be saturated. Consider upgrading to our **20 Mbps DS-HOME BASIC** or **25 Mbps DS-HOME PRO** package.
 
-Here is a visual walkthrough demonstrating streaming UI and optimistic state:
+## 3. Background Applications and Downloads
 
-:::youtube[SqcY0GlETPk]:::
+Check your computers and phones for background software updates, cloud syncing (Google Photos, OneDrive, iCloud), and torrent clients that silently consume your upload bandwidth.
 
-## 3. Realtime Reactive Architecture
+## 4. Optical Fiber vs. Old Wireless Connections
 
-When combined with Convex, queries are automatically subscribed to real-time WebSockets, guaranteeing that UI states never fall out of sync with your database.
+Traditional copper cables and congested wireless bands suffer from weather degradation and electromagnetic interference. Upgrading to a pure optical fiber line from Linksys ensures steady, symmetrical speeds rain or shine!
 
-- **Zero API boilerplate**: Direct typed queries and mutations
-- **Atomic transactions**: Consistent ACID guarantees
-- **Instant sync**: Zero manual cache invalidation needed
-
-> "Great engineering is not about writing more code; it's about creating systems that stay fast and simple as they grow."`,
+> "A well-positioned router and a clean fiber line solve 95% of everyday speed issues."`
       },
       {
         id: 'post-2',
-        slug: 'why-design-systems-accelerate-teams',
-        title: 'Why Modern Design Systems Accelerate Startup Momentum',
-        excerpt: 'How tokenized components and thoughtful design rules cut development time in half.',
-        date: 'Jan 15, 2026',
-        readTime: '4 min read',
-        category: 'Design Systems',
-        coverImage: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=1000&auto=format&fit=crop',
+        slug: 'difference-between-fiber-wireless-and-hotspot-internet',
+        title: 'Difference Between Fiber, Wireless, and Hotspot Internet',
+        excerpt: 'Understand the difference between fiber, wireless, and hotspot internet and choose the best option for your home or business in Kenya.',
+        date: 'Feb 18, 2026',
+        readTime: '6 min read',
+        category: 'Guide',
+        coverImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000&auto=format&fit=crop',
         published: true,
-        content: `A good design system is not just about visual polish; it is a shared grammar that accelerates communication between engineers, founders, and designers.
+        content: `Choosing the right internet connection in Molo depends on your location, budget, and bandwidth requirements. Let us compare the three primary connection types:
 
-## From Tokens to Reusable UI Primitives
+## 1. Fiber Optic Internet (Fastest & Most Reliable)
+Fiber transmits data as pulses of light over thin glass strands. It offers virtually unlimited bandwidth, symmetrical upload/download speeds, and zero susceptibility to rain or electrical interference.
 
-By standardizing tokens for spacing, typography, and color schemes, new features can be composed in minutes rather than days.
+- **Best for**: Permanent homes, apartments, offices, hotels, and businesses in Molo CBD and connected estates.
 
-\`\`\`typescript
-export const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-xl font-semibold transition-colors",
-  {
-    variants: {
-      variant: {
-        primary: "bg-primary text-primary-foreground shadow-lg shadow-primary/20",
-        outline: "border border-border bg-card hover:bg-muted",
+## 2. Fixed Wireless Internet
+Wireless uses directional microwave radio antennas installed on rooftops to receive signals from a nearby broadcast mast.
+
+- **Best for**: Areas where underground fiber cable has not yet been trenching (such as outlying farms and rural homesteads around Turi or Kibunja).
+
+## 3. Public Hotspots & Wi-Fi Broadcasting
+Public hotspots allow users to connect on-the-go using vouchers or pay-as-you-go access.
+
+- **Best for**: Students, cafes, market stalls, and visitors needing quick, affordable daily access.`
       },
-    },
-  }
-);
-\`\`\`
+      {
+        id: 'post-3',
+        slug: 'what-is-fiber-internet-and-how-does-it-work-in-kenya',
+        title: 'What is Fiber Internet and How Does It Work in Kenya?',
+        excerpt: 'Learn what fiber internet is, how it works in Kenya, and why it is faster and more reliable than traditional internet connections for homes and businesses.',
+        date: 'Jan 28, 2026',
+        readTime: '4 min read',
+        category: 'Technology',
+        coverImage: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?q=80&w=1000&auto=format&fit=crop',
+        published: true,
+        content: `Fiber optic technology has revolutionized internet access across Kenya. By connecting to undersea submarine cables along the Kenyan coast in Mombasa and routing through national fiber backbones to Nakuru and Molo, fiber delivers light-speed connectivity directly to your door.
 
-:::callout[info]
-Tokenization allows seamless light/dark mode switching and custom branding themes without touching individual component files.
-:::
-
-> Consistency builds trust with users, and speed builds momentum for product teams.`,
+### Why Molo Residents Are Switching to Fiber:
+1. **Zero Buffering**: Instant video streaming and lightning-fast downloads.
+2. **Weatherproof**: Unaffected by heavy rains or cold temperatures in Molo.
+3. **Affordability**: Fixed monthly billing starting from only KSh 1,500 with zero data limits.`
       },
+      {
+        id: 'post-4',
+        slug: 'the-best-internet-provider-in-molo',
+        title: 'The Best Internet Provider in Molo: Why Linksys Fiber Networks Leads',
+        excerpt: 'Looking for fast and reliable internet in Molo? Linksys Fiber Networks offers affordable fiber & WiFi packages, wide coverage, and expert IT solutions.',
+        date: 'Jan 12, 2026',
+        readTime: '5 min read',
+        category: 'Molo Internet',
+        coverImage: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1000&auto=format&fit=crop',
+        published: true,
+        content: `When searching for an internet service provider in Molo, you need a partner who combines high speed, affordability, and responsive local support.
+
+### Why Choose Linksys Fiber Networks:
+- **Local Molo Office**: Located on the Ground Floor of Generis Hotel Building in Molo CBD.
+- **Over 10 Years in Service**: Deep experience serving local homes, businesses, and institutions.
+- **Comprehensive Tech Services**: From internet packages to CCTV surveillance, LAN cabling, and IT maintenance.
+- **24/7 Dedicated Support**: Call or WhatsApp **0713 366 366** anytime.`
+      }
     ]
   },
   contact: {
-    sectionLabel: 'Have a good idea?',
-    title: "Let's make it feel inevitable.",
-    subtitle: "Tell me what you're building, where you're stuck, or what could be better. I'll bring clarity, craft, and momentum.",
-    email: 'vickdev@mjinidigital.co.ke',
-    ctaText: 'Start a conversation',
-    location: 'Nairobi, Kenya',
+    sectionLabel: 'Get Connected Today',
+    title: 'Ready for Fast, Reliable Internet in Molo?',
+    subtitle: 'Contact us today for instant package activation, residential fiber installation, or commercial quotes. Our local Molo team is ready to serve you.',
+    email: 'info@linksysfiber.ke',
+    ctaText: 'Contact Us Now',
+    location: 'Generis Hotel Building, Ground Floor, Molo, Nakuru County',
     socials: [
       {
         id: 'soc-1',
-        platform: 'GitHub',
-        label: 'GitHub',
-        url: 'https://github.com',
-        icon: 'Github',
-        username: '@victormaina'
+        platform: 'WhatsApp',
+        label: 'WhatsApp Chat',
+        url: 'https://wa.me/254713366366?text=Hello%20Linksys%20Fiber%20Networks%2C%20I%20would%20like%20to%20make%20an%20inquiry.',
+        icon: 'MessageCircle',
+        username: '0713 366 366'
       },
       {
         id: 'soc-2',
-        platform: 'LinkedIn',
-        label: 'LinkedIn',
-        url: 'https://linkedin.com',
-        icon: 'Linkedin',
-        username: 'Victor Maina'
+        platform: 'Facebook',
+        label: 'Facebook',
+        url: 'https://www.facebook.com/people/Linksys-Fiber-Networks/61558710290221/',
+        icon: 'Facebook',
+        username: 'Linksys Fiber Networks'
       },
       {
         id: 'soc-3',
-        platform: 'Twitter',
-        label: 'Twitter / X',
-        url: 'https://twitter.com',
-        icon: 'Twitter',
-        username: '@victormaina_dev'
+        platform: 'Instagram',
+        label: 'Instagram',
+        url: 'https://www.instagram.com/linksysfiber',
+        icon: 'Instagram',
+        username: '@linksysfiber'
+      },
+      {
+        id: 'soc-4',
+        platform: 'TikTok',
+        label: 'TikTok',
+        url: 'https://tiktok.com/@linksysfibernet',
+        icon: 'Video',
+        username: '@linksysfibernet'
       }
     ]
   },
   seo: {
-    title: 'Victor Maina — Website Developer & SEO Expert',
-    description: 'Professional Website Developer & SEO Expert based in Nairobi, Kenya, serving clients across all 47 Kenya counties, the United States, the United Kingdom, and worldwide.',
-    keywords: 'Website Developer Nairobi, SEO Expert Kenya, Web Developer Kenya 47 Counties, Website Developer USA, SEO Expert UK, Next.js Developer Nairobi, Full-Stack Developer Kenya, WordPress to Next.js Migration',
-    canonicalUrl: 'https://victormaina.mjinidigital.co.ke/',
-    ogImage: 'https://res.cloudinary.com/dcxqwes9x/image/upload/v1738001955/new_jkuh2v.png',
+    title: 'Internet Service Provider Molo | Fast Internet in Molo | Linksys Fiber Networks',
+    description: 'Linksys is a trusted internet service provider in Molo offering fast, reliable, and affordable Wi-Fi and fiber for homes and businesses. Packages from KSh 1,500/mo.',
+    keywords: 'Internet Service Provider Molo, Fast Internet in Molo, Fiber Internet Molo, Linksys Fiber Networks, WiFi Molo, ISP Molo Nakuru, CCTV installation Molo, Affordable WiFi Molo, Home Internet Molo, Business Internet Molo',
+    canonicalUrl: 'https://linksysfiber.ke/',
+    ogImage: 'https://linksysfiber.ke/api/media/file/hero-linksys%20(1)-2-1200x630.webp',
     twitterCard: 'summary_large_image',
     allowIndexing: true,
-    primaryLocation: 'Nairobi, Kenya',
+    primaryLocation: 'Molo, Nakuru County, Kenya',
     areasServed: [
-      'Nairobi, Kenya (Main Headquarters)',
-      'Kenya (All 47 Counties)',
-      'United States (Top States & Tech Hubs)',
-      'United Kingdom (London & Major Cities)',
-      'Worldwide',
+      'Molo CBD (Generis Hotel Building)',
+      'Tayari',
+      'Moto',
+      'Turi',
+      'Kibunja',
+      'Promise',
+      '20 Acres',
+      'Kenyatta 123',
+      'Treasure',
+      'Upperhill Estate',
+      'Mwangaza',
+      'Kasino',
+      'Keepleft',
+      'Mutirithia',
+      'Millimani',
+      'Nakuru County',
     ],
     pages: {
       '/': {
         path: '/',
         pageName: 'Home Page',
-        title: 'Victor Maina — Website Developer & SEO Expert | Nairobi, Kenya',
-        description: 'Building high-performance web applications, digital platforms, and SEO-optimized web systems in Nairobi, Kenya, USA, UK, and worldwide.',
-        keywords: 'Victor Maina, Website Developer Nairobi, SEO Expert Kenya, Next.js developer, Web design Kenya',
-        canonicalUrl: 'https://victormaina.mjinidigital.co.ke/',
+        title: 'Internet Service Provider Molo | Fast Internet in Molo | Linksys Fiber Networks',
+        description: 'Linksys is a trusted internet service provider in Molo offering fast, reliable, and affordable Wi-Fi for homes and businesses. Get connected today with fiber or hotspot internet.',
+        keywords: 'Internet Service Provider Molo, Fast Internet in Molo, Fiber Internet Molo, Linksys Fiber Networks',
+        canonicalUrl: 'https://linksysfiber.ke/',
         noIndex: false,
       },
-      '/projects': {
-        path: '/projects',
-        pageName: 'Projects & Portfolio',
-        title: 'Selected Works & Case Studies — Victor Maina',
-        description: 'Explore full-stack web apps, e-commerce storefronts, and open-source software built by Victor Maina.',
-        keywords: 'Victor Maina Portfolio, Web applications, React projects, Next.js showcase',
-        canonicalUrl: 'https://victormaina.mjinidigital.co.ke//projects',
+      '/packages': {
+        path: '/packages',
+        pageName: 'Internet Packages',
+        title: 'Internet Packages in Molo | Affordable Fiber & WiFi Plans — Linksys',
+        description: 'Explore unlimited internet packages in Molo starting from KSh 1,500/mo. Speeds from 6 Mbps up to 40 Mbps for homes, students, and businesses.',
+        keywords: 'Internet packages Molo, WiFi prices Molo, Cheap internet Molo, Fiber packages Nakuru',
+        canonicalUrl: 'https://linksysfiber.ke/packages',
         noIndex: false,
       },
       '/services': {
         path: '/services',
-        pageName: 'Services & Offerings',
-        title: 'Engineering & Design Services — Victor Maina',
-        description: 'Full-stack engineering, custom UI/UX design systems, and fast digital commerce solutions.',
-        keywords: 'Web development services, Next.js consulting, UI/UX design systems',
-        canonicalUrl: 'https://victormaina.mjinidigital.co.ke//services',
+        pageName: 'Services & Solutions',
+        title: 'Services & IT Solutions in Molo — Linksys Fiber Networks',
+        description: 'Home fiber internet, public Wi-Fi hotspot broadcasting, structured cabling, CCTV security installation, and managed IT services in Molo.',
+        keywords: 'CCTV installation Molo, Structured cabling Molo, Hotspot broadcasting Molo, IT services Molo',
+        canonicalUrl: 'https://linksysfiber.ke/services',
         noIndex: false,
       },
       '/templates': {
         path: '/templates',
-        pageName: 'Templates & Starter Kits',
-        title: 'Templates & Starter Kits — Victor Maina',
-        description: 'Production-ready web templates, design systems, and developer starter kits.',
-        keywords: 'Next.js templates, Convex starter kits, SaaS boilerplates, UI kits',
-        canonicalUrl: 'https://victormaina.mjinidigital.co.ke//templates',
+        pageName: 'Hardware & Equipment',
+        title: 'Networking Equipment & Bundles — Linksys Fiber Networks Molo',
+        description: 'High-gain Wi-Fi routers, optical network terminals, voucher hotspot gateways, and CCTV security kits in Molo.',
+        keywords: 'WiFi routers Molo, Hotspot kit Kenya, Optical fiber hardware Molo',
+        canonicalUrl: 'https://linksysfiber.ke/templates',
         noIndex: false,
       },
       '/blog': {
         path: '/blog',
-        pageName: 'Blog & Articles',
-        title: 'Thoughts & Technical Articles — Victor Maina',
-        description: 'Deep dives into modern frontend architecture, Next.js performance, and design systems.',
-        keywords: 'Technical blog, Next.js tutorials, Frontend architecture',
-        canonicalUrl: 'https://victormaina.mjinidigital.co.ke//blog',
+        pageName: 'Blog & Internet Guides',
+        title: 'Internet Tips, Guides & Tech News — Linksys Fiber Networks Molo',
+        description: 'Learn how to fix slow internet, understand fiber optics vs wireless, and get the most from your home or business Wi-Fi connection.',
+        keywords: 'Slow internet fix Kenya, Fiber internet guide Molo, Best ISP in Molo',
+        canonicalUrl: 'https://linksysfiber.ke/blog',
         noIndex: false,
       },
       '/contact': {
         path: '/contact',
-        pageName: 'Contact & Hire',
-        title: 'Get in Touch — Victor Maina',
-        description: 'Let’s discuss your next digital project, contract opportunities, or technical consulting.',
-        keywords: 'Hire Victor Maina, Contact full-stack developer, Kenya developer inquiry',
-        canonicalUrl: 'https://victormaina.mjinidigital.co.ke//contact',
+        pageName: 'Contact Us',
+        title: 'Contact Linksys Fiber Networks Molo | Generis Hotel Building',
+        description: 'Get connected with fast fiber internet in Molo. Visit our office at Generis Hotel Building, Ground Floor or call/WhatsApp 0713 366 366.',
+        keywords: 'Contact Linksys Molo, Linksys phone number 0713366366, Generis Hotel Building Molo ISP',
+        canonicalUrl: 'https://linksysfiber.ke/contact',
         noIndex: false,
       },
     },
@@ -621,84 +879,84 @@ Tokenization allows seamless light/dark mode switching and custom branding theme
     },
   },
   footer: {
-    copyright: '© 2026 Victor Maina. Built with care.',
+    copyright: '© 2026 Linksys Fiber Networks LTD. All rights reserved.',
     links: [
       { label: 'Back to top', href: '#top' },
-      { label: 'Work', href: '/projects' },
+      { label: 'Packages', href: '/packages' },
       { label: 'Services', href: '/services' },
-      { label: 'Templates', href: '/templates' },
+      { label: 'About Us', href: '/#about' },
       { label: 'Blog', href: '/blog' },
-      { label: 'Email me', href: 'mailto:vickdev@mjinidigital.co.ke' }
+      { label: 'Contact Us', href: '/contact' },
+      { label: 'Email Us', href: 'mailto:info@linksysfiber.ke' }
     ]
   },
   faq: {
-    sectionLabel: 'Got questions?',
+    sectionLabel: 'Got Questions?',
     title: 'Frequently Asked Questions',
-    subtitle: "Everything you might want to know before we work together. Can't find the answer? Just reach out.",
+    subtitle: "Everything you need to know about getting connected with Linksys Fiber Networks in Molo and its environs.",
     items: [
       {
         id: 'faq-1',
         order: 1,
-        question: 'What kind of projects do you take on?',
-        answer: 'I work on a wide range — from SaaS products and internal tools to portfolio sites and e-commerce platforms. My sweet spot is full-stack web applications where I can own both the backend logic and the user-facing experience.',
+        question: 'Which areas in Molo do you cover?',
+        answer: 'We cover Molo CBD, Tayari, Moto, Turi, Kibunja, Promise, 20 Acres, Kenyatta 123, Treasure, Upperhill Estate, Mwangaza, Kasino, Keepleft, Mutirithia, Millimani, and neighboring areas across Nakuru County. Contact us with your specific estate or landmark to confirm immediate coverage.',
       },
       {
         id: 'faq-2',
         order: 2,
-        question: 'What technologies do you work with?',
-        answer: 'My primary stack includes TypeScript, React, Next.js, and Node.js on the backend. For databases I commonly use PostgreSQL and Convex. I also work with Tailwind CSS, Prisma, Docker, and various third-party APIs.',
+        question: 'How much are your internet packages?',
+        answer: 'Our monthly unlimited packages are tailored for all budgets: BASE 6 Mbps is KSh 1,500/mo, STUDENT 10 Mbps is KSh 1,700/mo, DS-HOME BASIC 20 Mbps is KSh 2,000/mo, DS-HOME PRO 25 Mbps is KSh 2,500/mo, BUSINESS 30 Mbps is KSh 3,000/mo, BUSINESS PRO 35 Mbps is KSh 3,500/mo, and BUSINESS PREMIUM 40 Mbps is KSh 4,000/mo.',
       },
       {
         id: 'faq-3',
         order: 3,
-        question: 'How long does a typical project take?',
-        answer: 'It depends on the scope. A simple landing page or portfolio can be ready in 1–2 weeks. A fully custom web application with auth, a database, and a CMS usually takes 4–12 weeks. I always share a clear timeline in the proposal before we start.',
+        question: 'How fast can you install internet at my home or business?',
+        answer: 'In most coverage zones in Molo, we offer same-day or 24-hour installation. Our technicians will conduct a swift site assessment, lay the optical fiber cable or wireless receiver, set up your Wi-Fi router, and test your connection before handing over.',
       },
       {
         id: 'faq-4',
         order: 4,
-        question: 'How do you price your work?',
-        answer: 'I offer both fixed-price project quotes and hourly/retainer arrangements. Fixed-price works best when scope is well defined. For ongoing work or evolving requirements, a monthly retainer keeps things flexible. We will agree on the right model before signing anything.',
+        question: 'Are there any data caps or Fair Usage Policy (FUP) throttling?',
+        answer: 'No. All Linksys Fiber internet packages are truly unlimited with no data caps, no speed throttling during peak hours, and no hidden fair-use restrictions.',
       },
       {
         id: 'faq-5',
         order: 5,
-        question: 'Do you work with clients outside Kenya?',
-        answer: 'Absolutely. Most of my clients are remote. I work across time zones using async communication via email and Slack, with scheduled video calls for key milestones. I accept payments internationally via PayPal, Wise, and bank transfer.',
+        question: 'What payment methods do you accept?',
+        answer: 'We accept convenient monthly payments via M-Pesa (Paybill / Till), bank transfers, and direct cash payments at our Molo office on the Ground Floor of Generis Hotel Building.',
       },
       {
         id: 'faq-6',
         order: 6,
-        question: 'Will I own the code when the project is done?',
-        answer: 'Yes — full ownership is transferred to you upon final payment. You receive the complete source code, deployment credentials, and documentation so you are never locked in. I use GitHub to manage code handoffs cleanly.',
+        question: 'Do you provide the Wi-Fi router during installation?',
+        answer: 'Yes! We supply and configure a tested high-gain Wi-Fi router optimized for our fiber network, ensuring full signal coverage across your rooms or offices.',
       },
       {
         id: 'faq-7',
         order: 7,
-        question: 'Do you offer post-launch support or maintenance?',
-        answer: 'Yes. I offer a free 14-day bug-fix window after every launch. Beyond that, you can opt into a monthly maintenance retainer that covers updates, security patches, performance monitoring, and minor feature additions.',
+        question: 'What other technical services do you provide besides internet?',
+        answer: 'In addition to fiber and wireless internet, Linksys provides public Wi-Fi hotspot broadcasting with voucher systems, structured LAN network cabling, CCTV security camera installations with remote phone viewing, and managed IT support services for businesses and institutions.',
       },
       {
         id: 'faq-8',
         order: 8,
-        question: 'How involved do I need to be during the project?',
-        answer: 'As much or as little as you prefer. I send weekly progress updates and only need your input at key decision points — design approval, content review, and final sign-off. I handle the rest so you can focus on running your business.',
+        question: 'What happens if my connection experiences an issue?',
+        answer: 'We offer 24/7 dedicated local customer and technical support. You can call or WhatsApp us on 0713 366 366 or email info@linksysfiber.ke. Because our technical team is based right here in Molo, on-site resolution is rapid and efficient.',
       },
       {
         id: 'faq-9',
         order: 9,
-        question: 'Can you redesign or improve my existing website?',
-        answer: 'Definitely. Redesigns and performance overhauls are a big part of what I do. I start with an audit of your current site — speed, accessibility, design, and code quality — then propose targeted improvements that deliver the most value for your investment.',
+        question: 'Can I upgrade or downgrade my package later?',
+        answer: 'Yes, you can easily change your speed package at any time at the beginning of your billing cycle by contacting our customer support team.',
       },
       {
         id: 'faq-10',
         order: 10,
-        question: 'How do I get started?',
-        answer: "Send me a message via the contact form or email me directly. Tell me a bit about your project — what you want to build, your timeline, and your budget range. I will reply within 24 hours with questions or a proposal, and we can take it from there.",
+        question: 'Where is your physical office located in Molo?',
+        answer: 'Our main customer service center and network operations office is located at Generis Hotel Building, Ground Floor, Molo CBD, Nakuru County. You are always welcome to visit us in person.',
       },
     ],
   },
-  pageLayouts: defaultPageLayouts
+  pageLayouts: defaultPageLayouts,
+  lastUpdated: new Date().toISOString()
 }
-
-

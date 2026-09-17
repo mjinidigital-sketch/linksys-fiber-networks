@@ -66,7 +66,41 @@ function YouTubeEmbed({ videoId }: { videoId: string }) {
 export function RichTextRenderer({ content = '', className }: RichTextRendererProps) {
   if (!content) return null
 
-  // If content contains standard markdown or HTML, we parse line-by-line / block-by-block
+  // Check if content is HTML (produced by visual WYSIWYG editor)
+  const isHtml = /<(p|h[1-6]|div|ul|ol|table|blockquote|figure|pre|iframe|span|a|br)\b[^>]*>/i.test(content)
+
+  if (isHtml) {
+    return (
+      <div
+        className={cn(
+          'prose-custom prose prose-neutral dark:prose-invert max-w-none space-y-4 text-foreground leading-relaxed',
+          '[&_h1]:text-3xl [&_h1]:sm:text-4xl [&_h1]:font-black [&_h1]:tracking-tight [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-foreground',
+          '[&_h2]:text-2xl [&_h2]:sm:text-3xl [&_h2]:font-extrabold [&_h2]:tracking-tight [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:border-b [&_h2]:border-border/50 [&_h2]:pb-2 [&_h2]:text-foreground',
+          '[&_h3]:text-xl [&_h3]:sm:text-2xl [&_h3]:font-bold [&_h3]:tracking-tight [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-foreground',
+          '[&_h4]:text-lg [&_h4]:font-bold [&_h4]:mt-4 [&_h4]:mb-2 [&_h4]:text-foreground',
+          '[&_p]:text-sm [&_p]:sm:text-base [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:my-3',
+          '[&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1',
+          '[&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1',
+          '[&_li]:text-sm [&_li]:text-muted-foreground',
+          '[&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:py-1 [&_blockquote]:my-6 [&_blockquote]:italic [&_blockquote]:text-muted-foreground',
+          '[&_code]:rounded-md [&_code]:bg-primary/10 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_code]:font-semibold [&_code]:text-primary',
+          '[&_pre]:my-6 [&_pre]:p-4 [&_pre]:rounded-2xl [&_pre]:bg-slate-950 [&_pre]:text-slate-100 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:overflow-x-auto [&_pre]:border [&_pre]:border-border',
+          '[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-100',
+          '[&_a]:text-primary [&_a]:font-semibold [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:opacity-80',
+          '[&_table]:w-full [&_table]:my-6 [&_table]:border-collapse [&_table]:border [&_table]:border-border [&_table]:rounded-2xl [&_table]:overflow-hidden',
+          '[&_th]:border [&_th]:border-border [&_th]:bg-muted/80 [&_th]:p-3 [&_th]:text-left [&_th]:text-xs [&_th]:font-bold [&_th]:text-foreground',
+          '[&_td]:border [&_td]:border-border [&_td]:p-3 [&_td]:text-xs [&_td]:text-muted-foreground',
+          '[&_figure]:my-6 [&_figure]:text-center',
+          '[&_img]:rounded-2xl [&_img]:border [&_img]:border-border [&_img]:max-w-full [&_img]:inline-block [&_img]:shadow-md',
+          '[&_figcaption]:text-center [&_figcaption]:font-mono [&_figcaption]:text-xs [&_figcaption]:text-muted-foreground [&_figcaption]:mt-2',
+          className
+        )}
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    )
+  }
+
+  // If content contains standard markdown, parse line-by-line / block-by-block
   const lines = content.split('\n')
   const elements: React.ReactNode[] = []
 
