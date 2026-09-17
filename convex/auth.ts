@@ -6,7 +6,7 @@ import { query } from "./_generated/server";
 import { betterAuth } from "better-auth/minimal";
 import authConfig from "./auth.config";
 
-const siteUrl = process.env.SITE_URL!;
+const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -16,10 +16,32 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
-    // Configure simple, non-verified email/password to get started
+    // Configure email/password with Resend reset password function
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: false,
+      async sendResetPassword({ user, url }) {
+        // Call our HTTP endpoint to send the password reset email
+        try {
+          const convexUrl = process.env.CONVEX_SITE_URL || process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:3001";
+          
+          const response = await fetch(`${convexUrl}/api/sendPasswordResetEmail`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              email: user.email, 
+              url 
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to send email: ${response.statusText}`);
+          }
+        } catch (error) {
+          console.error("Failed to send password reset email:", error);
+          // Don't throw - better-auth should continue even if email fails
+        }
+      },
     },
     plugins: [
       // The Convex plugin is required for Convex compatibility

@@ -237,8 +237,8 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
                 <Users className={cn('size-4 shrink-0', pathname === '/admin/users' ? 'text-secondary' : 'text-secondary')} />
                 <span>User Management</span>
               </div>
-              <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-primary">
-                RBAC
+              <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-amber-500 border border-amber-500/20">
+                Admin Only
               </span>
             </Link>
 

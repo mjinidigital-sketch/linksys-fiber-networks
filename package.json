@@ -10,8 +10,10 @@
   "dependencies": {
     "@base-ui/react": "^1.5.0",
     "@convex-dev/better-auth": "^0.12.5",
+    "@convex-dev/resend": "^0.2.8",
     "@hookform/resolvers": "^3.9.1",
     "@number-flow/react": "^0.6.2",
+    "@tanstack/react-table": "^8.21.3",
     "@vercel/analytics": "^1.6.1",
     "better-auth": "^1.6.11",
     "class-variance-authority": "^0.7.1",

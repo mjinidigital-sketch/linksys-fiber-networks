@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { authClient } from '@/lib/auth-client'
-import { ShieldAlert, Loader2, ArrowLeft, LogOut } from 'lucide-react'
+import { ShieldAlert, Loader2, ArrowLeft, LogOut, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -57,12 +57,12 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
             <h3 className="text-base font-semibold tracking-tight text-foreground">
               {!session.isPending && !session.data?.user
                 ? 'Redirecting to Login...'
-                : 'Verifying Administrator Access'}
+                : 'Verifying Permissions & Security Credentials'}
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
               {!session.isPending && !session.data?.user
                 ? 'Please wait while we transfer you to authentication.'
-                : 'Checking authentication and security credentials...'}
+                : 'Checking role privileges in Convex database...'}
             </p>
           </div>
         </div>
@@ -70,9 +70,12 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     )
   }
 
-  // 3. Authenticated but NOT an Admin
   const role = userProfile?.role || 'user'
-  if (role !== 'admin') {
+  const isUsersRoute = pathname.startsWith('/admin/users')
+  const isAllowedAdminPanel = role === 'admin' || role === 'editor'
+
+  // 2. Authenticated but neither Admin nor Editor -> Block entire /admin area
+  if (!isAllowedAdminPanel) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-6">
         <Card className="w-full max-w-lg border-destructive/30 bg-card shadow-2xl backdrop-blur-md">
@@ -87,14 +90,14 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
               </Badge>
             </div>
             <CardDescription className="text-xs mt-1">
-              Your account (<strong>{session.data.user.email}</strong>) does not have administrator privileges.
+              Your account (<strong>{session.data.user.email}</strong>) does not have admin or editor privileges.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 pt-2 text-xs text-muted-foreground text-center">
             <div className="rounded-xl border border-border bg-muted/30 p-3">
               <p>
-                Only users assigned the <span className="font-mono font-semibold text-primary">admin</span> role in
-                the Convex database are allowed into this panel.
+                Only users assigned the <span className="font-mono font-semibold text-primary">admin</span> or{' '}
+                <span className="font-mono font-semibold text-primary">editor</span> role in the Convex database are allowed to access management routes.
               </p>
             </div>
           </CardContent>
@@ -120,6 +123,43 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     )
   }
 
-  // 4. Authorized Admin
+  // 3. User is an Editor trying to access /admin/users -> Block specific route
+  if (isUsersRoute && role !== 'admin') {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center p-6">
+        <Card className="w-full max-w-md border-amber-500/30 bg-card shadow-xl backdrop-blur-md">
+          <CardHeader className="text-center pb-2">
+            <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-500">
+              <Shield className="size-7" />
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <CardTitle className="text-lg font-bold">Admin Privilege Required</CardTitle>
+              <Badge variant="outline" className="uppercase text-[10px] text-amber-500 border-amber-500/40">
+                Editor Role
+              </Badge>
+            </div>
+            <CardDescription className="text-xs mt-1">
+              User Management is strictly restricted to Administrators.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3 pt-2 text-xs text-muted-foreground text-center">
+            <div className="rounded-xl border border-border bg-muted/30 p-3">
+              <p>
+                As an <strong>Editor (Staff)</strong>, you have full access to edit website content, collections, SEO settings, and live support chats, but viewing and managing user accounts and roles is strictly restricted to <strong>Administrators</strong>.
+              </p>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col sm:flex-row gap-2 pt-2">
+            <Button variant="default" className="w-full text-xs" onClick={() => router.push('/admin/website-content')}>
+              <ArrowLeft className="size-3.5 mr-1.5" />
+              Go to Website Content
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    )
+  }
+
+  // 4. Authorized user for target route
   return <>{children}</>
 }

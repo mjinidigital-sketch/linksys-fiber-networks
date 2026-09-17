@@ -146,6 +146,18 @@ export const updateProfile = mutation({
       throw new Error("Unauthorized");
     }
 
+    const currentCallerProfile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", authUser._id))
+      .unique();
+
+    const isSelf = args.userId === authUser._id;
+    const isAdmin = currentCallerProfile?.role === "admin";
+
+    if (!isSelf && !isAdmin) {
+      throw new Error("Only administrators can edit other users' profiles");
+    }
+
     const targetUser = await ctx.db
       .query("users")
       .withIndex("by_userId", (q) => q.eq("userId", args.userId))

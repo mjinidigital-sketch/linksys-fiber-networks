@@ -99,10 +99,16 @@ export default function Login() {
                     {...field}
                     aria-invalid={fieldState.invalid}
                   />
+                  <FieldDescription>
+                    <p className='mt-2 text-right text-sm'>
+                      <Link href='/auth/forgot-password' className='text-primary dark:text-secondary hover:text-primary/80 hover:underline'>Forgot password?</Link>
+                    </p>
+                  </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
+               
               )}
             />
 

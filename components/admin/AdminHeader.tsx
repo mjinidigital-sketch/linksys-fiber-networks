@@ -288,7 +288,7 @@ export function AdminHeader({ onToggleMobile }: AdminHeaderProps) {
               <ShieldCheck className="size-3 text-emerald-500" />
             </div>
             <p className="mt-1 text-xs text-muted-foreground leading-none capitalize">
-              {userProfile?.role || 'Admin'}
+              {userProfile?.role === 'editor' ? 'Editor (Staff)' : userProfile?.role || 'Admin'}
             </p>
           </div>
 
