@@ -16,6 +16,7 @@ import Stats from '@/components/stats'
 import CodeBlock from '@/components/code-block'
 import Blog from '@/components/blog'
 import { CareersSection } from '@/components/CareersSection'
+import { Gallery } from '@/components/gallery-component'
 import { RichTextRenderer } from '@/components/ui/rich-text-renderer'
 import { GithubIcon } from '@/components/ui/icons'
 import { Sparkles, Check, Code2, ArrowUpRight, ExternalLink, FileText, X } from 'lucide-react'
@@ -347,6 +348,15 @@ export function PageBlockRenderer({ path, content }: PageBlockRendererProps) {
                 )}
               </section>
             )
+
+          case 'gallery': {
+            const galleryData = { ...content.gallery, ...d }
+            return (
+              <section key={block.id} id={`gallery-${block.id}`}>
+                <Gallery gallery={galleryData} />
+              </section>
+            )
+          }
 
           default:
             return null

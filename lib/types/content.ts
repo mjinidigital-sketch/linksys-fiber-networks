@@ -340,6 +340,31 @@ export interface CodeBlockContent {
   files: CodeBlockFile[]
 }
 
+export interface GalleryImage {
+  src: string
+  alt: string
+  title?: string
+  category?: string
+  description?: string
+}
+
+export interface GallerySection {
+  type?: string
+  title?: string
+  description?: string
+  images: GalleryImage[]
+}
+
+export interface GalleryContent {
+  sectionLabel?: string
+  title?: string
+  titleHighlight?: string
+  subtitle?: string
+  categories?: string[]
+  images?: (GalleryImage | string)[]
+  sections?: GallerySection[]
+}
+
 export type ComponentBlockType =
   | 'hero'
   | 'hero2'
@@ -359,6 +384,7 @@ export type ComponentBlockType =
   | 'stats'
   | 'codeBlock'
   | 'careers'
+  | 'gallery'
 
 export interface PageComponentBlock {
   id: string
@@ -400,7 +426,9 @@ export interface WebsiteContent {
   pricing?: PricingContent
   stats?: StatsContent
   codeBlock?: CodeBlockContent
+  gallery?: GalleryContent
   pageLayouts?: Record<string, PageConfig>
   lastUpdated?: string
 }
+
 

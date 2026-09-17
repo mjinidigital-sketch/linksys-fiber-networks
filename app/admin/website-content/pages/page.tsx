@@ -20,7 +20,8 @@ import {
   LayoutTemplate,
   Eye,
   EyeOff,
-  Zap
+  Zap,
+  Image as ImageIcon
 } from 'lucide-react'
 import { useWebsiteContent } from '@/hooks/use-website-content'
 import { useToast } from '@/components/ui/toast'
@@ -33,7 +34,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { ContentHeader } from '@/components/admin/ContentHeader'
 import { BlockContentEditor } from '@/components/admin/BlockContentEditor'
 import { ComponentBlockType, PageComponentBlock, PageConfig } from '@/lib/types/content'
-import { defaultPageLayouts } from '@/lib/default-content'
+import { defaultContent, defaultPageLayouts } from '@/lib/default-content'
 
 export default function PagesLayoutManagerPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
@@ -50,7 +51,8 @@ export default function PagesLayoutManagerPage() {
   const [newPageName, setNewPageName] = useState('')
   const [newPagePath, setNewPagePath] = useState('')
 
-  const activePageLayouts = content.pageLayouts || defaultPageLayouts
+  const safeContent = content || defaultContent
+  const activePageLayouts = safeContent.pageLayouts || defaultPageLayouts
   const activePageConfig = activePageLayouts[selectedPagePath] || {
     id: `page-${selectedPagePath.replace('/', '') || 'home'}`,
     name: selectedPagePath === '/' ? 'Home Page' : selectedPagePath.replace('/', ''),
@@ -78,6 +80,7 @@ export default function PagesLayoutManagerPage() {
       case 'stats': return <Sparkles className="size-4 text-primary" />
       case 'codeBlock': return <Code2 className="size-4 text-primary" />
       case 'careers': return <Briefcase className="size-4 text-primary" />
+      case 'gallery': return <ImageIcon className="size-4 text-primary" />
       default: return <Code2 className="size-4 text-primary" />
     }
   }
@@ -87,30 +90,30 @@ export default function PagesLayoutManagerPage() {
       case 'hero':
       case 'hero2':
         return {
-          badge: content.hero?.badge || '',
-          titleLine1: content.hero?.titleLine1 || '',
-          titleHighlight1: content.hero?.titleHighlight1 || '',
-          titleLine2: content.hero?.titleLine2 || '',
-          titleHighlight2: content.hero?.titleHighlight2 || '',
-          bio: content.hero?.bio || '',
-          primaryCtaText: content.hero?.primaryCtaText || '',
-          primaryCtaLink: content.hero?.primaryCtaLink || '',
+          badge: safeContent.hero?.badge || '',
+          titleLine1: safeContent.hero?.titleLine1 || '',
+          titleHighlight1: safeContent.hero?.titleHighlight1 || '',
+          titleLine2: safeContent.hero?.titleLine2 || '',
+          titleHighlight2: safeContent.hero?.titleHighlight2 || '',
+          bio: safeContent.hero?.bio || '',
+          primaryCtaText: safeContent.hero?.primaryCtaText || '',
+          primaryCtaLink: safeContent.hero?.primaryCtaLink || '',
         }
       case 'techStack':
         return {
-          sectionLabel: content.techStack?.sectionLabel || '',
-          subtitle: content.techStack?.subtitle || '',
+          sectionLabel: safeContent.techStack?.sectionLabel || '',
+          subtitle: safeContent.techStack?.subtitle || '',
         }
       case 'process':
         return {
-          sectionLabel: content.process?.sectionLabel || 'My Process',
-          title: content.process?.title || 'How I Work',
+          sectionLabel: safeContent.process?.sectionLabel || 'My Process',
+          title: safeContent.process?.title || 'How I Work',
         }
       case 'contact':
         return {
-          sectionLabel: content.contact?.sectionLabel || '',
-          title: content.contact?.title || '',
-          subtitle: content.contact?.subtitle || '',
+          sectionLabel: safeContent.contact?.sectionLabel || '',
+          title: safeContent.contact?.title || '',
+          subtitle: safeContent.contact?.subtitle || '',
         }
       case 'ctaBanner':
         return {
@@ -121,31 +124,38 @@ export default function PagesLayoutManagerPage() {
         }
       case 'features':
         return {
-          sectionLabel: content.features?.sectionLabel || '',
-          title: content.features?.title || 'Features',
-          subtitle: content.features?.subtitle || '',
-          items: content.features?.items || [],
+          sectionLabel: safeContent.features?.sectionLabel || '',
+          title: safeContent.features?.title || 'Features',
+          subtitle: safeContent.features?.subtitle || '',
+          items: safeContent.features?.items || [],
         }
       case 'pricing':
         return {
-          sectionLabel: content.pricing?.sectionLabel || '',
-          title: content.pricing?.title || 'Pricing',
-          subtitle: content.pricing?.subtitle || '',
-          plans: content.pricing?.plans || [],
+          sectionLabel: safeContent.pricing?.sectionLabel || '',
+          title: safeContent.pricing?.title || 'Pricing',
+          subtitle: safeContent.pricing?.subtitle || '',
+          plans: safeContent.pricing?.plans || [],
         }
       case 'stats':
         return {
-          sectionLabel: content.stats?.sectionLabel || '',
-          title: content.stats?.title || 'Stats',
-          subtitle: content.stats?.subtitle || '',
-          items: content.stats?.items || [],
+          sectionLabel: safeContent.stats?.sectionLabel || '',
+          title: safeContent.stats?.title || 'Stats',
+          subtitle: safeContent.stats?.subtitle || '',
+          items: safeContent.stats?.items || [],
         }
       case 'codeBlock':
         return {
-          files: content.codeBlock?.files || [],
+          files: safeContent.codeBlock?.files || [],
         }
       case 'careers':
         return {}
+      case 'gallery':
+        return {
+          sectionLabel: safeContent.gallery?.sectionLabel || '',
+          title: safeContent.gallery?.title || '',
+          subtitle: safeContent.gallery?.subtitle || '',
+          images: safeContent.gallery?.images || [],
+        }
       default:
         return {}
     }
@@ -486,6 +496,7 @@ export default function PagesLayoutManagerPage() {
                 <option value="stats">Stats</option>
                 <option value="codeBlock">Code Block</option>
                 <option value="careers">Careers & Open Roles</option>
+                <option value="gallery">Gallery Showcase</option>
               </select>
             </div>
           </div>
@@ -534,7 +545,7 @@ export default function PagesLayoutManagerPage() {
       {editingBlock && (
         <BlockContentEditor
           block={editingBlock.block}
-          globalContent={content}
+          globalContent={safeContent}
           onSave={handleSaveBlockData}
           onClose={() => setEditingBlock(null)}
         />

@@ -84,13 +84,13 @@ export function Projects({
         {/* Section Header */}
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary dark:text-secondary">
               {projects.sectionLabel}
             </p>
 
             <h2
               id="work-title"
-              className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl"
+              className="mt-3 text-4xl font-bold text-foreground sm:text-4xl lg:text-5xl"
             >
               {projects.title}
             </h2>
@@ -99,7 +99,7 @@ export function Projects({
           <Button
             
             variant="ghost"
-            className="w-fit flex gap-2 px-0 text-primary hover:bg-transparent hover:text-primary"
+            className="w-fit flex gap-2 px-0 text-primary dark:text-secondary hover:bg-transparent hover:text-primary"
           >
             <Link href={projects.ctaLink} className="flex items-center gap-2 text-sm font-medium">
             
@@ -157,11 +157,11 @@ export function Projects({
 
                 {/* Content */}
                 <CardHeader className="space-y-0 pb-3">
-                   <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-primary">
+                   <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-primary dark:text-secondary">
                           {project.type}
                         </p>
 
-                        <h3 className="mt-1.5 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                        <h3 className="mt-1.5 text-xl font-semibold tracking-tight  sm:text-2xl">
                           {project.title}
                         </h3>
                  
@@ -177,7 +177,7 @@ export function Projects({
                     {project.tags.map((tag) => (
                       <Badge
                         key={tag}
-                        variant="secondary"
+                        variant="outline"
                         className="rounded-md px-2 py-0.5 font-mono text-[10px] font-medium"
                       >
                         {tag}
@@ -189,7 +189,7 @@ export function Projects({
                 {/* Footer */}
                 <CardFooter className="flex items-center justify-between gap-4 border-t border-border pt-4">
                   <Button
-                    variant="default"
+                    variant="secondary"
                     size="lg"
                     onClick={() => router.push(`/projects/${project.id}`)}
                         >
@@ -244,7 +244,7 @@ export function Projects({
       </div>
       <div className="flex justify-center mt-16 -mb-16">
         <Button variant="link" size="lg">
-          <Link href="/projects" className="flex items-center gap-2 text-sm font-medium">
+          <Link href="/projects" className="flex items-center gap-2 text-sm font-medium text-primary dark:text-secondary">
             <ArrowUpRight className="size-4" />
           View All Projects
           </Link>

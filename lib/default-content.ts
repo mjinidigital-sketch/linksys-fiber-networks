@@ -957,6 +957,57 @@ Public hotspots allow users to connect on-the-go using vouchers or pay-as-you-go
       },
     ],
   },
+  gallery: {
+    sectionLabel: 'Photo Showcase',
+    title: 'Network & Field Operations',
+    titleHighlight: 'Gallery',
+    subtitle: 'Take a visual tour of our fiber optic deployments, wireless transmission towers, CCTV installations, and technician field operations across Molo.',
+    categories: ['All', 'Fiber Optics', 'Wireless & WiFi', 'CCTV & Security', 'Field Team'],
+    images: [
+      {
+        src: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1200&auto=format&fit=crop',
+        alt: 'High-speed Fiber Optic Splicing & Trunk Cabling',
+        title: 'Fiber Cable Splicing',
+        category: 'Fiber Optics',
+        description: 'Precision fusion splicing on core optical fiber links powering high-speed internet in Molo CBD.'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Server Rack & Core Networking Switches',
+        title: 'Core Server Operations',
+        category: 'Datacenter',
+        description: 'High-capacity Gigabit routing equipment and redundant distribution switches maintaining 99.9% uptime.'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1551808525-51a94da548ce?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Long-Range Wireless Access Point & Antenna',
+        title: 'Point-to-Point Wireless Towers',
+        category: 'Wireless & WiFi',
+        description: 'Wireless radio access points delivering high-throughput broadband to outlying estates around Molo.'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1520869562399-e772f042f422?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Smart CCTV Camera Installation & Network Monitoring',
+        title: 'IP CCTV Security System',
+        category: 'CCTV & Security',
+        description: '4K Ultra-HD security surveillance with remote mobile viewing installed for local commercial hubs.'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Field Technicians Deploying Overhead Fiber Connections',
+        title: 'Last-Mile Home Installation',
+        category: 'Field Team',
+        description: 'Our dedicated certified installation team dropping fiber cable to residential premises in Tayari & Moto.'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Structured LAN Cabling & Patch Panels',
+        title: 'Structured Office Cabling',
+        category: 'Fiber Optics',
+        description: 'Neat Cat6 enterprise cabling and patch panel termination for office spaces in Molo Town.'
+      }
+    ]
+  },
   pageLayouts: defaultPageLayouts,
   lastUpdated: new Date().toISOString()
 }

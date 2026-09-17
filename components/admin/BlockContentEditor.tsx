@@ -865,6 +865,111 @@ function CodeBlockEditor({ data, onChange }: { data: Record<string, any>; onChan
   )
 }
 
+function GalleryEditor({ data, onChange }: { data: Record<string, any>; onChange: (d: Record<string, any>) => void }) {
+  const set = (key: string, val: any) => onChange({ ...data, [key]: val })
+  const images: any[] = data.images || []
+
+  return (
+    <div className="space-y-4">
+      <SectionDivider label="Gallery Header" />
+      <FieldRow label="Section Label" hint="e.g. 'Photo Showcase'">
+        <Input value={data.sectionLabel || ''} onChange={e => set('sectionLabel', e.target.value)} placeholder="Photo Showcase" className="text-sm" />
+      </FieldRow>
+      <div className="grid grid-cols-2 gap-3">
+        <FieldRow label="Title Main">
+          <Input value={data.title || ''} onChange={e => set('title', e.target.value)} placeholder="Network & Field Operations" className="text-sm" />
+        </FieldRow>
+        <FieldRow label="Title Highlight">
+          <Input value={data.titleHighlight || ''} onChange={e => set('titleHighlight', e.target.value)} placeholder="Gallery" className="text-sm" />
+        </FieldRow>
+      </div>
+      <FieldRow label="Subtitle">
+        <Textarea value={data.subtitle || ''} onChange={e => set('subtitle', e.target.value)} rows={2} placeholder="Description of the gallery section..." className="text-sm resize-none" />
+      </FieldRow>
+
+      <SectionDivider label="Gallery Images" />
+      <div className="space-y-3">
+        {images.map((img: any, i: number) => {
+          const imgSrc = typeof img === 'string' ? img : (img?.src || img?.url || '')
+          const imgTitle = typeof img === 'string' ? '' : (img?.title || '')
+          const imgCategory = typeof img === 'string' ? '' : (img?.category || '')
+          const imgAlt = typeof img === 'string' ? '' : (img?.alt || '')
+          const imgDesc = typeof img === 'string' ? '' : (img?.description || '')
+
+          const updateImg = (field: string, val: string) => {
+            const updated = [...images]
+            const currObj = typeof updated[i] === 'string' ? { src: updated[i] } : { ...updated[i] }
+            currObj[field] = val
+            updated[i] = currObj
+            set('images', updated)
+          }
+
+          return (
+            <div key={i} className="rounded-xl border border-border/70 bg-muted/10 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-primary">
+                  Photo #{i + 1}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-7 text-destructive hover:bg-destructive/10"
+                  onClick={() => {
+                    const updated = images.filter((_: any, idx: number) => idx !== i)
+                    set('images', updated)
+                  }}
+                  title="Remove image"
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              </div>
+
+              <ImageUploader
+                value={imgSrc}
+                onChange={(url) => updateImg('src', url)}
+                placeholder={`Upload image for Photo #${i + 1}`}
+                aspectRatio="video"
+              />
+
+              <div className="grid grid-cols-2 gap-2">
+                <FieldRow label="Photo Title">
+                  <Input value={imgTitle} onChange={e => updateImg('title', e.target.value)} placeholder="e.g. Fiber Cable Splicing" className="text-xs" />
+                </FieldRow>
+                <FieldRow label="Category Tag">
+                  <Input value={imgCategory} onChange={e => updateImg('category', e.target.value)} placeholder="e.g. Fiber Optics, CCTV" className="text-xs" />
+                </FieldRow>
+              </div>
+
+              <FieldRow label="Description">
+                <Input value={imgDesc} onChange={e => updateImg('description', e.target.value)} placeholder="Short image caption..." className="text-xs" />
+              </FieldRow>
+
+              <FieldRow label="Alt Text">
+                <Input value={imgAlt} onChange={e => updateImg('alt', e.target.value)} placeholder="Screen reader text..." className="text-xs" />
+              </FieldRow>
+            </div>
+          )
+        })}
+
+        <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 p-3 space-y-2">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-primary">
+            <Upload className="size-3" /> Add New Gallery Image
+          </div>
+          <ImageUploader
+            onChange={(url) => {
+              if (!url) return
+              set('images', [...images, { src: url, title: 'New Showcase Photo', category: 'General', alt: 'Gallery Image' }])
+            }}
+            placeholder="Upload or drop image to add to gallery"
+            aspectRatio="video"
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function FixedBlockNotice({ type }: { type: ComponentBlockType }) {
   const labels: Record<string, { icon: React.ReactNode; label: string; href: string }> = {
     projects: { icon: <Briefcase className="size-4" />, label: 'Projects Collection', href: '/admin/website-content/collections/projects' },
@@ -918,6 +1023,7 @@ const BLOCK_META: Record<ComponentBlockType, { label: string; icon: React.ReactN
   stats:      { label: 'Stats',             icon: <Sparkles className="size-4" />,     color: 'text-teal-500 bg-teal-500/10' },
   codeBlock:  { label: 'Code Block',        icon: <Code2 className="size-4" />,        color: 'text-zinc-500 bg-zinc-500/10' },
   careers:    { label: 'Careers & Roles',   icon: <Briefcase className="size-4" />,    color: 'text-blue-500 bg-blue-500/10' },
+  gallery:    { label: 'Gallery Showcase',  icon: <ImageIcon className="size-4" />,    color: 'text-indigo-500 bg-indigo-500/10' },
 }
 
 // ---------------------------------------------------------------------------
@@ -945,6 +1051,7 @@ export function BlockContentEditor({ block, globalContent, onSave, onClose }: Bl
       pricing:    globalContent.pricing    || {},
       stats:      globalContent.stats      || {},
       codeBlock:  globalContent.codeBlock  || {},
+      gallery:    globalContent.gallery    || {},
     }
     const base = globalDefaults[block.type] || {}
     return { ...base, ...(block.data || {}) }
@@ -970,6 +1077,7 @@ export function BlockContentEditor({ block, globalContent, onSave, onClose }: Bl
       pricing:    globalContent.pricing    || {},
       stats:      globalContent.stats      || {},
       codeBlock:  globalContent.codeBlock  || {},
+      gallery:    globalContent.gallery    || {},
     }
     setLocalData(globalDefaults[block.type] || {})
   }
@@ -999,6 +1107,7 @@ export function BlockContentEditor({ block, globalContent, onSave, onClose }: Bl
       case 'pricing':    return <PricingEditor data={localData} onChange={setLocalData} />
       case 'stats':      return <StatsEditor data={localData} onChange={setLocalData} />
       case 'codeBlock':  return <CodeBlockEditor data={localData} onChange={setLocalData} />
+      case 'gallery':    return <GalleryEditor data={localData} onChange={setLocalData} />
       default: return (
         <div className="py-8 text-center text-sm text-muted-foreground">
           No editable fields for this block type.
