@@ -12,7 +12,7 @@ export default function AuthLayout ({children}: {children: React.ReactNode}) {
                 Back to Home</Link>
             </div>
 
-            <div className="mx-auto w-full max-w-sm">
+            <div className="mx-auto w-full max-w-sm mt-20">
                 {children}
             </div>
         </div>
