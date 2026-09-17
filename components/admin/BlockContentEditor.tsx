@@ -5,13 +5,14 @@ import {
   X, Plus, Trash2, GripVertical, ChevronDown, ChevronUp,
   Sparkles, Wrench, Globe, Compass, Mail, HelpCircle,
   Code2, Megaphone, RotateCcw, Info, Layers, Briefcase,
-  LayoutTemplate, FileText
+  LayoutTemplate, FileText, Upload, Image as ImageIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { ImageUploader } from '@/components/ui/image-uploader'
 import { PageComponentBlock, ComponentBlockType } from '@/lib/types/content'
 
 // Block types that pull from global collections — not editable per-block
@@ -121,46 +122,73 @@ function HeroEditor({ data, onChange }: { data: Record<string, any>; onChange: (
       </div>
 
       <SectionDivider label="Carousel Images" />
-      <div className="space-y-2">
-        {(Array.isArray(data.images) ? data.images : []).map((imgUrl: string, i: number) => (
-          <div key={i} className="flex items-center gap-2">
-            <Input
-              value={imgUrl}
-              onChange={e => {
-                const updated = [...(data.images || [])]
-                updated[i] = e.target.value
-                set('images', updated)
-              }}
-              placeholder="https://images.unsplash.com/..."
-              className="text-xs font-mono"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="size-8 text-destructive shrink-0"
-              onClick={() => {
-                const updated = (data.images || []).filter((_: any, idx: number) => idx !== i)
-                set('images', updated)
-              }}
-            >
-              <Trash2 className="size-3.5" />
-            </Button>
+      <div className="space-y-3">
+        {/* Existing slides — each with ImageUploader + Alt Text field */}
+        {(Array.isArray(data.images) ? data.images : []).map((slide: any, i: number) => {
+          // Support legacy plain-string URLs and new {url,alt} objects
+          const slideUrl: string = typeof slide === 'string' ? slide : (slide?.url || '')
+          const slideAlt: string = typeof slide === 'string' ? '' : (slide?.alt || '')
+          const updateSlide = (field: 'url' | 'alt', val: string) => {
+            const updated = [...(data.images || [])]
+            updated[i] = { url: field === 'url' ? val : slideUrl, alt: field === 'alt' ? val : slideAlt }
+            set('images', updated)
+          }
+          return (
+            <div key={i} className="rounded-xl border border-border/70 bg-muted/10 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-primary">
+                  {i === 0 ? '★ Cover Slide' : `Slide ${i + 1}`}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-7 text-destructive hover:bg-destructive/10"
+                  onClick={() => {
+                    const updated = (data.images || []).filter((_: any, idx: number) => idx !== i)
+                    set('images', updated)
+                  }}
+                  title="Remove slide"
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              </div>
+              {/* Image upload / preview */}
+              <ImageUploader
+                value={slideUrl}
+                onChange={(url) => updateSlide('url', url)}
+                placeholder={`Upload image for Slide ${i + 1}`}
+                aspectRatio="video"
+              />
+              {/* Alt text input */}
+              <FieldRow label="Alt Text" hint="Shown to screen readers & on image load failure">
+                <Input
+                  value={slideAlt}
+                  onChange={(e) => updateSlide('alt', e.target.value)}
+                  placeholder={`e.g. Fiber internet installation in Molo`}
+                  className="text-xs"
+                />
+              </FieldRow>
+            </div>
+          )
+        })}
+
+        {/* Add new slide via file upload */}
+        <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 p-3 space-y-2">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-primary">
+            <Upload className="size-3" />
+            Add New Slide
           </div>
-        ))}
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            const current = Array.isArray(data.images) ? data.images : []
-            set('images', [...current, ''])
-          }}
-          className="w-full gap-1.5 text-xs"
-        >
-          <Plus className="size-3.5" />
-          Add Carousel Image URL
-        </Button>
+          <ImageUploader
+            onChange={(url) => {
+              if (!url) return
+              const current = Array.isArray(data.images) ? data.images : []
+              set('images', [...current, { url, alt: '' }])
+            }}
+            placeholder="Upload or drop image to add a new slide"
+            aspectRatio="video"
+          />
+        </div>
       </div>
     </div>
   )

@@ -30,6 +30,11 @@ export interface GeneralSettings {
   statusBadge: string
 }
 
+export interface HeroSlide {
+  url: string
+  alt: string
+}
+
 export interface HeroContent {
   badge: string
   titleLine1: string
@@ -46,7 +51,7 @@ export interface HeroContent {
   statusCardLabel: string
   statusCardText: string
   statusCardHighlight: string
-  images?: string[]
+  images?: (string | HeroSlide)[]
 }
 
 export interface TechStackContent {

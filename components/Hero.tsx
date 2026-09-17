@@ -16,7 +16,13 @@ import {
   Wifi,
 } from 'lucide-react'
 import Link from 'next/link'
-import { HeroContent, SocialLink } from '@/lib/types/content'
+import { HeroContent, HeroSlide, SocialLink } from '@/lib/types/content'
+
+// Normalize a slide entry — supports both legacy plain-string URLs and new {url,alt} objects
+function normalizeSlide(slide: string | HeroSlide, index: number): HeroSlide {
+  if (typeof slide === 'string') return { url: slide, alt: `Hero showcase image ${index + 1}` }
+  return { url: slide.url, alt: slide.alt || `Hero showcase image ${index + 1}` }
+}
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -70,6 +76,25 @@ const DEFAULT_CAROUSEL_IMAGES = [
   'https://images.unsplash.com/photo-1520869562399-e772f042f422?q=80&w=1200&auto=format&fit=crop',
 ]
 
+const DEFAULT_HERO: HeroContent = {
+  badge: 'Linksys Fiber Networks Molo',
+  titleLine1: 'High-Speed Fiber &',
+  titleHighlight1: 'Internet Solutions',
+  titleLine2: 'Powering Molo &',
+  titleHighlight2: 'Surrounding Environs',
+  bio: 'Experience dependable high-speed fiber internet, enterprise LAN cabling, and smart CCTV installations tailored for homes and businesses.',
+  primaryCtaText: 'View Packages',
+  primaryCtaLink: '/packages',
+  secondaryCtaText: 'Contact Support',
+  secondaryCtaLink: '/contact',
+  locationText: 'Generis Hotel Building, Molo CBD, Nakuru County',
+  avatarUrl: '/images/avatar.jpg',
+  statusCardLabel: 'Network Status',
+  statusCardText: '99.9% Uptime Guarantee',
+  statusCardHighlight: 'Active in Molo',
+  images: DEFAULT_CAROUSEL_IMAGES,
+}
+
 export interface HeroProps {
   hero?: HeroContent
   socials?: SocialLink[]
@@ -81,11 +106,16 @@ export function Hero({
 }: HeroProps) {
   const reduceMotion = useReducedMotion()
 
-  // Carousel images
-  const slides =
-    hero?.images && hero.images.length > 0
-      ? hero.images
-      : DEFAULT_CAROUSEL_IMAGES
+  const h: HeroContent = {
+    ...DEFAULT_HERO,
+    ...(hero || {}),
+  }
+
+  // Carousel images with fallback — normalised to {url, alt} objects
+  const slides: HeroSlide[] =
+    h.images && h.images.length > 0
+      ? h.images.map(normalizeSlide)
+      : DEFAULT_CAROUSEL_IMAGES.map(normalizeSlide)
 
   const [[currentIndex, direction], setPage] = useState<[number, number]>([0, 0])
   const [isPaused, setIsPaused] = useState(false)
@@ -128,7 +158,8 @@ export function Hero({
     }
   }
 
-  const currentImage = slides[currentIndex]
+  const currentSlide = slides[currentIndex]
+  const currentImage = currentSlide?.url
 
   return (
     <motion.section
@@ -136,7 +167,7 @@ export function Hero({
       whileInView={reduceMotion ? undefined : 'visible'}
       viewport={{ once: true, amount: 0.15 }}
       variants={reveal}
-      className="relative overflow-hidden grid items-center gap-10 py-16 border-b pb-40 border-secondary/30 lg:grid-cols-12 lg:gap-12"
+      className="relative overflow-hidden grid items-center gap-10 py-16 border-b pb-20 border-secondary/30 lg:grid-cols-12 lg:gap-12"
       aria-label="Introduction"
     >
       {/* ── Background Subtle SVG Pattern & Fiber Optic Waves ── */}
@@ -204,49 +235,49 @@ export function Hero({
 
       {/* Left Column: Content */}
       <div className="relative z-10 lg:col-span-6 flex flex-col justify-center">
-        {/* {hero.badge && (
-          <p className="mb-4 inline-flex items-center gap-2 self-start rounded-full border border-secondary/80 bg-secondary/ px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-secondary sm:text-xs">
+        {h.badge && (
+          <p className="mb-4 inline-flex items-center gap-2 self-start rounded-full border border-secondary/80 bg-secondary/10 px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-secondary sm:text-xs">
             <Sparkles className="size-3.5 text-secondary shrink-0" aria-hidden="true" />
-            {hero.badge}
+            {h.badge}
           </p>
-        )} */}
+        )}
 
         <h1 className="text-4xl font-extrabold sm:text-5xl lg:text-6xl">
-          {hero.titleLine1} <span className="text-accent-foreground dark:text-secondary">{hero.titleHighlight1}</span>{' '}
-          {hero.titleLine2} <span className="text-accent-foreground dark:text-secondary">{hero.titleHighlight2}</span>
+          {h.titleLine1} <span className="text-accent-foreground dark:text-secondary">{h.titleHighlight1}</span>{' '}
+          {h.titleLine2} <span className="text-accent-foreground dark:text-secondary">{h.titleHighlight2}</span>
         </h1>
 
-        <p className="mt-4 max-w-xl text-pretty text-sm text-muted-foreground sm:text-base  ">
-          {hero.bio}
+        <p className="mt-4 max-w-xl text-pretty text-sm text-muted-foreground sm:text-base">
+          {h.bio}
         </p>
 
         {/* Action Buttons */}
         <div className="mt-8 mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
-            href={hero.primaryCtaLink}
-            className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary  px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0"
+            href={h.primaryCtaLink || '/packages'}
+            className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0"
           >
-            {hero.primaryCtaText}
+            {h.primaryCtaText || 'Explore Packages'}
             <ArrowUpRight
               className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               aria-hidden="true"
             />
           </Link>
           <Link
-            href={hero.secondaryCtaLink}
+            href={h.secondaryCtaLink || '/contact'}
             className="inline-flex items-center justify-center gap-2 rounded-full border border-secondary bg-background/80 px-6 py-3.5 text-sm font-semibold backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-card hover:text-primary active:translate-y-0"
           >
-            {hero.secondaryCtaText}
+            {h.secondaryCtaText || 'Contact Support'}
             <Mail className="size-4 text-secondary" aria-hidden="true" />
           </Link>
         </div>
 
         {/* Location & Social Nav */}
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-border/60 pt-6 text-xs text-muted-foreground">
-          {hero.locationText && (
+          {h.locationText && (
             <span className="inline-flex items-center gap-2 font-medium">
               <MapPin className="size-4 text-secondary shrink-0" aria-hidden="true" />
-              {hero.locationText}
+              {h.locationText}
             </span>
           )}
 
@@ -288,7 +319,7 @@ export function Hero({
 
         {/* Carousel Viewport Container */}
         <div
-          className=" group relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xl transition-all"
+          className="group relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-square overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xl transition-all"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onFocus={() => setIsPaused(true)}
@@ -315,7 +346,7 @@ export function Hero({
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.65}
               onDragEnd={handleDragEnd}
-              className="absolute inset-0 size-full cursor-grab active:cursor-grabbing rounded-3xl overflow-hidden border-4 border-accent-foreground"
+              className="absolute inset-0 size-full cursor-grab active:cursor-grabbing overflow-hidden"
               role="group"
               aria-roledescription="slide"
               aria-label={`Slide ${currentIndex + 1} of ${slides.length}`}
@@ -323,14 +354,14 @@ export function Hero({
               {currentImage && !failedImages[currentIndex] ? (
                 <Image
                   src={currentImage}
-                  alt={`Showcase visual ${currentIndex + 1}`}
+                  alt={currentSlide?.alt || `Hero showcase image ${currentIndex + 1}`}
                   fill
                   priority={currentIndex === 0}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                   onError={() =>
                     setFailedImages((prev) => ({ ...prev, [currentIndex]: true }))
                   }
-                  className="size-full object-cover select-none pointer-events-none rounded-3xl"
+                  className="size-full object-cover select-none pointer-events-none"
                   draggable={false}
                 />
               ) : (
@@ -342,11 +373,35 @@ export function Hero({
                 </div>
               )}
 
-              {/* Cinematic Bottom & Top Gradient for Vignette & Contrast */}
+
+              {/* ── Subtle multi-layer overlay ───────────────────────────── */}
+
+              {/* 1. Radial vignette — darkens corners/edges only, centre stays clear */}
               <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 rounded-xl"
                 aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.28) 100%)',
+                }}
               />
+
+              {/* 2. Soft bottom scrim — keeps slide counter & dots readable */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-28"
+                style={{
+                  background:
+                    'linear-gradient(to top, rgba(0,0,0,0.32) 0%, transparent 100%)',
+                }}
+              />
+
+              {/* 3. Whisper brand tint — unifies images with site palette */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 mix-blend-multiply opacity-[0.12] bg-primary rounded-xl"
+              />
+
             </motion.div>
           </AnimatePresence>
 
@@ -412,19 +467,19 @@ export function Hero({
         </div>
 
         {/* Floating Status Card Over Corner */}
-        {hero.statusCardLabel && (
-          <div className="absolute -bottom-4 -left-2 sm:-left-6 z-20 rounded-xl border border-border/80 bg-card/60 px-4 py-3 shadow-xl backdrop-blur-md flex items-center gap-3">
+        {h.statusCardLabel && (
+          <div className="absolute -bottom-4 -left-2 sm:-left-6 z-20 rounded-xl border border-border/80 bg-card/80 px-4 py-3 shadow-xl backdrop-blur-md flex items-center gap-3">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
             </span>
             <div>
               <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                {hero.statusCardLabel}
+                {h.statusCardLabel}
               </p>
               <p className="mt-0.5 text-xs sm:text-sm font-semibold text-foreground">
-                {hero.statusCardText}
-                <span className="text-primary">{hero.statusCardHighlight}</span>
+                {h.statusCardText}{' '}
+                <span className="text-primary">{h.statusCardHighlight}</span>
               </p>
             </div>
           </div>
