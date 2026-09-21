@@ -12,13 +12,27 @@ import { ChatWidget } from '@/components/chat/ChatWidget'
 
 const fontSans = Roboto({
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
   variable: "--font-sans",
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
   title: 'Linksys Fiber Networks — Fast & Reliable Internet in Molo',
   description: 'Linksys is a trusted internet service provider in Molo offering fast, reliable, and affordable fiber and Wi-Fi for homes and businesses.',
-  generator: 'v0.app',
+  metadataBase: new URL('https://linksysmolo.com'),
+  openGraph: {
+    title: 'Linksys Fiber Networks — Fast & Reliable Internet in Molo',
+    description: 'Fast, reliable, and affordable fiber internet for homes and businesses in Molo, Nakuru County.',
+    type: 'website',
+    locale: 'en_KE',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Linksys Fiber Networks — Molo',
+    description: 'Fast, reliable, and affordable fiber internet for homes and businesses in Molo.',
+  },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

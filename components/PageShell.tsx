@@ -16,6 +16,12 @@ interface PageShellProps {
  * Shared client shell for all pages.
  * Accepts server-cached initialData from Server Components to guarantee
  * zero-layout-shift instant renders directly from Convex DB.
+ *
+ * Optimisations:
+ * - Skeleton is only shown when there is NO data at all (no SSR initialData
+ *   AND Convex hasn't responded yet). When initialData is present the page
+ *   renders instantly with zero flash.
+ * - Footer moved outside <main> for correct HTML landmark semantics.
  */
 export function PageShell({
   path,
@@ -24,7 +30,8 @@ export function PageShell({
 }: PageShellProps) {
   const { content, loading } = useWebsiteContent(initialData)
 
-  if (!content || loading) {
+  // Show skeleton only when we truly have no content yet (SSR data also absent)
+  if (loading && !content) {
     return (
       <div className="min-h-screen flex flex-col w-full bg-background animate-pulse">
         <div className="h-16 w-full border-b border-border/40 bg-card/20" />
@@ -41,13 +48,15 @@ export function PageShell({
     )
   }
 
+  if (!content) return null
+
   return (
     <div className="min-h-screen flex flex-col w-full">
       <Navbar navigation={content.navigation} general={content.general} />
       <main className={`flex-1 w-full ${className}`}>
         <PageBlockRenderer path={path} content={content} />
-        <Footer footer={content.footer} general={content.general} />
       </main>
+      <Footer footer={content.footer} general={content.general} />
     </div>
   )
 }

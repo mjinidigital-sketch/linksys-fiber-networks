@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { WebsiteContent, PageComponentBlock, ServiceItem, TemplateItem } from '@/lib/types/content'
+// Above-the-fold / critical path — keep as static imports
 import { Hero } from '@/components/Hero'
 import { Hero2 } from '@/components/Hero2'
 import { TechStack } from '@/components/TechStack'
@@ -9,17 +11,24 @@ import { Logos } from '@/components/Logos'
 import { Projects } from '@/components/Projects'
 import { Process } from '@/components/Process'
 import { Contact } from '@/components/Contact'
-import FAQ from '@/components/faq'
-import Features from '@/components/features'
-import Pricing from '@/components/pricing'
-import Stats from '@/components/stats'
-import CodeBlock from '@/components/code-block'
-import Blog from '@/components/blog'
-import { CareersSection } from '@/components/CareersSection'
-import { Gallery } from '@/components/gallery-component'
 import { RichTextRenderer } from '@/components/ui/rich-text-renderer'
 import { GithubIcon } from '@/components/ui/icons'
 import { Sparkles, Check, Code2, ArrowUpRight, ExternalLink, FileText, X } from 'lucide-react'
+// Below-the-fold — lazy-loaded to reduce initial JS bundle
+const FAQ = dynamic(() => import('@/components/faq'), { ssr: false })
+const Features = dynamic(() => import('@/components/features'), { ssr: false })
+const Pricing = dynamic(() => import('@/components/pricing'), { ssr: false })
+const Stats = dynamic(() => import('@/components/stats'), { ssr: false })
+const CodeBlock = dynamic(() => import('@/components/code-block'), { ssr: false })
+const Blog = dynamic(() => import('@/components/blog'), { ssr: false })
+const CareersSection = dynamic(
+  () => import('@/components/CareersSection').then((m) => ({ default: m.CareersSection })),
+  { ssr: false }
+)
+const Gallery = dynamic(
+  () => import('@/components/gallery-component').then((m) => ({ default: m.Gallery })),
+  { ssr: false }
+)
 
 interface PageBlockRendererProps {
   path: string
