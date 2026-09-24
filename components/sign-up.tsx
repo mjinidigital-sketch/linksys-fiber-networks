@@ -10,7 +10,7 @@ import { Separator } from "./ui/separator";
 import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "./ui/toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -18,6 +18,8 @@ import Link from "next/link";
 export default function SignUp() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect") || "/";
 
   const form = useForm<z.infer<typeof SignupSchema>>({
     resolver: zodResolver(SignupSchema),
@@ -51,7 +53,7 @@ export default function SignUp() {
         description: "Account created successfully",
         type: "success",
       });
-      router.push("/");
+      router.push(redirectParam.startsWith("/admin") ? "/" : redirectParam);
       router.refresh();
     });
   }

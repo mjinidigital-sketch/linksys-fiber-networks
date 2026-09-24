@@ -171,7 +171,7 @@ function AdminRoleCheck({
               size="sm"
               onClick={async () => {
                 await authClient.signOut()
-                router.push("/auth/login?redirect=/admin")
+                router.push("/auth/login")
                 router.refresh()
               }}
               className="rounded-xl text-xs gap-1.5 h-9 border-border bg-card/60 backdrop-blur-sm shadow-xs hover:text-destructive transition-colors"
@@ -260,7 +260,7 @@ function AdminRoleCheck({
                   size="default"
                   onClick={async () => {
                     await authClient.signOut()
-                    router.push("/auth/login?redirect=/admin")
+                    router.push("/auth/login")
                     router.refresh()
                   }}
                   className="w-full gap-2 rounded-xl text-xs font-semibold"
@@ -271,8 +271,7 @@ function AdminRoleCheck({
 
                 <Button
                   variant="outline"
-                  size="default"
-                  asChild
+                  size="default"                  
                   className="w-full gap-2 rounded-xl text-xs font-semibold"
                 >
                   <Link href="/#contact">

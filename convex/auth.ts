@@ -16,6 +16,12 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
     baseURL: siteUrl,
     secret: process.env.BETTER_AUTH_SECRET,
+    trustedOrigins: [
+      "http://localhost:3000",
+      "https://linksysfiber.ke",
+      "https://www.linksysfiber.ke",
+      siteUrl,
+    ].filter(Boolean),
     database: authComponent.adapter(ctx),
     // Configure email/password with Resend reset password function
     emailAndPassword: {
@@ -46,7 +52,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
     },
     plugins: [
       // The Convex plugin is required for Convex compatibility
-      convex({ authConfig }),
+      convex({ authConfig, jwksRotateOnTokenGenerationError: true }),
     ],
   });
 };

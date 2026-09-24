@@ -244,18 +244,18 @@ export default function AdminOverviewPage() {
                 </div>
               </div>
 
-              <div className="pt-2 flex gap-2">
-                <Link href="/admin/seo" className="flex-1">
+              <div className="pt-2 grid grid-cols-3 gap-2">
+                <Link href="/admin/seo" className="w-full">
                   <Button variant="outline" size="sm" className="w-full rounded-xl text-xs">
                     <Search className="size-3.5 mr-1" /> SEO
                   </Button>
                 </Link>
-                <Link href="/admin/socials" className="flex-1">
+                <Link href="/admin/socials" className="w-full">
                   <Button variant="outline" size="sm" className="w-full rounded-xl text-xs">
                     <Share2 className="size-3.5 mr-1" /> Socials
                   </Button>
                 </Link>
-                <Link href="/admin/settings" className="flex-1">
+                <Link href="/admin/settings" className="w-full">
                   <Button variant="outline" size="sm" className="w-full rounded-xl text-xs">
                     <Settings className="size-3.5 mr-1" /> Settings
                   </Button>
@@ -263,8 +263,50 @@ export default function AdminOverviewPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Quick Hub for Chats & Team */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Administration & Operations</CardTitle>
+              <CardDescription>Direct shortcuts to team and live customer support</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2.5">
+              <Link
+                href="/admin/chats"
+                className="flex items-center justify-between rounded-xl border border-border p-3 transition-colors hover:bg-muted/50"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="rounded-lg bg-primary/10 p-2 text-primary">
+                    <Sparkles className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold">Live Chat Support</p>
+                    <p className="text-[11px] text-muted-foreground">Manage real-time customer conversations</p>
+                  </div>
+                </div>
+                <ArrowRight className="size-4 text-muted-foreground" />
+              </Link>
+
+              <Link
+                href="/admin/users"
+                className="flex items-center justify-between rounded-xl border border-border p-3 transition-colors hover:bg-muted/50"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-500">
+                    <CheckCircle2 className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold">User & Role Management</p>
+                    <p className="text-[11px] text-muted-foreground">Manage administrators and staff permissions</p>
+                  </div>
+                </div>
+                <ArrowRight className="size-4 text-muted-foreground" />
+              </Link>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   )
 }
+

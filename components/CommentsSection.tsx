@@ -18,12 +18,14 @@ import {
   User,
 } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 interface CommentsSectionProps {
   postId: string
 }
 
 export function CommentsSection({ postId }: CommentsSectionProps) {
+  const pathname = usePathname()
   const { isAuthenticated, isLoading: authLoading } = useConvexAuth()
   const { data: session } = authClient.useSession()
   const currentUser = session?.user
@@ -334,12 +336,12 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
             </p>
           </div>
           <div className="flex items-center justify-center gap-3 pt-1">
-            <Link href="/auth/login">
+            <Link href={`/auth/login?redirect=${encodeURIComponent(pathname || '/')}`}>
               <Button variant="outline" size="sm" className="rounded-xl text-xs">
                 Log In
               </Button>
             </Link>
-            <Link href="/auth/sign-up">
+            <Link href={`/auth/sign-up?redirect=${encodeURIComponent(pathname || '/')}`}>
               <Button size="sm" className="rounded-xl text-xs font-semibold">
                 Sign Up
               </Button>

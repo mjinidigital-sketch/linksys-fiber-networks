@@ -10,12 +10,14 @@ import {
   MapPin, 
   Menu, 
   X, 
-  Phone 
+  Phone,
+  ShieldCheck,
 } from 'lucide-react'
 import { FaFacebook, FaGithub, FaXTwitter } from 'react-icons/fa6'
 import { NavigationContent, GeneralSettings } from '@/lib/types/content'
 import { Button } from './ui/button'
-import { useConvexAuth } from "convex/react"
+import { useConvexAuth, useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "@/components/ui/toast"
 import { useRouter } from "next/navigation"
@@ -53,6 +55,11 @@ export function Navbar({
   }
   
   const { isAuthenticated, isLoading } = useConvexAuth()
+  const userProfile = useQuery(
+    api.users.getCurrentUserWithProfile,
+    isAuthenticated ? {} : "skip"
+  )
+  const isAdminOrEditor = userProfile?.role === "admin" || userProfile?.role === "editor"
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -79,6 +86,15 @@ export function Navbar({
   const email = general?.email || 'info@linksysfiber.ke'
   const location = general?.location || 'Generis Hotel Building, Ground Floor, Molo'
   const cleanPhone = phone.replace(/\s+/g, '')
+
+  const navLinks = navigation?.links || [
+    { label: 'Packages', href: '/packages' },
+    { label: 'Services', href: '/services' },
+    { label: 'Projects', href: '/projects' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Careers', href: '/careers' },
+    { label: 'Contact', href: '/contact' },
+  ]
 
   return (
     <nav className="relative z-50">
@@ -228,7 +244,7 @@ export function Navbar({
           {/* Desktop Navigation */}
           <div className="flex items-center gap-6">
             <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-              {navigation.links.map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
@@ -243,9 +259,19 @@ export function Navbar({
               
               <div className="hidden sm:flex items-center gap-2">
                 {isLoading ? null : isAuthenticated ? (
-                  <Button onClick={handleSignOut} disabled={isPending} size="lg" variant="outline">
-                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing out...</> : "Logout"}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {isAdminOrEditor && (
+                      <Link href="/admin">
+                        <Button size="lg" variant="default" className="gap-1.5 font-semibold shadow-xs">
+                          <ShieldCheck className="size-4" />
+                          <span>Admin Panel</span>
+                        </Button>
+                      </Link>
+                    )}
+                    <Button onClick={handleSignOut} disabled={isPending} size="lg" variant="outline">
+                      {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing out...</> : "Logout"}
+                    </Button>
+                  </div>
                 ) : (
                   <>
                     <Button variant="outline" size="lg" render={<a href="/auth/login" />} nativeButton={false}>
@@ -290,7 +316,7 @@ export function Navbar({
         <div className="md:hidden w-full border-b border-border bg-background/95 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-4 animate-in slide-in-from-top-2 duration-200">
             <nav className="flex flex-col space-y-2">
-              {navigation.links.map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
@@ -305,9 +331,19 @@ export function Navbar({
             {/* Mobile Auth Buttons */}
             <div className="pt-2 border-t border-border flex flex-col gap-2">
               {isLoading ? null : isAuthenticated ? (
-                <Button onClick={handleSignOut} disabled={isPending} className="w-full">
-                  {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing out...</> : "Logout"}
-                </Button>
+                <div className="flex flex-col gap-2">
+                  {isAdminOrEditor && (
+                    <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="w-full">
+                      <Button variant="default" className="w-full gap-2 font-semibold shadow-xs">
+                        <ShieldCheck className="size-4" />
+                        <span>Open Admin Panel</span>
+                      </Button>
+                    </Link>
+                  )}
+                  <Button onClick={handleSignOut} disabled={isPending} variant="outline" className="w-full">
+                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing out...</> : "Logout"}
+                  </Button>
+                </div>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" render={<a href="/auth/login" />} nativeButton={false} className="w-full">

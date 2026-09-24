@@ -5,7 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,9 +31,7 @@ type LoginFormValues = z.infer<typeof LoginSchema>;
 export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const redirectUrl =
-    searchParams.get("redirect") || "/admin";
+  const redirectParam = searchParams.get("redirect");
 
   const [isPending, startTransition] = useTransition();
   const [loginStarted, setLoginStarted] = useState(false);
@@ -41,6 +40,11 @@ export default function Login() {
     isLoading: convexLoading,
     isAuthenticated,
   } = useConvexAuth();
+
+  const userProfile = useQuery(
+    api.users.getCurrentUserWithProfile,
+    isAuthenticated ? {} : "skip"
+  );
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
@@ -51,25 +55,32 @@ export default function Login() {
   });
 
   /*
-   * Redirect ONLY after Convex confirms authentication.
-   *
-   * This prevents:
-   *
-   * Better Auth → /admin → Convex says unauthenticated
-   * → /auth/login
-   *
-   * from happening because of a timing race.
+   * Smart, Role-Safe Redirect:
+   * 1. If standard user: ALWAYS redirect to public site ('/') unless coming from a public route (e.g. /careers).
+   * 2. If admin / editor: Redirect to /admin or the specified redirect route.
    */
   useEffect(() => {
     if (convexLoading) return;
+    if (!isAuthenticated) return;
+    // Wait until profile query resolves if authenticated
+    if (userProfile === undefined) return;
 
-    if (isAuthenticated) {
-      router.replace(redirectUrl);
+    const role = userProfile?.role || "user";
+    const isAdminOrEditor = role === "admin" || role === "editor";
+
+    let target = redirectParam || (isAdminOrEditor ? "/admin" : "/");
+
+    // Standard non-admin users should NEVER be sent to /admin
+    if (target.startsWith("/admin") && !isAdminOrEditor) {
+      target = "/";
     }
+
+    router.replace(target);
   }, [
     convexLoading,
     isAuthenticated,
-    redirectUrl,
+    userProfile,
+    redirectParam,
     router,
   ]);
 
