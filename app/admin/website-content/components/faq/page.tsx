@@ -17,7 +17,7 @@ export default function FaqComponentPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
 
-  const faqData = content.faq || {
+  const faqData = content?.faq || {
     sectionLabel: 'FAQ',
     title: 'Frequently Asked Questions',
     subtitle: 'Everything you need to know about working together and my delivery process.',

@@ -108,10 +108,10 @@ export function AdminHeader({ onToggleMobile }: AdminHeaderProps) {
         </button>
 
         <div>
-          <div className="mt-4 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-secondary">
+          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider font-semibold text-primary">
             <span>Admin</span>
-            <ChevronRight className="size-3 text-muted-foreground" />
-            <span className="text-foreground">{pathname.replace('/admin', '').replace('/', '') || 'overview'}</span>
+            <ChevronRight className="size-3.5 text-foreground/60" />
+            <span className="text-foreground font-bold">{pathname.replace('/admin', '').replace('/', '') || 'overview'}</span>
           </div>
         </div>
       </div>
@@ -121,11 +121,11 @@ export function AdminHeader({ onToggleMobile }: AdminHeaderProps) {
         <Link
           href="/"
           target="_blank"
-          className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors shadow-xs"
+          className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 text-xs sm:text-sm font-semibold text-foreground hover:bg-muted transition-colors shadow-xs"
         >
-          <Globe2 className="size-3.5 text-primary" />
+          <Globe2 className="size-4 text-primary" />
           <span>View Site</span>
-          <ExternalLink className="size-3 text-muted-foreground" />
+          <ExternalLink className="size-3.5 text-foreground/70" />
         </Link>
 
         {/* Live Chat Notification Bell Popover */}

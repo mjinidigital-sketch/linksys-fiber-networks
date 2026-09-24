@@ -17,7 +17,7 @@ export default function ProcessComponentPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
 
-  const processData = content.process || {
+  const processData = content?.process || {
     sectionLabel: 'Workflow & Delivery',
     title: 'How I Work',
     steps: []

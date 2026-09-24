@@ -14,7 +14,7 @@ export default function LogosComponentPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
 
-  const logosData = content.logos || {
+  const logosData = content?.logos || {
     sectionLabel: 'Trusted By & Built With',
     title: 'Modern Tools & Partners',
     subtitle: 'Technologies and ecosystems I collaborate with.',

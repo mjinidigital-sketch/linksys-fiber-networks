@@ -14,6 +14,8 @@ export default function BackupGlobalsPage() {
   const { content, saving, lastSaved, saveAll, resetToDefault } = useWebsiteContent()
   const { toast } = useToast()
 
+  if (!content) return null
+
   const [jsonInput, setJsonInput] = useState('')
   const [copied, setCopied] = useState(false)
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)

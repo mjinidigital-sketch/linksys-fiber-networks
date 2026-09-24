@@ -15,11 +15,11 @@ export function Footer({ footer, general }: FooterProps) {
     <footer className="border-t border-border mt-16 pt-8 pb-8 text-sm text-muted-foreground">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         {/* Left: copyright */}
-        <span>{footer.copyright}</span>
+        <span>{footer?.copyright || '© 2026 Linksys Fiber Networks LTD. All rights reserved.'}</span>
 
         {/* Center: contact details */}
         <div className="flex flex-col gap-2 sm:items-center">
-          {general.email && (
+          {general?.email && (
             <a
               href={`mailto:${general.email}`}
               className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
@@ -35,7 +35,7 @@ export function Footer({ footer, general }: FooterProps) {
                 className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
               >
                 <Phone className="size-3.5" />
-                {general.phone}
+                {general?.phone}
               </a>
               <span className="text-muted-foreground/40">·</span>
               <a
@@ -52,7 +52,7 @@ export function Footer({ footer, general }: FooterProps) {
 
         {/* Right: nav links */}
         <div className="flex flex-wrap gap-5">
-          {footer.links.map((link) => (
+          {footer?.links?.map((link) => (
             <Link
               key={link.label}
               href={link.href}

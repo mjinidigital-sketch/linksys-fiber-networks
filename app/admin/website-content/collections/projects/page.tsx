@@ -38,7 +38,7 @@ export default function ProjectsCollectionPage() {
   const [newTagInput, setNewTagInput] = useState('')
   const [searchFilter, setSearchFilter] = useState('')
 
-  const projectsData = content.projects || {
+  const projectsData = content?.projects || {
     sectionLabel: 'Projects',
     title: 'Selected Work',
     ctaText: 'View All Projects',

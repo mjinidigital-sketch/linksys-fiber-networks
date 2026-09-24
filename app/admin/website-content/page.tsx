@@ -43,13 +43,13 @@ export default function WebsiteContentHubPage() {
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState('')
 
-  const activePageLayouts = content.pageLayouts || defaultPageLayouts
+  const activePageLayouts = content?.pageLayouts || defaultPageLayouts
   const pageCount = Object.keys(activePageLayouts).length
-  const projectCount = content.projects?.items?.length || 0
-  const serviceCount = content.services?.items?.length || 0
-  const pricingCount = content.pricing?.plans?.length ?? defaultContent.pricing?.plans?.length ?? 0
-  const blogCount = content.blog?.posts?.length || 0
-  const techCount = content.techStack?.items?.length || 0
+  const projectCount = content?.projects?.items?.length || 0
+  const serviceCount = content?.services?.items?.length || 0
+  const pricingCount = content?.pricing?.plans?.length ?? defaultContent.pricing?.plans?.length ?? 0
+  const blogCount = content?.blog?.posts?.length || 0
+  const techCount = content?.techStack?.items?.length || 0
 
   const hubSections = [
     {
@@ -138,7 +138,7 @@ export default function WebsiteContentHubPage() {
           description: 'Methodology timeline, step numbers, titles and workflow descriptions',
           href: '/admin/website-content/components/process',
           icon: Compass,
-          badge: `${content.process?.steps?.length || 0} Steps`,
+          badge: `${content?.process?.steps?.length || 0} Steps`,
           color: 'from-lime-500/20 to-emerald-500/20 text-lime-500',
         },
         {
@@ -146,7 +146,7 @@ export default function WebsiteContentHubPage() {
           description: 'Common questions and answers for prospective clients and visitors',
           href: '/admin/website-content/components/faq',
           icon: HelpCircle,
-          badge: `${content.faq?.items?.length || 0} FAQs`,
+          badge: `${content?.faq?.items?.length || 0} FAQs`,
           color: 'from-orange-500/20 to-yellow-500/20 text-orange-500',
         },
         {
@@ -154,7 +154,7 @@ export default function WebsiteContentHubPage() {
           description: 'Brand names, partner tools, and trusted client badges',
           href: '/admin/website-content/components/logos',
           icon: Globe,
-          badge: `${content.logos?.items?.length || 0} Logos`,
+          badge: `${content?.logos?.items?.length || 0} Logos`,
           color: 'from-purple-500/20 to-pink-500/20 text-purple-500',
         },
       ]
@@ -168,7 +168,7 @@ export default function WebsiteContentHubPage() {
           description: 'Header navigation items, brand accent and header action links',
           href: '/admin/website-content/globals/navigation',
           icon: Menu,
-          badge: `${content.navigation?.links?.length || 0} Links`,
+          badge: `${content?.navigation?.links?.length || 0} Links`,
           color: 'from-indigo-500/20 to-blue-500/20 text-indigo-500',
         },
         {
@@ -184,7 +184,7 @@ export default function WebsiteContentHubPage() {
           description: 'Social media profile handles, external links and display icons',
           href: '/admin/website-content/globals/socials',
           icon: Share2,
-          badge: `${content.contact?.socials?.length || 0} Socials`,
+          badge: `${content?.contact?.socials?.length || 0} Socials`,
           color: 'from-sky-500/20 to-cyan-500/20 text-sky-500',
         },
         {
@@ -221,40 +221,40 @@ export default function WebsiteContentHubPage() {
 
       {/* Metrics Overview Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Pages</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{pageCount}</p>
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">Pages</p>
+          <p className="mt-1 text-2xl font-extrabold text-foreground">{pageCount}</p>
         </div>
-        <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Projects</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{projectCount}</p>
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">Projects</p>
+          <p className="mt-1 text-2xl font-extrabold text-foreground">{projectCount}</p>
         </div>
-        <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Services</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{serviceCount}</p>
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">Services</p>
+          <p className="mt-1 text-2xl font-extrabold text-foreground">{serviceCount}</p>
         </div>
-        <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Jobs</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">—</p>
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">Jobs</p>
+          <p className="mt-1 text-2xl font-extrabold text-foreground">{pricingCount}</p>
         </div>
-        <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Blog Posts</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{blogCount}</p>
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">Blog Posts</p>
+          <p className="mt-1 text-2xl font-extrabold text-foreground">{blogCount}</p>
         </div>
-        <div className="rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-xs">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">Skills</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{techCount}</p>
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">Skills</p>
+          <p className="mt-1 text-2xl font-extrabold text-foreground">{techCount}</p>
         </div>
       </div>
 
       {/* Quick Search & Filter */}
       <div className="relative">
-        <Search className="absolute left-3.5 top-3 size-4 text-muted-foreground" />
+        <Search className="absolute left-3.5 top-3 size-4 text-foreground/70" />
         <Input
           placeholder="Filter content pages, collections, components (e.g. 'hero', 'projects', 'footer')..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 h-10 rounded-xl bg-card/60 border-border/80 text-sm"
+          className="pl-10 h-10 rounded-xl bg-card border-border text-sm font-medium text-foreground"
         />
       </div>
 
@@ -263,8 +263,8 @@ export default function WebsiteContentHubPage() {
         {filteredSections.map((section) => (
           <div key={section.category} className="space-y-3">
             <div className="flex items-baseline justify-between">
-              <h2 className="text-lg font-bold tracking-tight text-foreground">{section.category}</h2>
-              <span className="text-xs text-muted-foreground">{section.description}</span>
+              <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-foreground">{section.category}</h2>
+              <span className="text-xs sm:text-sm font-medium text-muted-foreground">{section.description}</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -272,23 +272,23 @@ export default function WebsiteContentHubPage() {
                 const Icon = item.icon
                 return (
                   <Link key={item.href} href={item.href} className="group block">
-                    <Card className="h-full border-border/80 bg-card/60 hover:bg-card hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/5">
-                      <CardHeader className="p-5 pb-3">
+                    <Card className="h-full border-border bg-card hover:border-primary transition-all hover:shadow-md">
+                      <CardHeader className="p-5 pb-4">
                         <div className="flex items-start justify-between gap-3">
-                          <div className={`p-2.5 rounded-xl bg-linear-to-br ${item.color} border border-border/50`}>
+                          <div className={`p-2.5 rounded-xl bg-gradient-to-br ${item.color} border border-border`}>
                             <Icon className="size-5" />
                           </div>
                           {item.badge && (
-                            <Badge variant="outline" className="text-[10px] font-mono px-2 py-0.5 border-border bg-background/50">
+                            <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 border-border bg-muted/60 text-foreground">
                               {item.badge}
                             </Badge>
                           )}
                         </div>
-                        <CardTitle className="mt-3 text-base font-bold text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
+                        <CardTitle className="mt-3.5 text-base sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
                           <span>{item.title}</span>
                           <ArrowRight className="size-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-primary" />
                         </CardTitle>
-                        <CardDescription className="text-xs text-muted-foreground line-clamp-2">
+                        <CardDescription className="text-xs sm:text-sm font-medium text-muted-foreground line-clamp-2 mt-1">
                           {item.description}
                         </CardDescription>
                       </CardHeader>

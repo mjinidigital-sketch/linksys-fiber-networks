@@ -34,7 +34,7 @@ export default function ServicesCollectionPage() {
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false)
   const [newFeatureInput, setNewFeatureInput] = useState('')
 
-  const servicesData = content.services || {
+  const servicesData = content?.services || {
     sectionLabel: 'Services',
     title: 'What I Deliver',
     subtitle: 'High impact engineering and full-stack architecture solutions.',

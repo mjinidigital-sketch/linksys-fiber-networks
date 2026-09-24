@@ -16,7 +16,7 @@ export default function NavigationGlobalsPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
 
-  const navData = content.navigation || {
+  const navData = content?.navigation || {
     brandName: 'Victor',
     brandAccent: '.dev',
     links: [

@@ -16,6 +16,8 @@ export default function SettingsAdminPage() {
   const { content, setContent, saving, saveAll } = useWebsiteContent()
   const { toast } = useToast()
 
+  if (!content) return null
+
   const handleSave = async () => {
     const res = await saveAll(content)
     if (res?.success) {

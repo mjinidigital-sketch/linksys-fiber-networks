@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { WebsiteContent } from '@/lib/types/content'
+import { defaultContent } from '@/lib/default-content'
 
 // Helper to trigger Next.js cache revalidation when admin edits content
 async function triggerRevalidate(section?: string, path?: string) {
@@ -23,7 +24,6 @@ export function useWebsiteContent(initialData?: WebsiteContent | null) {
   const updateSectionMutation = useMutation(api.content.updateSection)
   const saveAllMutation = useMutation(api.content.saveAll)
   const resetMutation = useMutation(api.content.resetToDefault)
-  const seedMutation = useMutation(api.seed.seedWebsiteContent)
 
   const activeContent = useMemo(() => {
     if (convexData) return convexData as WebsiteContent
@@ -39,9 +39,9 @@ export function useWebsiteContent(initialData?: WebsiteContent | null) {
   useEffect(() => {
     if (convexData === null) {
       // Database not seeded yet, seed it automatically
-      seedMutation().catch((err) => console.error('Seed error:', err))
+      resetMutation({ defaultContent }).catch((err) => console.error('Seed error:', err))
     }
-  }, [convexData, seedMutation])
+  }, [convexData, resetMutation])
 
   useEffect(() => {
     if (activeContent) {
@@ -117,8 +117,8 @@ export function useWebsiteContent(initialData?: WebsiteContent | null) {
       setSaving(true)
       setError(null)
 
-      // Re-trigger seed mutation to restore full database content
-      await seedMutation()
+      // Restore full database content to default
+      await resetMutation({ defaultContent })
       await triggerRevalidate()
 
       setLastSaved(new Date())
@@ -130,7 +130,7 @@ export function useWebsiteContent(initialData?: WebsiteContent | null) {
     } finally {
       setSaving(false)
     }
-  }, [seedMutation])
+  }, [resetMutation])
 
   return {
     content: localContent,

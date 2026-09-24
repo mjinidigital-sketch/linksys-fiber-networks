@@ -27,6 +27,16 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { CollectionSeoSection } from '@/components/admin/CollectionSeoSection'
 import { BlogPostItem } from '@/lib/types/content'
 
+function slugify(text: string): string {
+  if (!text) return ''
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 export default function BlogCollectionPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
@@ -35,7 +45,7 @@ export default function BlogCollectionPage() {
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const blogData = content.blog || {
+  const blogData = content?.blog || {
     sectionLabel: 'Articles & Insights',
     title: 'Latest Writing',
     subtitle: 'Deep dives on engineering, scalable systems, and modern web architectures.',
@@ -58,17 +68,20 @@ export default function BlogCollectionPage() {
     setIsPostDialogOpen(true)
   }
 
+  const handleEditPost = (post: BlogPostItem) => {
+    setEditingPost({ ...post })
+    setIsPostDialogOpen(true)
+  }
+
   const handleSavePost = async () => {
     if (!editingPost || !editingPost.title.trim()) {
       toast({ title: 'Title required', description: 'Please enter a post title.', variant: 'destructive' })
       return
     }
 
-    // Auto slug if empty
+    // Auto-generate clean slug from title
     let postToSave = { ...editingPost }
-    if (!postToSave.slug.trim()) {
-      postToSave.slug = postToSave.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-    }
+    postToSave.slug = slugify(postToSave.title) || `post-${Date.now().toString(36)}`
 
     const posts = [...(blogData.posts || [])]
     const index = posts.findIndex((p) => p.id === postToSave.id)
@@ -205,10 +218,7 @@ export default function BlogCollectionPage() {
                       variant="ghost"
                       size="icon"
                       className="size-7 text-muted-foreground hover:text-foreground"
-                      onClick={() => {
-                        setEditingPost({ ...post })
-                        setIsPostDialogOpen(true)
-                      }}
+                      onClick={() => handleEditPost(post)}
                     >
                       <Pencil className="size-3.5" />
                     </Button>
@@ -259,29 +269,32 @@ export default function BlogCollectionPage() {
 
             <div className="space-y-4 py-2">
               <div>
-                <Label className="text-xs">Post Title *</Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs">Post Title *</Label>
+                  {editingPost.title && (
+                    <span className="text-xs font-mono text-muted-foreground flex items-center gap-1">
+                      <span>URL:</span>
+                      <span className="font-bold text-primary">/blog/{slugify(editingPost.title)}</span>
+                    </span>
+                  )}
+                </div>
                 <Input
                   value={editingPost.title}
                   onChange={(e) => {
                     const title = e.target.value
-                    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-                    setEditingPost({ ...editingPost, title, slug: editingPost.slug ? editingPost.slug : slug })
+                    const slug = slugify(title)
+                    setEditingPost({
+                      ...editingPost,
+                      title,
+                      slug
+                    })
                   }}
                   placeholder="e.g. Building Real-time Distributed Systems with Next.js and Convex"
-                  className="mt-1 text-sm"
+                  className="mt-1 text-sm font-medium"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <Label className="text-xs">Slug Path</Label>
-                  <Input
-                    value={editingPost.slug}
-                    onChange={(e) => setEditingPost({ ...editingPost, slug: e.target.value })}
-                    placeholder="post-url-slug"
-                    className="mt-1 text-sm font-mono"
-                  />
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <Label className="text-xs">Category</Label>
                   <Input

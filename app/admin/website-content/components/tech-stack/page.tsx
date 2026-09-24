@@ -14,7 +14,7 @@ export default function TechStackComponentPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
 
-  const techData = content.techStack || {
+  const techData = content?.techStack || {
     sectionLabel: 'Core Stack & Engineering Tools',
     subtitle: 'Technologies and frameworks I use to build production systems.',
     items: ['Next.js', 'React', 'TypeScript', 'Node.js', 'Convex', 'Tailwind CSS', 'PostgreSQL', 'Docker', 'GraphQL', 'Python']

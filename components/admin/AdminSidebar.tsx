@@ -100,32 +100,32 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
         )}
       >
         {/* Brand Header */}
-        <div className="rounded-2xl border border-primary/20 bg-background/90 p-3.5">
+        <div className="rounded-2xl border border-primary/30 bg-background/95 p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <p className="font-bold ">Admin Panel</p>
-            <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
+            <p className="font-bold text-base text-foreground tracking-tight">Admin Panel</p>
+            <span className="flex size-2.5 rounded-full bg-emerald-500 animate-pulse" />
           </div>
         </div>
 
         {/* Main Navigation */}
         <div className="mt-5">
-          <p className="px-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
+          <p className="px-3 font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
             Navigation
           </p>
-          <nav className="mt-2 space-y-1" aria-label="Admin navigation">
+          <nav className="mt-2 space-y-1.5" aria-label="Admin navigation">
             {/* Overview */}
             <Link
               href="/admin"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin'
-                  ? 'bg-secondary text-primary-foreground shadow-xs shadow-primary/25'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
-              <div className="flex items-center gap-2.5">
-                <LayoutDashboard className={cn('size-4 shrink-0', pathname === '/admin' ? 'text-accent' : 'text-secondary')} />
+              <div className="flex items-center gap-3">
+                <LayoutDashboard className={cn('size-4 shrink-0', pathname === '/admin' ? 'text-primary-foreground' : 'text-primary')} />
                 <span>Overview</span>
               </div>
             </Link>
@@ -137,17 +137,17 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
                   href="/admin/website-content"
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    'flex flex-1 items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                    'flex flex-1 items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                     isContentActive
-                      ? 'bg-secondary text-muted font-semibold'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground '
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-foreground/80 hover:bg-muted hover:text-foreground'
                   )}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <FileCode2 className="size-4 shrink-0 text-primary" />
+                  <div className="flex items-center gap-3">
+                    <FileCode2 className={cn('size-4 shrink-0', isContentActive ? 'text-primary-foreground' : 'text-primary')} />
                     <span>Website Content</span>
                   </div>
-                  <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-primary">
+                  <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide', isContentActive ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-primary/10 text-primary')}>
                     Core
                   </span>
                 </Link>
@@ -155,22 +155,22 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
                 <button
                   type="button"
                   onClick={() => setContentDropdownOpen(!contentDropdownOpen)}
-                  className="flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                  className="flex size-9 items-center justify-center rounded-xl text-foreground/70 hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
                   title={contentDropdownOpen ? 'Collapse menu' : 'Expand menu'}
                   aria-label="Toggle website content menu"
                 >
                   <ChevronDown
-                    className={cn('size-3.5 transition-transform duration-200', contentDropdownOpen && 'rotate-180')}
+                    className={cn('size-4 transition-transform duration-200', contentDropdownOpen && 'rotate-180')}
                   />
                 </button>
               </div>
 
               {/* Collapsible Sub-menu */}
               {contentDropdownOpen && (
-                <div className="ml-2.5 border-l border-border/70 pl-2.5 space-y-3 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="ml-3 border-l-2 border-border pl-3 space-y-3 py-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
                   {websiteContentSections.map((category) => (
-                    <div key={category.title} className="space-y-0.5">
-                      <p className="px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                    <div key={category.title} className="space-y-1">
+                      <p className="px-2 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                         {category.title}
                       </p>
                       {category.items.map(({ label, href, icon: Icon }) => {
@@ -181,13 +181,13 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
                             href={href}
                             onClick={() => setMobileOpen(false)}
                             className={cn(
-                              'flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors',
+                              'flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors',
                               isSubActive
-                                ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                ? 'bg-primary/15 text-primary font-bold shadow-xs'
+                                : 'text-foreground/80 hover:bg-muted hover:text-foreground'
                             )}
                           >
-                            <Icon className={cn('size-3.5 shrink-0', isSubActive ? 'text-primary-foreground' : 'text-muted-foreground/80')} />
+                            <Icon className={cn('size-4 shrink-0', isSubActive ? 'text-primary' : 'text-muted-foreground')} />
                             <span>{label}</span>
                           </Link>
                         )
@@ -203,22 +203,22 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               href="/admin/chats"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/chats'
-                  ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
-              <div className="flex items-center gap-2.5">
-                <MessageSquare className={cn('size-4 shrink-0', pathname === '/admin/chats' ? 'text-secondary' : 'text-secondary')} />
+              <div className="flex items-center gap-3">
+                <MessageSquare className={cn('size-4 shrink-0', pathname === '/admin/chats' ? 'text-primary-foreground' : 'text-secondary')} />
                 <span>Live Chat & Support</span>
               </div>
               {adminUnreadCount !== undefined && adminUnreadCount > 0 ? (
-                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground animate-pulse">
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-xs font-bold text-destructive-foreground animate-pulse">
                   {adminUnreadCount}
                 </span>
               ) : (
-                <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-emerald-500">
+                <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
                   Live
                 </span>
               )}
@@ -229,18 +229,18 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               href="/admin/users"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/users'
-                  ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
-              <div className="flex items-center gap-2.5">
-                <Users className={cn('size-4 shrink-0', pathname === '/admin/users' ? 'text-secondary' : 'text-secondary')} />
+              <div className="flex items-center gap-3">
+                <Users className={cn('size-4 shrink-0', pathname === '/admin/users' ? 'text-primary-foreground' : 'text-secondary')} />
                 <span>User Management</span>
               </div>
-              <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-amber-500 border border-amber-500/20">
-                Admin Only
+              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                Admin
               </span>
             </Link>
 
@@ -248,14 +248,14 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               href="/admin/seo"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/seo'
-                  ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
-              <div className="flex items-center gap-2.5">
-                <Search className={cn('size-4 shrink-0', pathname === '/admin/seo' ? 'text-secondary' : 'text-secondary')} />
+              <div className="flex items-center gap-3">
+                <Search className={cn('size-4 shrink-0', pathname === '/admin/seo' ? 'text-primary-foreground' : 'text-secondary')} />
                 <span>SEO Settings</span>
               </div>
             </Link>
@@ -264,14 +264,14 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               href="/admin/socials"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/socials'
-                  ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
-              <div className="flex items-center gap-2.5">
-                <Share2 className={cn('size-4 shrink-0', pathname === '/admin/socials' ? 'text-secondary' : 'text-secondary')} />
+              <div className="flex items-center gap-3">
+                <Share2 className={cn('size-4 shrink-0', pathname === '/admin/socials' ? 'text-primary-foreground' : 'text-secondary')} />
                 <span>Social Links</span>
               </div>
             </Link>
@@ -280,14 +280,14 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               href="/admin/settings"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                'flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all group',
+                'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/settings'
-                  ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
-              <div className="flex items-center gap-2.5">
-                <Settings className={cn('size-4 shrink-0', pathname === '/admin/settings' ? 'text-secondary' : 'text-secondary')} />
+              <div className="flex items-center gap-3">
+                <Settings className={cn('size-4 shrink-0', pathname === '/admin/settings' ? 'text-primary-foreground' : 'text-secondary')} />
                 <span>Site Settings</span>
               </div>
             </Link>
@@ -295,12 +295,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
         </div>
 
         {/* Bottom Public Link */}
-        <div className="border-t border-border pt-3 mt-4">
+        <div className="border-t border-border pt-3.5 mt-5">
           <Link
             href="/"
-            className="flex items-center gap-2.5 rounded-xl border border-border bg-background/50 px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            className="flex items-center gap-3 rounded-xl border border-border bg-card px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-muted transition-colors shadow-xs"
           >
-            <Globe2 className="size-4 text-primary" />
+            <Globe2 className="size-4 text-primary shrink-0" />
             <span>Open Public Site</span>
           </Link>
         </div>

@@ -16,7 +16,7 @@ export default function SocialsGlobalsPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
 
-  const contactData = content.contact || {
+  const contactData = content?.contact || {
     sectionLabel: 'Contact',
     title: 'Let’s Build Something Exceptional',
     subtitle: 'Available for high impact projects, architecture consulting, and full-stack development.',

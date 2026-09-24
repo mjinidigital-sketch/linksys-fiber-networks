@@ -130,6 +130,8 @@ export default function SeoAdminPage() {
   const { content, setContent, saving, saveAll } = useWebsiteContent()
   const { toast } = useToast()
 
+  if (!content) return null
+
   const [activeTab, setActiveTab] = useState<'pages' | 'global' | 'sitemap' | 'apis' | 'audit'>('pages')
   const [pageSubTab, setPageSubTab] = useState<'meta' | 'schema'>('meta')
   const [selectedPath, setSelectedPath] = useState<string>('/')

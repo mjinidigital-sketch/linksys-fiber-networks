@@ -16,7 +16,7 @@ export default function FooterGlobalsPage() {
   const { content, saving, lastSaved, updateSection } = useWebsiteContent()
   const { toast } = useToast()
 
-  const footerData = content.footer || {
+  const footerData = content?.footer || {
     copyright: 'Victor Maina. Built with Next.js & Convex.',
     links: [
       { label: 'Home', href: '/' },

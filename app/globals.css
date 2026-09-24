@@ -22,14 +22,14 @@ html, body {
      Core
      ------------------------------------------------------- */
 
-  --background: #fdfffa;
-  --foreground: #021d2c;
+  --background: #fafcfd;
+  --foreground: #021826;
 
   --card: #ffffff;
-  --card-foreground: #021d2c;
+  --card-foreground: #021826;
 
   --popover: #ffffff;
-  --popover-foreground: #021d2c;
+  --popover-foreground: #021826;
 
   /* -------------------------------------------------------
      Brand
@@ -38,34 +38,34 @@ html, body {
   --primary: #034a71;
   --primary-foreground: #ffffff;
 
-  --secondary: #77c041;
+  --secondary: #68ad33;
   --secondary-foreground: #ffffff;
 
-  --accent: #e8f6fb;
-  --accent-foreground: #0da4f5;
+  --accent: #e4f3f9;
+  --accent-foreground: #0284c7;
 
   /* -------------------------------------------------------
      Supporting UI
      ------------------------------------------------------- */
 
-  --muted: #f5f7f8;
-  --muted-foreground: #5f6b72;
+  --muted: #edf2f5;
+  --muted-foreground: #33434e;
 
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
-  --border: #dce5e9;
-  --input: #dce5e9;
+  --border: #a4b8c4;
+  --input: #a4b8c4;
   --ring: #00659a;
 
   /* -------------------------------------------------------
      Status
      ------------------------------------------------------- */
 
-  --success: #77c041;
+  --success: #68ad33;
   --success-foreground: #ffffff;
 
-  --warning: #f59e0b;
+  --warning: #d97706;
   --warning-foreground: #ffffff;
 
   --error: #dc2626;
@@ -76,25 +76,25 @@ html, body {
      ------------------------------------------------------- */
 
   --chart-1: #00659a;
-  --chart-2: #77c041;
-  --chart-3: #21a9e4;
-  --chart-4: #4d9fc5;
-  --chart-5: #8bc53f;
+  --chart-2: #68ad33;
+  --chart-3: #0284c7;
+  --chart-4: #3381a7;
+  --chart-5: #74b82e;
 
   /* -------------------------------------------------------
      Sidebar
      ------------------------------------------------------- */
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #021d2c;
+  --sidebar-foreground: #021826;
 
-  --sidebar-primary: #00659a;
+  --sidebar-primary: #034a71;
   --sidebar-primary-foreground: #ffffff;
 
-  --sidebar-accent: #e8f6fb;
-  --sidebar-accent-foreground: #00659a;
+  --sidebar-accent: #e4f3f9;
+  --sidebar-accent-foreground: #034a71;
 
-  --sidebar-border: #dce5e9;
+  --sidebar-border: #a4b8c4;
   --sidebar-ring: #00659a;
 
   /* -------------------------------------------------------
@@ -189,13 +189,13 @@ html, body {
      ------------------------------------------------------- */
 
   --muted: #062a3a;
-  --muted-foreground: #a8b8bf;
+  --muted-foreground: #cbd6dc;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
 
-  --border: #164252;
-  --input: #164252;
+  --border: #235467;
+  --input: #235467;
   --ring: #21a9e4;
 
   /* -------------------------------------------------------
