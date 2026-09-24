@@ -66,4 +66,4 @@ export const rotateKeys = action({
     const auth = createAuth(ctx);
     return await auth.api.rotateKeys();
   },
-});
+});
