@@ -24,7 +24,24 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 export default function AdminOverviewPage() {
-  const { content } = useWebsiteContent()
+  const { content, loading } = useWebsiteContent()
+
+  if (loading || !content) {
+    return (
+      <div className="mx-auto max-w-7xl space-y-8 animate-pulse">
+        <div className="h-40 rounded-3xl bg-muted" />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-28 rounded-2xl bg-muted" />
+          ))}
+        </div>
+        <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+          <div className="h-80 rounded-2xl bg-muted" />
+          <div className="h-80 rounded-2xl bg-muted" />
+        </div>
+      </div>
+    )
+  }
 
   const stats = [
     {

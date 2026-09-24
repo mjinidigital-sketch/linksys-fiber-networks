@@ -16,16 +16,74 @@ export const getCurrentUserWithProfile = query({
         .withIndex("by_userId", (q) => q.eq("userId", authUser._id))
         .unique();
 
+      let role = profile?.role;
+      if (!role) {
+        // If profile does not exist yet, check if any admins exist in the table
+        const anyAdmin = await ctx.db
+          .query("users")
+          .filter((q) => q.eq(q.field("role"), "admin"))
+          .first();
+
+        // If no admins exist yet, grant admin role to the first authenticated user
+        role = !anyAdmin ? "admin" : "user";
+      }
+
       return {
         user: authUser,
         profile: profile || null,
-        role: profile?.role || "user",
+        role: role || "user",
       };
     } catch {
       return null;
     }
   },
 });
+
+export const ensureCurrentUserProfile = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const authUser = await authComponent.safeGetAuthUser(ctx);
+    if (!authUser) {
+      return null;
+    }
+
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", authUser._id))
+      .unique();
+
+    if (existing) {
+      return existing;
+    }
+
+    const anyAdmin = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("role"), "admin"))
+      .first();
+
+    const isFirstAdmin = !anyAdmin;
+    const now = Date.now();
+
+    const newProfile = {
+      userId: authUser._id,
+      email: authUser.email || "",
+      name: authUser.name || "Administrator",
+      role: isFirstAdmin ? ("admin" as const) : ("user" as const),
+      profilePic: authUser.image ?? undefined,
+      socials: [
+        { platform: "github", label: "GitHub", url: "https://github.com" },
+        { platform: "twitter", label: "X / Twitter", url: "https://twitter.com" },
+        { platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com" },
+      ],
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const id = await ctx.db.insert("users", newProfile);
+    return { _id: id, ...newProfile };
+  },
+});
+
 
 export const syncUser = mutation({
   args: {

@@ -52,6 +52,7 @@ export default function SignUp() {
         type: "success",
       });
       router.push("/");
+      router.refresh();
     });
   }
 

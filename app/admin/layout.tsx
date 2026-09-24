@@ -3,9 +3,8 @@
 import { useState } from 'react'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 import { AdminHeader } from '@/components/admin/AdminHeader'
-import { AdminGuard } from '@/components/admin/AdminGuard'
 import { ToastProvider } from '@/components/ui/toast'
-
+import AdminGuard from '@/components/admin/AdminGuard'
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
 

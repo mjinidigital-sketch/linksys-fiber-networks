@@ -16,7 +16,6 @@ import type * as content from "../content.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as likes from "../likes.js";
-import type * as seed from "../seed.js";
 import type * as sendEmails from "../sendEmails.js";
 import type * as users from "../users.js";
 
@@ -35,7 +34,6 @@ declare const fullApi: ApiFromModules<{
   files: typeof files;
   http: typeof http;
   likes: typeof likes;
-  seed: typeof seed;
   sendEmails: typeof sendEmails;
   users: typeof users;
 }>;
