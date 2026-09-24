@@ -120,12 +120,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               className={cn(
                 'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-secondary text-secondary-foreground shadow-sm shadow-secondary/25'
                   : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
               <div className="flex items-center gap-3">
-                <LayoutDashboard className={cn('size-4 shrink-0', pathname === '/admin' ? 'text-primary-foreground' : 'text-primary')} />
+                <LayoutDashboard className={cn('size-4 shrink-0', pathname === '/admin' ? 'text-secondary-foreground' : 'text-secondary')} />
                 <span>Overview</span>
               </div>
             </Link>
@@ -139,15 +139,15 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
                   className={cn(
                     'flex flex-1 items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                     isContentActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      ? 'bg-secondary text-secondary-foreground shadow-sm shadow-secondary/25'
                       : 'text-foreground/80 hover:bg-muted hover:text-foreground'
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <FileCode2 className={cn('size-4 shrink-0', isContentActive ? 'text-primary-foreground' : 'text-primary')} />
+                    <FileCode2 className={cn('size-4 shrink-0', isContentActive ? 'text-secondary-foreground' : 'text-primary')} />
                     <span>Website Content</span>
                   </div>
-                  <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide', isContentActive ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-primary/10 text-primary')}>
+                  <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide', isContentActive ? 'bg-secondary-foreground/20 text-secondary-foreground' : 'bg-primary/10 text-primary')}>
                     Core
                   </span>
                 </Link>
@@ -183,11 +183,11 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
                             className={cn(
                               'flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors',
                               isSubActive
-                                ? 'bg-primary/15 text-primary font-bold shadow-xs'
+                                ? 'bg-secondary text-secondary-foreground font-bold shadow-xs'
                                 : 'text-foreground/80 hover:bg-muted hover:text-foreground'
                             )}
                           >
-                            <Icon className={cn('size-4 shrink-0', isSubActive ? 'text-primary' : 'text-muted-foreground')} />
+                            <Icon className={cn('size-4 shrink-0', isSubActive ? 'text-secondary-foreground' : 'text-muted-foreground')} />
                             <span>{label}</span>
                           </Link>
                         )
@@ -205,12 +205,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               className={cn(
                 'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/chats'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-secondary text-secondary-foreground shadow-sm shadow-secondary/25'
                   : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
               <div className="flex items-center gap-3">
-                <MessageSquare className={cn('size-4 shrink-0', pathname === '/admin/chats' ? 'text-primary-foreground' : 'text-secondary')} />
+                <MessageSquare className={cn('size-4 shrink-0', pathname === '/admin/chats' ? 'text-secondary-foreground' : 'text-secondary')} />
                 <span>Live Chat & Support</span>
               </div>
               {adminUnreadCount !== undefined && adminUnreadCount > 0 ? (
@@ -231,12 +231,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               className={cn(
                 'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/users'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-secondary text-secondary-foreground shadow-sm shadow-secondary/25'
                   : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
               <div className="flex items-center gap-3">
-                <Users className={cn('size-4 shrink-0', pathname === '/admin/users' ? 'text-primary-foreground' : 'text-secondary')} />
+                <Users className={cn('size-4 shrink-0', pathname === '/admin/users' ? 'text-secondary-foreground' : 'text-secondary')} />
                 <span>User Management</span>
               </div>
               <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:text-amber-300 border border-amber-500/30">
@@ -250,12 +250,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               className={cn(
                 'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/seo'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-secondary text-secondary-foreground shadow-sm shadow-secondary/25'
                   : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
               <div className="flex items-center gap-3">
-                <Search className={cn('size-4 shrink-0', pathname === '/admin/seo' ? 'text-primary-foreground' : 'text-secondary')} />
+                <Search className={cn('size-4 shrink-0', pathname === '/admin/seo' ? 'text-secondary-foreground' : 'text-secondary')} />
                 <span>SEO Settings</span>
               </div>
             </Link>
@@ -266,12 +266,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               className={cn(
                 'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/socials'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-secondary text-secondary-foreground shadow-sm shadow-secondary/25'
                   : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
               <div className="flex items-center gap-3">
-                <Share2 className={cn('size-4 shrink-0', pathname === '/admin/socials' ? 'text-primary-foreground' : 'text-secondary')} />
+                <Share2 className={cn('size-4 shrink-0', pathname === '/admin/socials' ? 'text-secondary-foreground' : 'text-secondary')} />
                 <span>Social Links</span>
               </div>
             </Link>
@@ -282,12 +282,12 @@ export function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebarProps) {
               className={cn(
                 'flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all group',
                 pathname === '/admin/settings'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-secondary text-secondary-foreground shadow-sm shadow-secondary/25'
                   : 'text-foreground/80 hover:bg-muted hover:text-foreground'
               )}
             >
               <div className="flex items-center gap-3">
-                <Settings className={cn('size-4 shrink-0', pathname === '/admin/settings' ? 'text-primary-foreground' : 'text-secondary')} />
+                <Settings className={cn('size-4 shrink-0', pathname === '/admin/settings' ? 'text-secondary-foreground' : 'text-secondary')} />
                 <span>Site Settings</span>
               </div>
             </Link>
