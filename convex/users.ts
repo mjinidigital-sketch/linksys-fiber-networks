@@ -1,6 +1,6 @@
 import { v } from "convex/values";
-import { internalMutation, mutation, query } from "./_generated/server";
-import { components } from "./_generated/api";
+import { action, internalMutation, mutation, query } from "./_generated/server";
+import { components, internal } from "./_generated/api";
 import { authComponent } from "./auth";
 
 export const getCurrentUserWithProfile = query({
@@ -166,11 +166,99 @@ export const createUserProfileFromAuth = internalMutation({
 });
 
 /**
- * Public mutation to sync all existing Better Auth users into the Convex users table.
- * Fetches all registered accounts from the Better Auth component and creates or updates
- * their profiles in the Convex users table.
+ * Internal mutation that upserts one page of Better Auth users into the Convex users table.
+ * Called once per page from the `syncExistingUsers` action so each batch runs in its own
+ * transaction and never hits Convex's per-transaction read/write limits.
  */
-export const syncExistingUsers = mutation({
+export const syncUsersBatch = internalMutation({
+  args: {
+    users: v.array(
+      v.object({
+        _id: v.string(),
+        email: v.optional(v.string()),
+        name: v.optional(v.string()),
+        image: v.optional(v.string()),
+        phoneNumber: v.optional(v.string()),
+        createdAt: v.optional(v.number()),
+        updatedAt: v.optional(v.number()),
+      })
+    ),
+    overwriteExisting: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    let created = 0;
+    let updated = 0;
+
+    for (const authUser of args.users) {
+      const userId = authUser._id;
+      const email = authUser.email ?? "";
+      const name = authUser.name ?? (email ? email.split("@")[0] : "User");
+      const image = authUser.image ?? undefined;
+      const phone = authUser.phoneNumber ?? undefined;
+
+      let existing = await ctx.db
+        .query("users")
+        .withIndex("by_userId", (q) => q.eq("userId", userId))
+        .unique();
+
+      if (!existing && email) {
+        existing = await ctx.db
+          .query("users")
+          .withIndex("by_email", (q) => q.eq("email", email))
+          .unique();
+      }
+
+      const now = Date.now();
+
+      if (existing) {
+        if (args.overwriteExisting || existing.userId !== userId) {
+          await ctx.db.patch(existing._id, {
+            userId,
+            name: existing.name || name,
+            email: existing.email || email,
+            profilePic: existing.profilePic || image,
+            phone: existing.phone || phone,
+            updatedAt: now,
+          });
+          updated++;
+        }
+      } else {
+        const anyAdmin = await ctx.db
+          .query("users")
+          .filter((q) => q.eq(q.field("role"), "admin"))
+          .first();
+
+        const role = !anyAdmin ? ("admin" as const) : ("user" as const);
+
+        await ctx.db.insert("users", {
+          userId,
+          email,
+          name,
+          role,
+          profilePic: image,
+          phone,
+          socials: [
+            { platform: "github", label: "GitHub", url: "https://github.com" },
+            { platform: "twitter", label: "X / Twitter", url: "https://twitter.com" },
+            { platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com" },
+          ],
+          createdAt: typeof authUser.createdAt === "number" ? authUser.createdAt : now,
+          updatedAt: typeof authUser.updatedAt === "number" ? authUser.updatedAt : now,
+        });
+        created++;
+      }
+    }
+
+    return { created, updated };
+  },
+});
+
+/**
+ * Public action to sync all existing Better Auth users into the Convex users table.
+ * Runs the pagination loop outside any transaction (actions have no DB transaction limits)
+ * and commits each page via `syncUsersBatch` — its own isolated mutation transaction.
+ */
+export const syncExistingUsers = action({
   args: {
     overwriteExisting: v.optional(v.boolean()),
   },
@@ -191,77 +279,38 @@ export const syncExistingUsers = mutation({
           phoneNumber?: string | null;
           createdAt?: number;
           updatedAt?: number;
-          [key: string]: any;
         }>;
         isDone: boolean;
         continueCursor: string;
       } = await ctx.runQuery(components.betterAuth.adapter.findMany, {
         model: "user",
         paginationOpts: {
-          numItems: 100,
+          numItems: 50,
           cursor,
         },
       });
 
-      for (const authUser of result.page) {
-        totalFound++;
-        const userId = String(authUser._id);
-        const email = String(authUser.email || "");
-        const name = String(authUser.name || (email ? email.split("@")[0] : "User"));
-        const image = authUser.image ? String(authUser.image) : undefined;
-        const phone = authUser.phoneNumber ? String(authUser.phoneNumber) : undefined;
+      if (result.page.length > 0) {
+        // Normalize nullable fields before passing across the action→mutation boundary
+        const batch = result.page.map((u) => ({
+          _id: u._id,
+          email: u.email ?? undefined,
+          name: u.name ?? undefined,
+          image: u.image ?? undefined,
+          phoneNumber: u.phoneNumber ?? undefined,
+          createdAt: typeof u.createdAt === "number" ? u.createdAt : undefined,
+          updatedAt: typeof u.updatedAt === "number" ? u.updatedAt : undefined,
+        }));
 
-        let existing = await ctx.db
-          .query("users")
-          .withIndex("by_userId", (q) => q.eq("userId", userId))
-          .unique();
-
-        if (!existing && email) {
-          existing = await ctx.db
-            .query("users")
-            .withIndex("by_email", (q) => q.eq("email", email))
-            .unique();
-        }
-
-        const now = Date.now();
-
-        if (existing) {
-          if (args.overwriteExisting || existing.userId !== userId) {
-            await ctx.db.patch(existing._id, {
-              userId,
-              name: existing.name || name,
-              email: existing.email || email,
-              profilePic: existing.profilePic || image,
-              phone: existing.phone || phone,
-              updatedAt: now,
-            });
-            updated++;
-          }
-        } else {
-          const anyAdmin = await ctx.db
-            .query("users")
-            .filter((q) => q.eq(q.field("role"), "admin"))
-            .first();
-
-          const role = !anyAdmin ? ("admin" as const) : ("user" as const);
-
-          await ctx.db.insert("users", {
-            userId,
-            email,
-            name,
-            role,
-            profilePic: image,
-            phone,
-            socials: [
-              { platform: "github", label: "GitHub", url: "https://github.com" },
-              { platform: "twitter", label: "X / Twitter", url: "https://twitter.com" },
-              { platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com" },
-            ],
-            createdAt: typeof authUser.createdAt === "number" ? authUser.createdAt : now,
-            updatedAt: typeof authUser.updatedAt === "number" ? authUser.updatedAt : now,
+        const batchResult: { created: number; updated: number } =
+          await ctx.runMutation(internal.users.syncUsersBatch, {
+            users: batch,
+            overwriteExisting: args.overwriteExisting,
           });
-          created++;
-        }
+
+        totalFound += result.page.length;
+        created += batchResult.created;
+        updated += batchResult.updated;
       }
 
       isDone = result.isDone;

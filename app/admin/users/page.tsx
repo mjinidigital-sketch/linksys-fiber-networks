@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { useQuery, useMutation } from 'convex/react'
+import { useQuery, useMutation, useAction } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { authClient } from '@/lib/auth-client'
 import {
@@ -78,7 +78,7 @@ export default function AdminUsersPage() {
 
   const updateUserRole = useMutation(api.users.updateUserRole)
   const updateProfile = useMutation(api.users.updateProfile)
-  const syncExistingUsersMutation = useMutation(api.users.syncExistingUsers)
+  const syncExistingUsersAction = useAction(api.users.syncExistingUsers)
 
   const [isSyncing, setIsSyncing] = useState(false)
 
@@ -116,7 +116,7 @@ export default function AdminUsersPage() {
   const handleSyncUsers = async () => {
     try {
       setIsSyncing(true)
-      const res = await syncExistingUsersMutation({})
+      const res = await syncExistingUsersAction({})
       toast.add({
         title: 'Better Auth Sync Complete',
         description: `Synced ${res.totalFound} users (${res.created} new created, ${res.updated} updated, ${res.alreadyInSync} up to date).`,
