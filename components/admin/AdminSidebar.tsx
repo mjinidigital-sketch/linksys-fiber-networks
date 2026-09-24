@@ -20,6 +20,7 @@ import {
   Briefcase,
   Layers,
   FileText,
+  DollarSign,
   Sparkles,
   Wrench,
   Compass,
@@ -53,6 +54,7 @@ const websiteContentSections: ContentCategory[] = [
     items: [
       { label: 'Projects', href: '/admin/website-content/collections/projects', icon: Briefcase },
       { label: 'Services', href: '/admin/website-content/collections/services', icon: Layers },
+      { label: 'Pricing Plans', href: '/admin/website-content/collections/pricing', icon: DollarSign },
       { label: 'Careers & Jobs', href: '/admin/website-content/collections/careers', icon: Users },
       { label: 'Blog Posts', href: '/admin/website-content/collections/blog', icon: FileText },
     ]

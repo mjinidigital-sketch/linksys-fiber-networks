@@ -26,7 +26,8 @@ import {
   HelpCircle,
   Share2,
   FolderOpen,
-  Users
+  Users,
+  DollarSign
 } from 'lucide-react'
 import { useWebsiteContent } from '@/hooks/use-website-content'
 import { useToast } from '@/components/ui/toast'
@@ -35,7 +36,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { ContentHeader } from '@/components/admin/ContentHeader'
-import { defaultPageLayouts } from '@/lib/default-content'
+import { defaultPageLayouts, defaultContent } from '@/lib/default-content'
 
 export default function WebsiteContentHubPage() {
   const { content, loading, saving, lastSaved } = useWebsiteContent()
@@ -46,6 +47,7 @@ export default function WebsiteContentHubPage() {
   const pageCount = Object.keys(activePageLayouts).length
   const projectCount = content.projects?.items?.length || 0
   const serviceCount = content.services?.items?.length || 0
+  const pricingCount = content.pricing?.plans?.length ?? defaultContent.pricing?.plans?.length ?? 0
   const blogCount = content.blog?.posts?.length || 0
   const techCount = content.techStack?.items?.length || 0
 
@@ -83,6 +85,14 @@ export default function WebsiteContentHubPage() {
           icon: Layers,
           badge: `${serviceCount} Services`,
           color: 'from-emerald-500/20 to-teal-500/20 text-emerald-500',
+        },
+        {
+          title: 'Pricing Plans',
+          description: `Internet packages, subscription pricing tiers, feature lists and highlighted deals`,
+          href: '/admin/website-content/collections/pricing',
+          icon: DollarSign,
+          badge: `${pricingCount} Plans`,
+          color: 'from-cyan-500/20 to-teal-500/20 text-cyan-500',
         },
         {
           title: 'Careers & Jobs',

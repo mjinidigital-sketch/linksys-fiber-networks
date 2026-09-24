@@ -446,74 +446,77 @@ Let our IT specialists handle your computer systems, backups, and network troubl
     subtitle: 'Unlimited high-speed internet designed for households, students, and businesses across Molo.',
     plans: [
       {
-        id: 'plan-base',
-        name: 'BASE',
+        id: 'plan-6mbps',
+        name: '6 Mbps',
         description: 'Ideal for light browsing, social media, WhatsApp, and email on 1-2 devices.',
         price: 1500,
         isRecommended: false,
         icon: 'Wifi',
         features: [
           '6 Mbps High-Speed Internet',
+          'Unlimited monthly usage',
           'Ideal for browsing & social media',
-          'Stable connection for small households',
-          'Email & basic streaming support',
+          'Stable connection for 1-2 devices',
           '24/7 customer support'
         ]
       },
       {
-        id: 'plan-student',
-        name: 'STUDENT',
+        id: 'plan-10mbps',
+        name: '10 Mbps',
         description: 'Perfect for online classes, research, Zoom calls, and smooth HD video playback.',
         price: 1700,
         isRecommended: false,
         icon: 'GraduationCap',
         features: [
           '10 Mbps High-Speed Internet',
+          'Unlimited monthly usage',
           'Perfect for online classes & Zoom',
           'Smooth HD video streaming',
-          'Reliable for assignments & research',
           '24/7 customer support'
         ]
       },
       {
-        id: 'plan-home-basic',
-        name: 'DS-HOME BASIC',
+        id: 'plan-20mbps',
+        name: '20 Mbps',
         description: 'Our most popular plan for families. Smooth streaming, gaming, and multiple connected phones.',
         price: 2000,
         isRecommended: true,
         icon: 'Home',
         features: [
           '20 Mbps High-Speed Internet',
+          'Unlimited monthly usage',
           'Multiple device connectivity (4-6 devices)',
           'HD streaming & gaming support',
           'Fast downloads & uploads',
-          '24/7 customer support'
+          '24/7 priority customer support'
         ]
       },
       {
-        id: 'plan-home-pro',
-        name: 'DS-HOME PRO',
+        id: 'plan-25mbps',
+        name: '25 Mbps',
         description: 'High-throughput connectivity for heavy households, 4K streaming, and remote professionals.',
         price: 2500,
         isRecommended: false,
         icon: 'Zap',
         features: [
           '25 Mbps High-Speed Internet',
+          'Unlimited monthly usage',
           'Seamless streaming on multiple screens',
           'Online gaming ready with low latency',
           'Work-from-home optimized',
-          'Priority customer support'
+          '24/7 customer support'
         ]
       },
       {
-        id: 'plan-business',
-        name: 'BUSINESS',
+        id: 'plan-30mbps',
+        name: '30 Mbps',
         description: 'Reliable commercial internet for shops, pharmacies, cybercafes, and small offices.',
         price: 3000,
         isRecommended: false,
         icon: 'Briefcase',
         features: [
           '30 Mbps High-Speed Internet',
+          'Unlimited high-speed bandwidth',
           'Reliable for offices & SMEs',
           'Fast cloud access & file uploads',
           'Multi-user simultaneous browsing',
@@ -521,33 +524,18 @@ Let our IT specialists handle your computer systems, backups, and network troubl
         ]
       },
       {
-        id: 'plan-business-pro',
-        name: 'BUSINESS PRO',
-        description: 'Heavy usage business connectivity for hotels, institutions, and growing corporate teams.',
+        id: 'plan-40mbps',
+        name: '40 Mbps',
+        description: 'Maximum speed package for institutions, heavy usage, power users, and commercial operations.',
         price: 3500,
         isRecommended: false,
-        icon: 'Building',
-        features: [
-          '35 Mbps High-Speed Internet',
-          'High-performance business connectivity',
-          'Heavy usage & multitasking ready',
-          'Video conferencing without lag',
-          'Dedicated support & uptime focus'
-        ]
-      },
-      {
-        id: 'plan-business-premium',
-        name: 'BUSINESS PREMIUM',
-        description: 'Maximum speed package for enterprise networks, schools, and large commercial operations.',
-        price: 4000,
-        isRecommended: false,
-        icon: 'Shield',
+        icon: 'Rocket',
         features: [
           '40 Mbps High-Speed Internet',
-          'Ultra-fast speeds for large teams',
-          'Enterprise-grade performance',
-          'Heavy downloads & cloud operations',
-          'Top-tier priority support'
+          'Ultra-fast speeds for heavy teams',
+          'Multi-screen 4K streaming & video calls',
+          'Heavy downloads & cloud syncing',
+          'Top-tier dedicated 24/7 support'
         ]
       }
     ]
