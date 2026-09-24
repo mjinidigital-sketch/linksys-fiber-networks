@@ -78,7 +78,7 @@ export default function SignUp() {
                   <FieldLabel htmlFor="name">Name</FieldLabel>
                   <Input
                     id="name"
-                    placeholder="Victor Maina"
+                    placeholder=""
                     autoComplete="name"
                     {...field}
                     aria-invalid={fieldState.invalid}
@@ -99,7 +99,7 @@ export default function SignUp() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="name@example.com"
+                    placeholder=""
                     autoComplete="email"
                     {...field}
                     aria-invalid={fieldState.invalid}
