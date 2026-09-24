@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { action, internalMutation, mutation, query } from "./_generated/server";
+import { action, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { components, internal } from "./_generated/api";
 import { authComponent } from "./auth";
 
@@ -166,6 +166,27 @@ export const createUserProfileFromAuth = internalMutation({
 });
 
 /**
+ * Internal query that fetches one page of users from the Better Auth component.
+ * Actions cannot call component-internal functions directly — they must go through
+ * an app-level query/mutation wrapper like this one.
+ */
+export const getAuthUserPage = internalQuery({
+  args: {
+    cursor: v.union(v.string(), v.null()),
+    numItems: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.runQuery(components.betterAuth.adapter.findMany, {
+      model: "user",
+      paginationOpts: {
+        numItems: args.numItems,
+        cursor: args.cursor,
+      },
+    });
+  },
+});
+
+/**
  * Internal mutation that upserts one page of Better Auth users into the Convex users table.
  * Called once per page from the `syncExistingUsers` action so each batch runs in its own
  * transaction and never hits Convex's per-transaction read/write limits.
@@ -282,12 +303,9 @@ export const syncExistingUsers = action({
         }>;
         isDone: boolean;
         continueCursor: string;
-      } = await ctx.runQuery(components.betterAuth.adapter.findMany, {
-        model: "user",
-        paginationOpts: {
-          numItems: 50,
-          cursor,
-        },
+      } = await ctx.runQuery(internal.users.getAuthUserPage, {
+        cursor,
+        numItems: 50,
       });
 
       if (result.page.length > 0) {
