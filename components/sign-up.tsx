@@ -14,12 +14,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function SignUp() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectParam = searchParams.get("redirect") || "/";
+  const syncUserMutation = useMutation(api.users.syncUser);
 
   const form = useForm<z.infer<typeof SignupSchema>>({
     resolver: zodResolver(SignupSchema),
@@ -33,7 +36,7 @@ export default function SignUp() {
 
   function onSubmit(values: z.infer<typeof SignupSchema>) {
     startTransition(async () => {
-      const { error } = await authClient.signUp.email({
+      const { data, error } = await authClient.signUp.email({
         name: values.name,
         email: values.email,
         password: values.password,
@@ -46,6 +49,19 @@ export default function SignUp() {
           type: "error",
         });
         return;
+      }
+
+      if (data?.user) {
+        try {
+          await syncUserMutation({
+            userId: data.user.id,
+            email: data.user.email,
+            name: data.user.name,
+            image: data.user.image ?? undefined,
+          });
+        } catch {
+          // Handled by backend hook as well
+        }
       }
 
       toast.add({

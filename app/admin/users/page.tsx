@@ -45,6 +45,7 @@ import {
   ShieldAlert,
   Sparkles,
   Filter,
+  RefreshCw,
 } from 'lucide-react'
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -77,6 +78,9 @@ export default function AdminUsersPage() {
 
   const updateUserRole = useMutation(api.users.updateUserRole)
   const updateProfile = useMutation(api.users.updateProfile)
+  const syncExistingUsersMutation = useMutation(api.users.syncExistingUsers)
+
+  const [isSyncing, setIsSyncing] = useState(false)
 
   // Table states
   const [sorting, setSorting] = useState<SortingState>([])
@@ -106,6 +110,26 @@ export default function AdminUsersPage() {
         description: err?.message || 'Permission denied',
         type: 'error',
       })
+    }
+  }
+
+  const handleSyncUsers = async () => {
+    try {
+      setIsSyncing(true)
+      const res = await syncExistingUsersMutation({})
+      toast.add({
+        title: 'Better Auth Sync Complete',
+        description: `Synced ${res.totalFound} users (${res.created} new created, ${res.updated} updated, ${res.alreadyInSync} up to date).`,
+        type: 'success',
+      })
+    } catch (err: any) {
+      toast.add({
+        title: 'Sync Failed',
+        description: err?.message || 'Failed to sync users with Better Auth',
+        type: 'error',
+      })
+    } finally {
+      setIsSyncing(false)
     }
   }
 
@@ -606,12 +630,24 @@ export default function AdminUsersPage() {
             </div>
           </div>
 
-          {/* Table summary badge */}
-          <div className="text-xs text-muted-foreground flex items-center gap-2">
-            <span>
-              Showing <strong>{table.getRowModel().rows.length}</strong> of{' '}
-              <strong>{filteredData.length}</strong> users
-            </span>
+          {/* Table summary & Sync Better Auth Button */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 text-xs gap-1.5 border-primary/30 hover:bg-primary/10"
+              onClick={handleSyncUsers}
+              disabled={isSyncing}
+            >
+              <RefreshCw className={`size-3.5 ${isSyncing ? 'animate-spin text-primary' : ''}`} />
+              {isSyncing ? 'Syncing Users...' : 'Sync Better Auth'}
+            </Button>
+            <div className="text-xs text-muted-foreground hidden sm:flex items-center gap-2">
+              <span>
+                Showing <strong>{table.getRowModel().rows.length}</strong> of{' '}
+                <strong>{filteredData.length}</strong> users
+              </span>
+            </div>
           </div>
         </div>
 

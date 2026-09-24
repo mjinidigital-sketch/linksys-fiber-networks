@@ -1,6 +1,6 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
-import { components } from "./_generated/api";
+import { components, internal } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { action, query } from "./_generated/server";
 import { betterAuth } from "better-auth/minimal";
@@ -23,6 +23,44 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
       siteUrl,
     ].filter(Boolean),
     database: authComponent.adapter(ctx),
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (user) => {
+            if ("runMutation" in ctx) {
+              try {
+                await ctx.runMutation(internal.users.createUserProfileFromAuth, {
+                  userId: (user as any).id || (user as any)._id,
+                  email: user.email || "",
+                  name: user.name || "User",
+                  image: user.image ?? undefined,
+                  phone: (user as any).phoneNumber ?? undefined,
+                });
+              } catch (error) {
+                console.error("Failed to auto-create Convex user profile in databaseHook:", error);
+              }
+            }
+          },
+        },
+        update: {
+          after: async (user) => {
+            if ("runMutation" in ctx) {
+              try {
+                await ctx.runMutation(internal.users.createUserProfileFromAuth, {
+                  userId: (user as any).id || (user as any)._id,
+                  email: user.email || "",
+                  name: user.name || "User",
+                  image: user.image ?? undefined,
+                  phone: (user as any).phoneNumber ?? undefined,
+                });
+              } catch (error) {
+                console.error("Failed to sync Convex user profile on update:", error);
+              }
+            }
+          },
+        },
+      },
+    },
     // Configure email/password with Resend reset password function
     emailAndPassword: {
       enabled: true,

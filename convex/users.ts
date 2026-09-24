@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
+import { components } from "./_generated/api";
 import { authComponent } from "./auth";
 
 export const getCurrentUserWithProfile = query({
@@ -47,10 +48,24 @@ export const ensureCurrentUserProfile = mutation({
       return null;
     }
 
-    const existing = await ctx.db
+    let existing = await ctx.db
       .query("users")
       .withIndex("by_userId", (q) => q.eq("userId", authUser._id))
       .unique();
+
+    if (!existing && authUser.email) {
+      existing = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", authUser.email))
+        .unique();
+
+      if (existing) {
+        await ctx.db.patch(existing._id, {
+          userId: authUser._id,
+          updatedAt: Date.now(),
+        });
+      }
+    }
 
     if (existing) {
       return existing;
@@ -84,6 +99,184 @@ export const ensureCurrentUserProfile = mutation({
   },
 });
 
+/**
+ * Internal mutation used by Better Auth signup/update hooks
+ * to guarantee that a user document is created or updated in the Convex users table.
+ */
+export const createUserProfileFromAuth = internalMutation({
+  args: {
+    userId: v.string(),
+    email: v.string(),
+    name: v.string(),
+    image: v.optional(v.string()),
+    phone: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let existing = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .unique();
+
+    if (!existing && args.email) {
+      existing = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", args.email))
+        .unique();
+    }
+
+    const now = Date.now();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        userId: args.userId,
+        name: args.name || existing.name,
+        email: args.email || existing.email,
+        profilePic: args.image ?? existing.profilePic,
+        phone: args.phone ?? existing.phone,
+        updatedAt: now,
+      });
+      return existing._id;
+    }
+
+    const anyAdmin = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("role"), "admin"))
+      .first();
+
+    const role = !anyAdmin ? ("admin" as const) : ("user" as const);
+
+    const newId = await ctx.db.insert("users", {
+      userId: args.userId,
+      email: args.email,
+      name: args.name || "User",
+      role,
+      profilePic: args.image,
+      phone: args.phone,
+      socials: [
+        { platform: "github", label: "GitHub", url: "https://github.com" },
+        { platform: "twitter", label: "X / Twitter", url: "https://twitter.com" },
+        { platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com" },
+      ],
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    return newId;
+  },
+});
+
+/**
+ * Public mutation to sync all existing Better Auth users into the Convex users table.
+ * Fetches all registered accounts from the Better Auth component and creates or updates
+ * their profiles in the Convex users table.
+ */
+export const syncExistingUsers = mutation({
+  args: {
+    overwriteExisting: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    let cursor: string | null = null;
+    let isDone = false;
+    let totalFound = 0;
+    let created = 0;
+    let updated = 0;
+
+    while (!isDone) {
+      const result: {
+        page: Array<{
+          _id: string;
+          email?: string;
+          name?: string;
+          image?: string | null;
+          phoneNumber?: string | null;
+          createdAt?: number;
+          updatedAt?: number;
+          [key: string]: any;
+        }>;
+        isDone: boolean;
+        continueCursor: string;
+      } = await ctx.runQuery(components.betterAuth.adapter.findMany, {
+        model: "user",
+        paginationOpts: {
+          numItems: 100,
+          cursor,
+        },
+      });
+
+      for (const authUser of result.page) {
+        totalFound++;
+        const userId = String(authUser._id);
+        const email = String(authUser.email || "");
+        const name = String(authUser.name || (email ? email.split("@")[0] : "User"));
+        const image = authUser.image ? String(authUser.image) : undefined;
+        const phone = authUser.phoneNumber ? String(authUser.phoneNumber) : undefined;
+
+        let existing = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", userId))
+          .unique();
+
+        if (!existing && email) {
+          existing = await ctx.db
+            .query("users")
+            .withIndex("by_email", (q) => q.eq("email", email))
+            .unique();
+        }
+
+        const now = Date.now();
+
+        if (existing) {
+          if (args.overwriteExisting || existing.userId !== userId) {
+            await ctx.db.patch(existing._id, {
+              userId,
+              name: existing.name || name,
+              email: existing.email || email,
+              profilePic: existing.profilePic || image,
+              phone: existing.phone || phone,
+              updatedAt: now,
+            });
+            updated++;
+          }
+        } else {
+          const anyAdmin = await ctx.db
+            .query("users")
+            .filter((q) => q.eq(q.field("role"), "admin"))
+            .first();
+
+          const role = !anyAdmin ? ("admin" as const) : ("user" as const);
+
+          await ctx.db.insert("users", {
+            userId,
+            email,
+            name,
+            role,
+            profilePic: image,
+            phone,
+            socials: [
+              { platform: "github", label: "GitHub", url: "https://github.com" },
+              { platform: "twitter", label: "X / Twitter", url: "https://twitter.com" },
+              { platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com" },
+            ],
+            createdAt: typeof authUser.createdAt === "number" ? authUser.createdAt : now,
+            updatedAt: typeof authUser.updatedAt === "number" ? authUser.updatedAt : now,
+          });
+          created++;
+        }
+      }
+
+      isDone = result.isDone;
+      cursor = result.continueCursor ?? null;
+    }
+
+    return {
+      success: true,
+      totalFound,
+      created,
+      updated,
+      alreadyInSync: totalFound - created - updated,
+    };
+  },
+});
 
 export const syncUser = mutation({
   args: {
