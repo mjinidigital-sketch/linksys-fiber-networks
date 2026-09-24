@@ -61,15 +61,12 @@ export default function Login() {
    * from happening because of a timing race.
    */
   useEffect(() => {
-    if (!loginStarted) return;
-
     if (convexLoading) return;
 
     if (isAuthenticated) {
       router.replace(redirectUrl);
     }
   }, [
-    loginStarted,
     convexLoading,
     isAuthenticated,
     redirectUrl,
